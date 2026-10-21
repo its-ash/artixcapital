@@ -1,0 +1,441 @@
+<script setup lang="ts">
+import gsap from 'gsap'
+import type { Topology, GeometryCollection } from 'topojson-specification'
+import type { MultiPolygon, Polygon } from 'geojson'
+
+type V3 = [number, number, number]
+type Hub = { id: string; lat: number; lon: number; sym: string; hue: string }
+type Arc = { world: Float32Array; sp: Float32Array; hid: Uint8Array; hue: string; offset: number; speed: number }
+
+const DOTS = 12000
+const SPIN = 0.0022
+const TILT = -0.32
+const GRID_STEP = 15
+const ARC_PTS = 96
+const TRAIL = 0.42
+const TRAIL_SEGS = 10
+const RIM_FADE = 0.22
+const PALETTE = ['#22d3ee', '#5184ff', '#a78bfa', '#ff7aea']
+
+const HUBS: Hub[] = [
+  { id: 'LDN', lat: 51.51, lon: -0.13, sym: 'GBP/USD', hue: '#5184ff' },
+  { id: 'NYC', lat: 40.71, lon: -74.0, sym: 'US500', hue: '#22d3ee' },
+  { id: 'FRA', lat: 50.11, lon: 8.68, sym: 'EUR/USD', hue: '#a78bfa' },
+  { id: 'TYO', lat: 35.68, lon: 139.69, sym: 'USD/JPY', hue: '#ff7aea' },
+  { id: 'SGP', lat: 1.35, lon: 103.82, sym: 'XAU/USD', hue: '#fbbf24' },
+  { id: 'SYD', lat: -33.87, lon: 151.21, sym: 'AUD/USD', hue: '#3fd17a' },
+  { id: 'HKG', lat: 22.32, lon: 114.17, sym: 'BTC/USD', hue: '#ff8a4c' },
+  { id: 'SLU', lat: 14.08, lon: -60.95, sym: 'NAS100', hue: '#9ab6ff' }
+]
+const ROUTES: [string, string][] = [['LDN', 'NYC'], ['NYC', 'TYO'], ['FRA', 'SGP'], ['LDN', 'HKG'], ['SGP', 'SYD'], ['SLU', 'LDN'], ['TYO', 'SYD'], ['NYC', 'SLU'], ['HKG', 'FRA']]
+
+const box = ref<HTMLElement | null>(null)
+const cvs = ref<HTMLCanvasElement | null>(null)
+const { quotes } = useMarketFeed()
+const done = useIntroDone()
+let stop = () => {}
+
+const vec = (lat: number, lon: number): V3 => {
+  const p = (lat * Math.PI) / 180
+  const l = (lon * Math.PI) / 180
+  return [Math.cos(p) * Math.sin(l), Math.sin(p), Math.cos(p) * Math.cos(l)]
+}
+
+const slerp = (a: V3, b: V3, t: number): V3 => {
+  const d = Math.acos(Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]))
+  const s = Math.sin(d) || 1
+  const ka = Math.sin((1 - t) * d) / s
+  const kb = Math.sin(t * d) / s
+  return [a[0] * ka + b[0] * kb, a[1] * ka + b[1] * kb, a[2] * ka + b[2] * kb]
+}
+
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
+
+const landDots = async () => {
+  const [{ feature }, topo] = await Promise.all([import('topojson-client'), import('world-atlas/land-110m.json')])
+  const t = (topo.default ?? topo) as unknown as Topology<{ land: GeometryCollection }>
+  const land = feature(t, t.objects.land)
+  const W = 720
+  const H = 360
+  const off = document.createElement('canvas')
+  off.width = W
+  off.height = H
+  const c = off.getContext('2d', { willReadFrequently: true })
+  if (!c) return new Float32Array()
+  c.fillStyle = '#fff'
+  const geoms = 'features' in land ? land.features.map(f => f.geometry) : [land.geometry]
+  for (const g of geoms) {
+    const polys = g.type === 'MultiPolygon' ? (g as MultiPolygon).coordinates : g.type === 'Polygon' ? [(g as Polygon).coordinates] : []
+    for (const poly of polys) {
+      c.beginPath()
+      for (const ring of poly) ring.forEach(([lo = 0, la = 0], i) => (i ? c.lineTo : c.moveTo).call(c, ((lo + 180) / 360) * W, ((90 - la) / 180) * H))
+      c.fill('evenodd')
+    }
+  }
+  const px = c.getImageData(0, 0, W, H).data
+  const out: number[] = []
+  const golden = Math.PI * (3 - Math.sqrt(5))
+  for (let i = 0; i < DOTS; i++) {
+    const lat = (Math.asin(1 - (i / (DOTS - 1)) * 2) * 180) / Math.PI
+    const lon = ((((golden * i * 180) / Math.PI) % 360) + 360) % 360 - 180
+    const ix = Math.min(W - 1, Math.floor(((lon + 180) / 360) * W))
+    const iy = Math.min(H - 1, Math.floor(((90 - lat) / 180) * H))
+    if ((px[(iy * W + ix) * 4] ?? 0) > 128) out.push(...vec(lat, lon))
+  }
+  return new Float32Array(out)
+}
+
+onMounted(() => {
+  const el = box.value
+  const c = cvs.value
+  const ctx = c?.getContext('2d')
+  if (!el || !c || !ctx) return
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+  const hubs = HUBS.map(h => ({ ...h, v: vec(h.lat, h.lon), phase: Math.random() * 2 }))
+  const byId = Object.fromEntries(hubs.map(h => [h.id, h]))
+  const arcs: Arc[] = ROUTES.flatMap(([a, b], i) => {
+    const A = byId[a]
+    const B = byId[b]
+    if (!A || !B) return []
+    const dist = Math.acos(A.v[0] * B.v[0] + A.v[1] * B.v[1] + A.v[2] * B.v[2])
+    const world = new Float32Array((ARC_PTS + 1) * 3)
+    for (let k = 0; k <= ARC_PTS; k++) {
+      const t = k / ARC_PTS
+      const p = slerp(A.v, B.v, t)
+      const h = 1 + Math.sin(Math.PI * t) * (0.08 + dist * 0.12)
+      world.set([p[0] * h, p[1] * h, p[2] * h], k * 3)
+    }
+    return [{ world, sp: new Float32Array((ARC_PTS + 1) * 3), hid: new Uint8Array(ARC_PTS + 1), hue: A.hue, offset: (i * 0.29) % 1, speed: 0.34 + (i % 3) * 0.05 }]
+  })
+  const grid: V3[][] = []
+  for (let lon = -180; lon < 180; lon += GRID_STEP) grid.push(Array.from({ length: 61 }, (_, k) => vec(-90 + k * 3, lon)))
+  for (let lat = -75; lat <= 75; lat += GRID_STEP) grid.push(Array.from({ length: 121 }, (_, k) => vec(lat, -180 + k * 3)))
+
+  let dots = new Float32Array()
+  const state = { yaw: 0.6, tilt: TILT, vYaw: SPIN, reveal: reduce ? 1 : 0, dots: 0, hover: 0 }
+  const tmp: V3 = [0, 0, 0]
+  const pt: V3 = [0, 0, 0]
+  let w = 0
+  let R = 0
+  let cx = 0
+  let cy = 0
+  let raf = 0
+  let visible = true
+  let drag: { x: number; y: number; t: number } | null = null
+  let fills: { halo: CanvasGradient; body: CanvasGradient; rim: CanvasGradient; pal: CanvasGradient } | null = null
+
+  const glow = document.createElement('canvas')
+  glow.width = glow.height = 64
+  const gctx = glow.getContext('2d')
+  if (gctx) {
+    const g = gctx.createRadialGradient(32, 32, 0, 32, 32, 32)
+    g.addColorStop(0, 'rgba(255,255,255,1)')
+    g.addColorStop(0.25, 'rgba(255,255,255,0.55)')
+    g.addColorStop(1, 'rgba(255,255,255,0)')
+    gctx.fillStyle = g
+    gctx.fillRect(0, 0, 64, 64)
+  }
+
+  const resize = () => {
+    const dpr = Math.min(devicePixelRatio, 2)
+    w = el.clientWidth
+    c.width = c.height = Math.round(w * dpr)
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    R = w * 0.36
+    cx = cy = w / 2
+    const halo = ctx.createRadialGradient(cx, cy, R * 0.85, cx, cy, R * 1.45)
+    halo.addColorStop(0, 'rgba(81,132,255,0.35)')
+    halo.addColorStop(0.4, 'rgba(167,139,250,0.14)')
+    halo.addColorStop(1, 'rgba(255,122,234,0)')
+    const body = ctx.createRadialGradient(cx - R * 0.35, cy - R * 0.4, R * 0.1, cx, cy, R)
+    body.addColorStop(0, 'rgba(40,52,110,0.95)')
+    body.addColorStop(0.7, 'rgba(16,18,40,0.96)')
+    body.addColorStop(1, 'rgba(10,11,26,0.98)')
+    const rim = ctx.createRadialGradient(cx, cy, R * 0.94, cx, cy, R * 1.03)
+    rim.addColorStop(0, 'rgba(154,182,255,0)')
+    rim.addColorStop(0.6, 'rgba(154,182,255,0.35)')
+    rim.addColorStop(1, 'rgba(255,122,234,0)')
+    const pal = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R)
+    PALETTE.forEach((col, i) => pal.addColorStop(i / (PALETTE.length - 1), col))
+    fills = { halo, body, rim, pal }
+    if (reduce) draw(0)
+  }
+
+  const proj = (v: ArrayLike<number>, o: number, out: V3) => {
+    const cyw = Math.cos(state.yaw)
+    const syw = Math.sin(state.yaw)
+    const ct = Math.cos(state.tilt)
+    const st = Math.sin(state.tilt)
+    const vx = v[o] ?? 0
+    const vy = v[o + 1] ?? 0
+    const vz = v[o + 2] ?? 0
+    const x = vx * cyw + vz * syw
+    const z1 = -vx * syw + vz * cyw
+    out[0] = cx + x * R
+    out[1] = cy - (vy * ct - z1 * st) * R
+    out[2] = vy * st + z1 * ct
+    return out
+  }
+  const occluded = (x: number, y: number, z: number) => z < 0 && Math.hypot(x - cx, y - cy) < R
+
+  const arcPoint = (a: Arc, f: number, out: V3) => {
+    const idx = Math.min(ARC_PTS - 1e-6, Math.max(0, f * ARC_PTS))
+    const i = Math.floor(idx)
+    const t = idx - i
+    const j = i * 3
+    out[0] = (a.sp[j] ?? 0) + ((a.sp[j + 3] ?? 0) - (a.sp[j] ?? 0)) * t
+    out[1] = (a.sp[j + 1] ?? 0) + ((a.sp[j + 4] ?? 0) - (a.sp[j + 1] ?? 0)) * t
+    out[2] = (a.hid[i] ?? 1) && (a.hid[i + 1] ?? 1) ? 1 : 0
+    return out
+  }
+
+  const traceArc = (a: Arc, f0: number, f1: number) => {
+    arcPoint(a, f0, pt)
+    let pen = !pt[2]
+    if (pen) ctx.moveTo(pt[0], pt[1])
+    for (let k = Math.ceil(f0 * ARC_PTS); k < f1 * ARC_PTS; k++) {
+      if (a.hid[k]) { pen = false; continue }
+      const x = a.sp[k * 3] ?? 0
+      const y = a.sp[k * 3 + 1] ?? 0
+      pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y)
+      pen = true
+    }
+    arcPoint(a, f1, pt)
+    if (pen && !pt[2]) ctx.lineTo(pt[0], pt[1])
+  }
+
+  const draw = (time: number) => {
+    if (!fills) return
+    const s = time / 1000
+    const rv = state.reveal
+    ctx.clearRect(0, 0, w, w)
+
+    ctx.globalAlpha = rv
+    ctx.fillStyle = fills.halo
+    ctx.fillRect(0, 0, w, w)
+    ctx.beginPath()
+    ctx.arc(cx, cy, R * (0.92 + rv * 0.08), 0, Math.PI * 2)
+    ctx.fillStyle = fills.body
+    ctx.fill()
+
+    ctx.lineWidth = 1
+    for (const front of [false, true]) {
+      ctx.beginPath()
+      for (const line of grid) {
+        let pen = false
+        const n = Math.ceil(line.length * rv)
+        for (let k = 0; k < n; k++) {
+          const v = line[k]
+          if (!v) continue
+          const p = proj(v, 0, tmp)
+          if (p[2] >= 0 === front) {
+            pen ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])
+            pen = true
+          } else pen = false
+        }
+      }
+      ctx.strokeStyle = front ? fills.pal : 'rgba(154,182,255,0.07)'
+      ctx.globalAlpha = (front ? 0.38 : 1) * rv
+      ctx.stroke()
+    }
+
+    if (dots.length) {
+      const sz = Math.max(1.4, R / 120)
+      for (const rimPass of [true, false]) {
+        ctx.beginPath()
+        for (let i = 0; i < dots.length; i += 3) {
+          const p = proj(dots, i, tmp)
+          if (p[2] <= 0 || (p[2] < RIM_FADE) !== rimPass) continue
+          ctx.rect(p[0] - sz / 2, p[1] - sz / 2, sz, sz)
+        }
+        ctx.fillStyle = fills.pal
+        ctx.globalAlpha = (rimPass ? 0.35 : 0.95) * state.dots
+        ctx.fill()
+      }
+    }
+
+    const arcAlpha = Math.max(0, rv * 2 - 1)
+    const lw = 1.4 * (w / 560 + 0.4)
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+    for (const a of arcs) {
+      for (let k = 0; k <= ARC_PTS; k++) {
+        const p = proj(a.world, k * 3, tmp)
+        a.sp[k * 3] = p[0]
+        a.sp[k * 3 + 1] = p[1]
+        a.hid[k] = occluded(p[0], p[1], p[2]) ? 1 : 0
+      }
+      ctx.strokeStyle = a.hue
+      ctx.lineWidth = lw * 0.7
+      ctx.globalAlpha = (reduce ? 0.6 : 0.16) * arcAlpha
+      ctx.beginPath()
+      traceArc(a, 0, 1)
+      ctx.stroke()
+      if (reduce || !arcAlpha) continue
+
+      const u = easeInOut((s * a.speed + a.offset) % 1) * (1 + TRAIL)
+      const head = Math.min(1, u)
+      const tail = Math.max(0, u - TRAIL)
+      for (let j = 0; j < TRAIL_SEGS && head > tail; j++) {
+        const k = (j + 1) / TRAIL_SEGS
+        ctx.beginPath()
+        traceArc(a, tail + (head - tail) * (j / TRAIL_SEGS), tail + (head - tail) * k)
+        ctx.globalAlpha = k * k * arcAlpha
+        ctx.lineWidth = lw * (0.5 + k * 0.9)
+        ctx.stroke()
+      }
+      if (u < 1) {
+        arcPoint(a, head, pt)
+        if (!pt[2]) {
+          ctx.globalAlpha = arcAlpha
+          ctx.drawImage(glow, pt[0] - 10, pt[1] - 10, 20, 20)
+        }
+      } else {
+        const r = (u - 1) / TRAIL
+        arcPoint(a, 1, pt)
+        if (!pt[2]) {
+          ctx.globalAlpha = (1 - r) * arcAlpha
+          ctx.lineWidth = 1.5
+          ctx.beginPath()
+          ctx.arc(pt[0], pt[1], 4 + r * 18, 0, Math.PI * 2)
+          ctx.stroke()
+        }
+      }
+    }
+
+    ctx.font = `500 ${Math.max(9, Math.round(w / 56))}px "JetBrains Mono", ui-monospace, monospace`
+    ctx.textBaseline = 'middle'
+    for (const h of hubs) {
+      const p = proj(h.v, 0, tmp)
+      if (p[2] <= 0.05) continue
+      const vis = Math.min(1, p[2] / 0.35) * arcAlpha
+      const pulse = reduce ? 0.5 : ((s + h.phase) % 2) / 2
+      ctx.globalAlpha = vis * (1 - pulse)
+      ctx.strokeStyle = h.hue
+      ctx.lineWidth = 1.5
+      ctx.beginPath()
+      ctx.arc(p[0], p[1], 3 + pulse * 16, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.globalAlpha = vis
+      ctx.fillStyle = h.hue
+      ctx.beginPath()
+      ctx.arc(p[0], p[1], 3.2, 0, Math.PI * 2)
+      ctx.fill()
+      if (p[2] < 0.45) continue
+      const q = quotes.value.find(x => x.sym === h.sym)
+      const label = `${h.id}  ${h.sym}  ${q ? fmt(q.price, Math.min(q.dp, 4)) : ''}`
+      const tw = ctx.measureText(label).width + 16
+      const lx = p[0] + 10
+      const ly = p[1] - 16
+      ctx.globalAlpha = vis * 0.92
+      ctx.fillStyle = 'rgba(14,15,28,0.85)'
+      ctx.beginPath()
+      ctx.roundRect(lx, ly - 10, tw, 20, 10)
+      ctx.fill()
+      ctx.strokeStyle = h.hue
+      ctx.lineWidth = 1
+      ctx.stroke()
+      ctx.fillStyle = q && q.dir < 0 ? '#ff8a90' : '#eef0f6'
+      ctx.fillText(label, lx + 8, ly + 0.5)
+    }
+
+    ctx.globalAlpha = rv
+    ctx.fillStyle = fills.rim
+    ctx.beginPath()
+    ctx.arc(cx, cy, R * 1.03, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.globalAlpha = 1
+  }
+
+  const loop = (now: number) => {
+    raf = requestAnimationFrame(loop)
+    if (!visible || document.hidden) return
+    if (!drag) {
+      state.vYaw += (SPIN - state.vYaw) * 0.02
+      state.tilt += (TILT + state.hover - state.tilt) * 0.04
+    }
+    state.yaw += state.vYaw
+    draw(now)
+  }
+
+  const down = (e: PointerEvent) => {
+    if (!e.isPrimary) return
+    drag = { x: e.clientX, y: e.clientY, t: performance.now() }
+    c.setPointerCapture(e.pointerId)
+    c.style.cursor = 'grabbing'
+  }
+  const move = (e: PointerEvent) => {
+    if (!drag) {
+      if (e.pointerType === 'mouse') {
+        const r = c.getBoundingClientRect()
+        state.hover = ((e.clientY - r.top) / r.height - 0.5) * 0.25
+      }
+      return
+    }
+    const now = performance.now()
+    const dx = e.clientX - drag.x
+    const dy = e.clientY - drag.y
+    const dt = Math.max(1, now - drag.t)
+    state.yaw += dx * 0.006
+    state.tilt = gsap.utils.clamp(-1.1, 1.1, state.tilt + dy * 0.006)
+    state.vYaw = ((dx * 0.006) / dt) * 16
+    drag = { x: e.clientX, y: e.clientY, t: now }
+  }
+  const up = (e: PointerEvent) => {
+    if (!drag) return
+    drag = null
+    if (c.hasPointerCapture(e.pointerId)) c.releasePointerCapture(e.pointerId)
+    c.style.cursor = ''
+  }
+  const leave = () => { state.hover = 0 }
+
+  const ro = new ResizeObserver(resize)
+  ro.observe(el)
+  const io = new IntersectionObserver(([e]) => { visible = !!e?.isIntersecting })
+  io.observe(el)
+  resize()
+
+  whenIntroDone(done, () => {
+    if (!reduce) gsap.to(state, { reveal: 1, duration: 2.4, ease: 'power2.inOut' })
+  })
+
+  landDots().then(d => {
+    dots = d
+    if (reduce) {
+      state.dots = 1
+      draw(0)
+    } else gsap.to(state, { dots: 1, duration: 1.6, delay: 0.6, ease: 'power2.out' })
+  }).catch(() => { dots = new Float32Array() })
+
+  if (reduce) draw(0)
+  else {
+    c.addEventListener('pointerdown', down)
+    c.addEventListener('pointermove', move)
+    c.addEventListener('pointerup', up)
+    c.addEventListener('pointercancel', up)
+    c.addEventListener('pointerleave', leave)
+    raf = requestAnimationFrame(loop)
+  }
+
+  stop = () => {
+    cancelAnimationFrame(raf)
+    ro.disconnect()
+    io.disconnect()
+    gsap.killTweensOf(state)
+    c.removeEventListener('pointerdown', down)
+    c.removeEventListener('pointermove', move)
+    c.removeEventListener('pointerup', up)
+    c.removeEventListener('pointercancel', up)
+    c.removeEventListener('pointerleave', leave)
+  }
+})
+
+onBeforeUnmount(() => stop())
+</script>
+
+<template>
+  <div ref="box" class="relative aspect-square w-full">
+    <canvas ref="cvs" class="absolute inset-0 size-full cursor-grab touch-pan-y" role="img" aria-label="Rotating globe linking London, New York, Frankfurt, Tokyo, Singapore, Sydney, Hong Kong and Saint Lucia with indicative prices" />
+  </div>
+</template>

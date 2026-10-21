@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artix Capital | Trade Forex with Precision</title>
+<meta name="description" content="Artix Capital offers institutional-grade forex trading with tight spreads, fast execution and transparent pricing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }, boxShadow: { soft: '0 4px 8px rgba(0,0,0,0.04), 0 1px 0 rgba(0,0,0,0.02)', lift: '0 16px 40px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04)' } } } };
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { background: #fafafa; color: #000; font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  section[id] { scroll-margin-top: 80px; }
+  .t-12 { font-size: 12px; line-height: 16px; }
+  .t-16 { font-size: 16px; line-height: 24px; }
+  .t-20 { font-size: 20px; line-height: 28px; }
+  .t-24 { font-size: 24px; line-height: 32px; }
+  .t-32 { font-size: 32px; line-height: 40px; }
+  .t-40 { font-size: 40px; line-height: 48px; }
+  .t-56 { font-size: 56px; line-height: 64px; }
+  .t-14 { font-size: 14px; line-height: 20px; }
+  @media (max-width: 767px) { .t-m40 { font-size: 40px; line-height: 48px; } .t-m32 { font-size: 32px; line-height: 40px; } }
+  a:focus-visible, button:focus-visible { outline: 2px solid #000; outline-offset: 4px; border-radius: 12px; }
+  .on-dark a:focus-visible, .on-dark button:focus-visible { outline-color: #fff; }
+  .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 24px; box-shadow: 0 4px 8px rgba(0,0,0,0.04); transition: box-shadow .2s ease, transform .2s ease; }
+  .card:hover { box-shadow: 0 16px 40px rgba(0,0,0,0.08); transform: translateY(-4px); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 24px; border-radius: 12px; font-weight: 600; font-size: 16px; line-height: 24px; transition: transform .15s ease, box-shadow .15s ease; white-space: nowrap; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.12); }
+  .btn-dark { background: #000; color: #fff; border: 1px solid #000; }
+  .btn-light { background: #fff; color: #000; border: 1px solid #d4d4d4; }
+  .pulse { animation: pulse 2s ease-out infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,.5); } 100% { box-shadow: 0 0 0 8px rgba(16,185,129,0); } }
+  .tri-up { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 8px solid #10b981; }
+  .tri-down { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 8px solid #f43f5e; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body class="text-black">
+
+<!-- NAV -->
+<header class="sticky top-0 z-50 bg-white border-b border-neutral-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-2 text-black font-bold t-20" aria-label="Artix Capital home">
+      <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect x="0" y="0" width="32" height="32" rx="8" fill="#000"/><path d="M8 24 L16 8 L24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.5 18 H20.5" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/></svg>
+      Artix Capital
+    </a>
+    <nav class="hidden md:flex items-center gap-8 t-14 font-medium text-black" aria-label="Primary">
+      <a href="#features" class="py-2 hover:underline underline-offset-8">Features</a>
+      <a href="#markets" class="py-2 hover:underline underline-offset-8">Markets</a>
+      <a href="#how" class="py-2 hover:underline underline-offset-8">How it works</a>
+      <a href="#pricing" class="py-2 hover:underline underline-offset-8">Accounts</a>
+      <a href="#reviews" class="py-2 hover:underline underline-offset-8">Reviews</a>
+    </nav>
+    <div class="hidden md:flex items-center gap-4">
+      <a href="#" class="btn btn-light">Log in</a>
+      <a href="#pricing" class="btn btn-dark">Open account</a>
+    </div>
+    <button id="menuBtn" class="md:hidden w-12 h-12 flex items-center justify-center rounded-xl border border-neutral-200 bg-white" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
+      <svg id="icoOpen" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+      <svg id="icoClose" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden border-t border-neutral-200 bg-white">
+    <div class="px-4 sm:px-6 py-4 flex flex-col gap-2 text-black t-16 font-medium">
+      <a href="#features" class="py-3 px-4 rounded-xl hover:bg-neutral-100">Features</a>
+      <a href="#markets" class="py-3 px-4 rounded-xl hover:bg-neutral-100">Markets</a>
+      <a href="#how" class="py-3 px-4 rounded-xl hover:bg-neutral-100">How it works</a>
+      <a href="#pricing" class="py-3 px-4 rounded-xl hover:bg-neutral-100">Accounts</a>
+      <a href="#reviews" class="py-3 px-4 rounded-xl hover:bg-neutral-100">Reviews</a>
+      <div class="grid grid-cols-2 gap-4 pt-4">
+        <a href="#" class="btn btn-light">Log in</a>
+        <a href="#pricing" class="btn btn-dark">Open account</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="bg-[#fafafa]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <div>
+      <div class="inline-flex items-center gap-2 h-8 px-4 rounded-full bg-white border border-neutral-200 shadow-soft t-12 font-semibold text-black">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 pulse"></span> Markets open &middot; 24/5
+      </div>
+      <h1 class="mt-6 t-m40 md:t-56 text-[40px] leading-[48px] md:text-[56px] md:leading-[64px] font-semibold tracking-tight text-black">Trade the world's currencies with calm precision.</h1>
+      <p class="mt-6 t-20 text-black max-w-xl">Raw spreads from 0.0 pips, execution in milliseconds and transparent pricing. Artix Capital gives serious traders a quieter, sharper way to work the forex market.</p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-4">
+        <a href="#pricing" class="btn btn-dark">Open live account</a>
+        <a href="#pricing" class="btn btn-light">Try free demo</a>
+      </div>
+      <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 t-14 font-medium text-black">
+        <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>No hidden fees</span>
+        <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Segregated client funds</span>
+        <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Instant withdrawals</span>
+      </div>
+    </div>
+
+    <!-- Live market card -->
+    <div class="card p-4 sm:p-6 hover:translate-y-0" style="transform:none" aria-label="Live market prices">
+      <div class="flex items-center justify-between pb-4 border-b border-neutral-200">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 pulse"></span>
+          <h2 class="t-16 font-semibold text-black">Live market</h2>
+        </div>
+        <span class="t-12 font-semibold text-black px-3 h-6 inline-flex items-center rounded-full border border-neutral-200 bg-neutral-50">Spot FX</span>
+      </div>
+      <div class="grid grid-cols-[1fr_auto] min-[480px]:grid-cols-[1fr_96px_auto] gap-4 py-2 t-12 font-semibold text-black">
+        <span>Pair</span><span class="hidden min-[480px]:block">1D</span><span class="text-right">Bid / Ask</span>
+      </div>
+      <ul id="liveList" class="divide-y divide-neutral-200">
+        <li class="grid grid-cols-[1fr_auto] min-[480px]:grid-cols-[1fr_96px_auto] gap-4 items-center py-4" data-mid="1.08432" data-dec="5" data-spr="0.00006">
+          <div><p class="t-16 font-semibold text-black">EUR/USD</p><p class="flex items-center gap-2 t-12 font-medium text-black"><span class="tri-up"></span>+0.23%</p></div>
+          <svg class="hidden min-[480px]:block" width="96" height="32" viewBox="0 0 96 32" aria-hidden="true" data-spark="14,16,13,18,17,21,19,24,22,27,26,29" data-dir="up"></svg>
+          <div class="text-right t-16 font-semibold tabular-nums text-black"><span data-bid></span><br><span data-ask></span></div>
+        </li>
+        <li class="grid grid-cols-[1fr_auto] min-[480px]:grid-cols-[1fr_96px_auto] gap-4 items-center py-4" data-mid="1.27145" data-dec="5" data-spr="0.00008">
+          <div><p class="t-16 font-semibold text-black">GBP/USD</p><p class="flex items-center gap-2 t-12 font-medium text-black"><span class="tri-down"></span>-0.11%</p></div>
+          <svg class="hidden min-[480px]:block" width="96" height="32" viewBox="0 0 96 32" aria-hidden="true" data-spark="26,24,25,21,22,18,19,15,17,13,14,10" data-dir="down"></svg>
+          <div class="text-right t-16 font-semibold tabular-nums text-black"><span data-bid></span><br><span data-ask></span></div>
+        </li>
+        <li class="grid grid-cols-[1fr_auto] min-[480px]:grid-cols-[1fr_96px_auto] gap-4 items-center py-4" data-mid="149.832" data-dec="3" data-spr="0.007">
+          <div><p class="t-16 font-semibold text-black">USD/JPY</p><p class="flex items-center gap-2 t-12 font-medium text-black"><span class="tri-up"></span>+0.38%</p></div>
+          <svg class="hidden min-[480px]:block" width="96" height="32" viewBox="0 0 96 32" aria-hidden="true" data-spark="10,12,11,15,14,16,19,18,22,24,23,28" data-dir="up"></svg>
+          <div class="text-right t-16 font-semibold tabular-nums text-black"><span data-bid></span><br><span data-ask></span></div>
+        </li>
+      </ul>
+      <div class="pt-4 border-t border-neutral-200 flex items-center justify-between t-12 font-medium text-black">
+        <span>Indicative prices</span><a href="#markets" class="font-semibold underline underline-offset-4">View all markets</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STATS -->
+<section class="bg-white border-y border-neutral-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-2 lg:grid-cols-4 gap-8">
+    <div class="border-l-2 border-emerald-500 pl-4"><p class="t-32 font-semibold text-black">0.0 pips</p><p class="t-14 font-medium text-black mt-2">Raw spreads on major pairs</p></div>
+    <div class="border-l-2 border-emerald-500 pl-4"><p class="t-32 font-semibold text-black">&lt;30 ms</p><p class="t-14 font-medium text-black mt-2">Average order execution</p></div>
+    <div class="border-l-2 border-emerald-500 pl-4"><p class="t-32 font-semibold text-black">60+</p><p class="t-14 font-medium text-black mt-2">Currency pairs available</p></div>
+    <div class="border-l-2 border-emerald-500 pl-4"><p class="t-32 font-semibold text-black">120K</p><p class="t-14 font-medium text-black mt-2">Active traders worldwide</p></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="bg-[#fafafa]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-2xl">
+      <p class="t-14 font-semibold text-black">Why Artix Capital</p>
+      <h2 class="mt-4 t-m32 md:t-40 text-[32px] leading-[40px] md:text-[40px] md:leading-[48px] font-semibold tracking-tight text-black">Everything you need, nothing you don't.</h2>
+      <p class="mt-4 t-16 text-black">A focused trading environment built around the six things that matter most to active traders.</p>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <article class="card p-8">
+        <div class="w-12 h-12 rounded-xl border border-neutral-200 bg-neutral-50 flex items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></div>
+        <h3 class="mt-6 t-20 font-semibold text-black">Tight spreads</h3>
+        <p class="mt-2 t-16 text-black">Deep liquidity from tier-one providers delivers spreads from 0.0 pips on major pairs.</p>
+      </article>
+      <article class="card p-8">
+        <div class="w-12 h-12 rounded-xl border border-neutral-200 bg-neutral-50 flex items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></svg></div>
+        <h3 class="mt-6 t-20 font-semibold text-black">Fast execution</h3>
+        <p class="mt-2 t-16 text-black">Servers co-located near major data centres fill orders in under 30 milliseconds.</p>
+      </article>
+      <article class="card p-8">
+        <div class="w-12 h-12 rounded-xl border border-neutral-200 bg-neutral-50 flex items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3 class="mt-6 t-20 font-semibold text-black">Regulated and secure</h3>
+        <p class="mt-2 t-16 text-black">Client funds are held in segregated accounts with bank-grade encryption and audits.</p>
+      </article>
+      <article class="card p-8">
+        <div class="w-12 h-12 rounded-xl border border-neutral-200 bg-neutral-50 flex items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+        <h3 class="mt-6 t-20 font-semibold text-black">Flexible leverage</h3>
+        <p class="mt-2 t-16 text-black">Choose leverage up to 1:500 by account type, with negative balance protection built in.</p>
+      </article>
+      <article class="card p-8">
+        <div class="w-12 h-12 rounded-xl border border-neutral-200 bg-neutral-50 flex items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
+        <h3 class="mt-6 t-20 font-semibold text-black">Every platform</h3>
+        <p class="mt-2 t-16 text-black">Trade on MT5, our web terminal or the mobile app, with your account synced across all.</p>
+      </article>
+      <article class="card p-8">
+        <div class="w-12 h-12 rounded-xl border border-neutral-200 bg-neutral-50 flex items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="3" y="14" width="4" height="6" rx="1"/><rect x="17" y="14" width="4" height="6" rx="1"/></svg></div>
+        <h3 class="mt-6 t-20 font-semibold text-black">24/5 support</h3>
+        <p class="mt-2 t-16 text-black">Real people answer by chat, email and phone whenever the market is open.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETS -->
+<section id="markets" class="bg-white border-y border-neutral-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+      <div class="max-w-2xl">
+        <p class="t-14 font-semibold text-black">Markets</p>
+        <h2 class="mt-4 t-m32 md:t-40 text-[32px] leading-[40px] md:text-[40px] md:leading-[48px] font-semibold tracking-tight text-black">Major, minor and cross pairs.</h2>
+        <p class="mt-4 t-16 text-black">Compare live spreads and daily movement across our most traded instruments.</p>
+      </div>
+      <a href="#pricing" class="btn btn-light self-start md:self-auto">Start trading</a>
+    </div>
+    <div class="mt-12 card overflow-hidden hover:translate-y-0" style="transform:none">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[720px] text-left">
+          <thead>
+            <tr class="bg-neutral-50 border-b border-neutral-200 t-12 font-semibold text-black">
+              <th class="px-6 h-12">Pair</th><th class="px-6 h-12 text-right">Bid</th><th class="px-6 h-12 text-right">Ask</th><th class="px-6 h-12 text-right">Spread</th><th class="px-6 h-12 text-right">Change</th><th class="px-6 h-12">7D trend</th>
+            </tr>
+          </thead>
+          <tbody id="pairsBody" class="t-16 text-black divide-y divide-neutral-200"></tbody>
+        </table>
+      </div>
+    </div>
+    <p class="mt-4 t-12 text-black">Prices are indicative and for illustration only. Spreads vary with market conditions.</p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="bg-[#fafafa]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-2xl">
+      <p class="t-14 font-semibold text-black">How it works</p>
+      <h2 class="mt-4 t-m32 md:t-40 text-[32px] leading-[40px] md:text-[40px] md:leading-[48px] font-semibold tracking-tight text-black">From sign-up to first trade in minutes.</h2>
+    </div>
+    <div class="mt-12 grid md:grid-cols-3 gap-6 relative">
+      <article class="card p-8">
+        <div class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center t-20 font-semibold">1</div>
+        <h3 class="mt-6 t-20 font-semibold text-black">Create your account</h3>
+        <p class="mt-2 t-16 text-black">Register online in five minutes and verify your identity with a document and a selfie.</p>
+      </article>
+      <article class="card p-8">
+        <div class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center t-20 font-semibold">2</div>
+        <h3 class="mt-6 t-20 font-semibold text-black">Fund securely</h3>
+        <p class="mt-2 t-16 text-black">Deposit by bank transfer, card or e-wallet. Funds usually arrive instantly with no fees.</p>
+      </article>
+      <article class="card p-8">
+        <div class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center t-20 font-semibold">3</div>
+        <h3 class="mt-6 t-20 font-semibold text-black">Start trading</h3>
+        <p class="mt-2 t-16 text-black">Open your platform of choice, pick a pair and place your first order with built-in risk tools.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="bg-white border-y border-neutral-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-2xl mx-auto text-center">
+      <p class="t-14 font-semibold text-black">Account types</p>
+      <h2 class="mt-4 t-m32 md:t-40 text-[32px] leading-[40px] md:text-[40px] md:leading-[48px] font-semibold tracking-tight text-black">Pick the account that fits your style.</h2>
+      <p class="mt-4 t-16 text-black">Transparent pricing. No inactivity fees. Upgrade or switch at any time.</p>
+    </div>
+    <div class="mt-12 grid lg:grid-cols-3 gap-6 items-stretch">
+      <!-- Standard -->
+      <article class="card p-8 flex flex-col">
+        <h3 class="t-20 font-semibold text-black">Standard</h3>
+        <p class="mt-2 t-14 text-black">For traders getting started.</p>
+        <p class="mt-6 t-40 font-semibold text-black">From 1.2 pips</p>
+        <p class="t-14 text-black">No commission</p>
+        <ul class="mt-8 flex flex-col gap-4 t-16 text-black">
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Minimum deposit $100</li>
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Leverage up to 1:200</li>
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Micro lots from 0.01</li>
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Free demo account</li>
+        </ul>
+        <a href="#" class="btn btn-light mt-8 w-full">Open Standard</a>
+      </article>
+      <!-- Raw (featured, dark) -->
+      <article class="on-dark rounded-3xl bg-black text-white p-8 flex flex-col border border-black shadow-lift relative lg:-translate-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="t-20 font-semibold text-white">Raw Spread</h3>
+          <span class="inline-flex items-center gap-2 h-8 px-4 rounded-full border border-white t-12 font-semibold text-white"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Most popular</span>
+        </div>
+        <p class="mt-2 t-14 text-white">For active and scalping traders.</p>
+        <p class="mt-6 t-40 font-semibold text-white">From 0.0 pips</p>
+        <p class="t-14 text-white">$3.50 commission per side per lot</p>
+        <ul class="mt-8 flex flex-col gap-4 t-16 text-white">
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Minimum deposit $500</li>
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Leverage up to 1:400</li>
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Scalping and EAs allowed</li>
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Priority execution</li>
+        </ul>
+        <a href="#" class="btn mt-8 w-full bg-white text-black border border-white">Open Raw Spread</a>
+      </article>
+      <!-- Pro -->
+      <article class="card p-8 flex flex-col">
+        <h3 class="t-20 font-semibold text-black">Professional</h3>
+        <p class="mt-2 t-14 text-black">For high-volume and institutional traders.</p>
+        <p class="mt-6 t-40 font-semibold text-black">From 0.0 pips</p>
+        <p class="t-14 text-black">$2.00 commission per side per lot</p>
+        <ul class="mt-8 flex flex-col gap-4 t-16 text-black">
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Minimum deposit $10,000</li>
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Leverage up to 1:500</li>
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Dedicated account manager</li>
+          <li class="flex items-center gap-4"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>Custom liquidity access</li>
+        </ul>
+        <a href="#" class="btn btn-light mt-8 w-full">Open Professional</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="reviews" class="bg-[#fafafa]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="max-w-2xl">
+      <p class="t-14 font-semibold text-black">Testimonials</p>
+      <h2 class="mt-4 t-m32 md:t-40 text-[32px] leading-[40px] md:text-[40px] md:leading-[48px] font-semibold tracking-tight text-black">Trusted by traders who value clarity.</h2>
+    </div>
+    <div class="mt-12 grid md:grid-cols-3 gap-6">
+      <figure class="card p-8 flex flex-col">
+        <svg width="104" height="16" viewBox="0 0 104 16" aria-label="5 out of 5 stars" role="img"><g fill="#000"><path id="st" d="M8 0l2.4 5.2 5.6.6-4.2 3.8 1.2 5.6L8 12.4 3 15.2l1.2-5.6L0 5.8l5.6-.6z"/></g><use href="#st" x="22"/><use href="#st" x="44"/><use href="#st" x="66"/><use href="#st" x="88"/></svg>
+        <blockquote class="mt-6 t-16 text-black flex-1">"Spreads are genuinely tight and fills are fast. During news events my orders still execute where I expect them to."</blockquote>
+        <figcaption class="mt-8 flex items-center gap-4">
+          <span class="w-12 h-12 rounded-full border border-neutral-200 bg-neutral-50 flex items-center justify-center t-14 font-semibold text-black">DM</span>
+          <span><span class="block t-16 font-semibold text-black">Daniel M.</span><span class="block t-14 text-black">Swing trader, London</span></span>
+        </figcaption>
+      </figure>
+      <figure class="card p-8 flex flex-col">
+        <svg width="104" height="16" viewBox="0 0 104 16" aria-label="5 out of 5 stars" role="img"><g fill="#000"><use href="#st"/><use href="#st" x="22"/><use href="#st" x="44"/><use href="#st" x="66"/><use href="#st" x="88"/></g></svg>
+        <blockquote class="mt-6 t-16 text-black flex-1">"The interface is clean and uncluttered. I moved from three tools to one, and withdrawals reach my bank the same day."</blockquote>
+        <figcaption class="mt-8 flex items-center gap-4">
+          <span class="w-12 h-12 rounded-full border border-neutral-200 bg-neutral-50 flex items-center justify-center t-14 font-semibold text-black">SK</span>
+          <span><span class="block t-16 font-semibold text-black">Sofia K.</span><span class="block t-14 text-black">Day trader, Singapore</span></span>
+        </figcaption>
+      </figure>
+      <figure class="card p-8 flex flex-col">
+        <svg width="104" height="16" viewBox="0 0 104 16" aria-label="5 out of 5 stars" role="img"><g fill="#000"><use href="#st"/><use href="#st" x="22"/><use href="#st" x="44"/><use href="#st" x="66"/><use href="#st" x="88"/></g></svg>
+        <blockquote class="mt-6 t-16 text-black flex-1">"Support replies in minutes, and they actually understand trading. That matters when a position is open."</blockquote>
+        <figcaption class="mt-8 flex items-center gap-4">
+          <span class="w-12 h-12 rounded-full border border-neutral-200 bg-neutral-50 flex items-center justify-center t-14 font-semibold text-black">RA</span>
+          <span><span class="block t-16 font-semibold text-black">Rahul A.</span><span class="block t-14 text-black">Scalper, Dubai</span></span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- Risk note -->
+    <aside class="mt-12 flex gap-4 bg-white border border-neutral-200 rounded-2xl shadow-soft p-6" role="note" aria-label="Risk warning">
+      <span class="w-1 shrink-0 rounded-full bg-rose-500"></span>
+      <p class="t-14 text-black"><strong class="font-semibold">Risk warning:</strong> Trading leveraged products such as forex carries a high level of risk and may not be suitable for all investors. You can lose more than your initial deposit. Past performance does not guarantee future results.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="bg-white border-t border-neutral-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+    <div class="on-dark rounded-3xl bg-black text-white px-6 py-12 md:p-16 text-center shadow-lift">
+      <h2 class="t-m32 md:t-40 text-[32px] leading-[40px] md:text-[40px] md:leading-[48px] font-semibold tracking-tight text-white max-w-2xl mx-auto">Ready to trade with a sharper edge?</h2>
+      <p class="mt-4 t-20 text-white max-w-xl mx-auto">Open a live account in minutes or practise risk-free with a $50,000 demo balance.</p>
+      <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+        <a href="#pricing" class="btn bg-white text-black border border-white">Open live account</a>
+        <a href="#pricing" class="btn bg-black text-white border border-white">Try free demo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="on-dark bg-black text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-12">
+      <div class="lg:col-span-2">
+        <a href="#top" class="flex items-center gap-2 text-white font-bold t-20" aria-label="Artix Capital home">
+          <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#fff"/><path d="M8 24 L16 8 L24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.5 18 H20.5" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/></svg>
+          Artix Capital
+        </a>
+        <p class="mt-4 t-16 text-white max-w-sm">Precision forex trading for people who take their craft seriously.</p>
+      </div>
+      <nav aria-label="Trading">
+        <h3 class="t-14 font-semibold text-white">Trading</h3>
+        <ul class="mt-4 flex flex-col gap-2 t-14 text-white">
+          <li><a class="inline-block py-1 hover:underline" href="#markets">Markets</a></li>
+          <li><a class="inline-block py-1 hover:underline" href="#pricing">Accounts</a></li>
+          <li><a class="inline-block py-1 hover:underline" href="#features">Platforms</a></li>
+          <li><a class="inline-block py-1 hover:underline" href="#features">Leverage</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Company">
+        <h3 class="t-14 font-semibold text-white">Company</h3>
+        <ul class="mt-4 flex flex-col gap-2 t-14 text-white">
+          <li><a class="inline-block py-1 hover:underline" href="#how">How it works</a></li>
+          <li><a class="inline-block py-1 hover:underline" href="#reviews">Reviews</a></li>
+          <li><a class="inline-block py-1 hover:underline" href="#">Careers</a></li>
+          <li><a class="inline-block py-1 hover:underline" href="#">Contact</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Legal">
+        <h3 class="t-14 font-semibold text-white">Legal</h3>
+        <ul class="mt-4 flex flex-col gap-2 t-14 text-white">
+          <li><a class="inline-block py-1 hover:underline" href="#">Terms of business</a></li>
+          <li><a class="inline-block py-1 hover:underline" href="#">Privacy policy</a></li>
+          <li><a class="inline-block py-1 hover:underline" href="#">Risk disclosure</a></li>
+          <li><a class="inline-block py-1 hover:underline" href="#">Order execution</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="mt-12 pt-8 border-t border-white flex flex-col gap-4">
+      <p class="t-12 text-white"><strong class="font-semibold">Risk warning:</strong> Forex and CFDs are complex instruments and come with a high risk of losing money rapidly due to leverage. A large share of retail investor accounts lose money when trading these products. Consider whether you understand how they work and whether you can afford to take the high risk of losing your money. Never trade with funds you cannot afford to lose.</p>
+      <p class="t-12 text-white">&copy; <span id="yr">2026</span> Artix Capital. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Mobile menu
+  var btn = document.getElementById('menuBtn'), menu = document.getElementById('mobileMenu');
+  var o = document.getElementById('icoOpen'), c = document.getElementById('icoClose');
+  function setMenu(open) {
+    menu.classList.toggle('hidden', !open);
+    o.classList.toggle('hidden', open);
+    c.classList.toggle('hidden', !open);
+    btn.setAttribute('aria-expanded', String(open));
+  }
+  btn.addEventListener('click', function () { setMenu(menu.classList.contains('hidden')); });
+  menu.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+  window.matchMedia('(min-width: 768px)').addEventListener('change', function (e) { if (e.matches) setMenu(false); });
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // Sparklines (inline SVG)
+  var NS = 'http://www.w3.org/2000/svg';
+  function spark(svg) {
+    var d = svg.dataset.spark.split(',').map(Number), up = svg.dataset.dir === 'up';
+    var w = 96, h = 32, pad = 4, min = Math.min.apply(null, d), max = Math.max.apply(null, d);
+    var pts = d.map(function (v, i) {
+      return (i * (w / (d.length - 1))).toFixed(1) + ',' + (h - pad - ((v - min) / (max - min || 1)) * (h - pad * 2)).toFixed(1);
+    });
+    var col = up ? '#10b981' : '#f43f5e';
+    var line = document.createElementNS(NS, 'polyline');
+    line.setAttribute('points', pts.join(' '));
+    line.setAttribute('fill', 'none'); line.setAttribute('stroke', col);
+    line.setAttribute('stroke-width', '2'); line.setAttribute('stroke-linecap', 'round'); line.setAttribute('stroke-linejoin', 'round');
+    var last = pts[pts.length - 1].split(',');
+    var dot = document.createElementNS(NS, 'circle');
+    dot.setAttribute('cx', Math.min(+last[0], w - 4)); dot.setAttribute('cy', last[1]); dot.setAttribute('r', '3'); dot.setAttribute('fill', col);
+    svg.replaceChildren(line, dot);
+  }
+
+  // Markets table
+  var pairs = [
+    ['EUR/USD', 1.08432, 5, 0.00006, 0.23, '14,16,13,18,17,21,19,24,22,27,26,29'],
+    ['GBP/USD', 1.27145, 5, 0.00008, -0.11, '26,24,25,21,22,18,19,15,17,13,14,10'],
+    ['USD/JPY', 149.832, 3, 0.007, 0.38, '10,12,11,15,14,16,19,18,22,24,23,28'],
+    ['USD/CHF', 0.88214, 5, 0.00009, -0.07, '22,23,20,21,18,19,17,18,15,14,15,13'],
+    ['AUD/USD', 0.65378, 5, 0.00007, 0.15, '12,14,13,13,16,15,18,17,20,19,22,23'],
+    ['USD/CAD', 1.36492, 5, 0.00010, -0.19, '24,22,23,20,21,17,18,16,14,15,12,11'],
+    ['EUR/GBP', 0.85276, 5, 0.00008, 0.05, '15,17,14,16,15,18,16,19,17,20,19,21'],
+    ['EUR/JPY', 162.455, 3, 0.012, 0.44, '8,11,10,14,13,17,16,20,22,21,25,28']
+  ];
+  var tb = document.getElementById('pairsBody');
+  pairs.forEach(function (p) {
+    var up = p[4] >= 0, dec = p[2], pip = dec === 5 ? 0.0001 : 0.01;
+    var bid = p[1], ask = p[1] + p[3];
+    var tr = document.createElement('tr');
+    tr.className = 'hover:bg-neutral-50';
+    tr.innerHTML =
+      '<td class="px-6 h-16 font-semibold">' + p[0] + '</td>' +
+      '<td class="px-6 h-16 text-right tabular-nums">' + bid.toFixed(dec) + '</td>' +
+      '<td class="px-6 h-16 text-right tabular-nums">' + ask.toFixed(dec) + '</td>' +
+      '<td class="px-6 h-16 text-right tabular-nums">' + (p[3] / pip).toFixed(1) + ' pips</td>' +
+      '<td class="px-6 h-16 text-right"><span class="inline-flex items-center justify-end gap-2 font-medium tabular-nums"><span class="' + (up ? 'tri-up' : 'tri-down') + '"></span>' + (up ? '+' : '') + p[4].toFixed(2) + '%</span></td>' +
+      '<td class="px-6 h-16"><svg width="96" height="32" viewBox="0 0 96 32" aria-hidden="true" data-spark="' + p[5] + '" data-dir="' + (up ? 'up' : 'down') + '"></svg></td>';
+    tb.appendChild(tr);
+  });
+  document.querySelectorAll('svg[data-spark]').forEach(spark);
+
+  // Live ticking for hero card
+  var rows = document.querySelectorAll('#liveList li');
+  function render(li) {
+    var dec = +li.dataset.dec, mid = +li.dataset.mid, spr = +li.dataset.spr;
+    li.querySelector('[data-bid]').textContent = (mid - spr / 2).toFixed(dec);
+    li.querySelector('[data-ask]').textContent = (mid + spr / 2).toFixed(dec);
+  }
+  rows.forEach(render);
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setInterval(function () {
+      rows.forEach(function (li) {
+        var step = (+li.dataset.spr) * (Math.random() - 0.5) * 2;
+        li.dataset.mid = (+li.dataset.mid + step).toFixed(+li.dataset.dec);
+        render(li);
+      });
+    }, 1800);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artix Capital — Trade the world's currencies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['"Inter Tight"', 'system-ui', 'sans-serif'] },
+      colors: { up: '#10b981', down: '#f43f5e' }
+    }
+  }
+}
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter Tight', system-ui, sans-serif; color: #000; background: #fff; -webkit-font-smoothing: antialiased; }
+  .d-xxl { font-size: 48px; line-height: 52px; letter-spacing: -0.04em; font-weight: 700; }
+  .d-xl  { font-size: 36px; line-height: 40px; letter-spacing: -0.035em; font-weight: 700; }
+  .d-lg  { font-size: 28px; line-height: 32px; letter-spacing: -0.03em; font-weight: 600; }
+  .d-md  { font-size: 20px; line-height: 28px; letter-spacing: -0.02em; font-weight: 600; }
+  .body-l { font-size: 18px; line-height: 28px; }
+  .body-m { font-size: 16px; line-height: 24px; }
+  .body-s { font-size: 14px; line-height: 20px; }
+  .eyebrow { font-size: 12px; line-height: 16px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; }
+  @media (min-width: 640px) {
+    .d-xxl { font-size: 64px; line-height: 64px; }
+    .d-xl  { font-size: 48px; line-height: 52px; }
+    .d-lg  { font-size: 32px; line-height: 40px; }
+  }
+  @media (min-width: 1024px) {
+    .d-xxl { font-size: 80px; line-height: 80px; }
+    .d-xl  { font-size: 56px; line-height: 60px; }
+  }
+  .shadow-soft { box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08); }
+  .shadow-lift { box-shadow: 0 4px 8px rgba(0,0,0,.06), 0 24px 48px rgba(0,0,0,.14); }
+  .shadow-dark { box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 8px 24px rgba(0,0,0,.5); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 24px; border-radius: 9999px; font-size: 16px; line-height: 24px; font-weight: 600; transition: transform .15s ease, box-shadow .15s ease; white-space: nowrap; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:focus-visible, a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid #10b981; outline-offset: 4px; }
+  .btn-black { background: #000; color: #fff; box-shadow: 0 8px 16px rgba(0,0,0,.2); }
+  .btn-white { background: #fff; color: #000; box-shadow: 0 8px 16px rgba(255,255,255,.12); }
+  .btn-ghost-black { background: #fff; color: #000; border: 1px solid #000; }
+  .btn-ghost-white { background: #000; color: #fff; border: 1px solid #fff; }
+  .rule-b { border-color: #000; }
+  .rule-w { border-color: #fff; }
+  input { color: #000; background: transparent; }
+  @media (prefers-reduced-motion: reduce) { .btn, html { transition: none; scroll-behavior: auto; } }
+</style>
+</head>
+<body class="bg-white text-black">
+
+<!-- NAV -->
+<header class="sticky top-0 z-50 bg-white border-b border-black">
+  <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-12">
+    <a href="#" class="flex items-center gap-3" aria-label="Artix Capital home">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="16" fill="#000"/><path d="M8 22L16 8l8 14" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.5 18h9" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <span class="text-[20px] leading-7 font-bold tracking-tight">Artix Capital</span>
+    </a>
+    <nav class="hidden items-center gap-8 lg:flex" aria-label="Primary">
+      <a href="#features" class="body-m font-medium hover:underline underline-offset-4">Platform</a>
+      <a href="#markets" class="body-m font-medium hover:underline underline-offset-4">Markets</a>
+      <a href="#learn" class="body-m font-medium hover:underline underline-offset-4">Learn</a>
+      <a href="#pricing" class="body-m font-medium hover:underline underline-offset-4">Pricing</a>
+    </nav>
+    <div class="hidden items-center gap-4 lg:flex">
+      <a href="#" class="body-m font-medium hover:underline underline-offset-4">Log in</a>
+      <a href="#cta" class="btn btn-black">Open account</a>
+    </div>
+    <button id="menuBtn" class="flex h-12 w-12 items-center justify-center rounded-full border border-black lg:hidden" aria-expanded="false" aria-controls="mobileMenu" aria-label="Toggle menu">
+      <svg id="iconOpen" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+      <svg id="iconClose" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div id="mobileMenu" class="hidden border-t border-black bg-white lg:hidden">
+    <div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-6">
+      <a href="#features" class="d-md">Platform</a>
+      <a href="#markets" class="d-md">Markets</a>
+      <a href="#learn" class="d-md">Learn</a>
+      <a href="#pricing" class="d-md">Pricing</a>
+      <div class="flex flex-col gap-4 pt-4 sm:flex-row">
+        <a href="#" class="btn btn-ghost-black">Log in</a>
+        <a href="#cta" class="btn btn-black">Open account</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="bg-white">
+  <div class="mx-auto grid max-w-7xl gap-16 px-6 py-16 lg:grid-cols-12 lg:gap-8 lg:px-12 lg:py-24">
+    <div class="flex flex-col justify-center lg:col-span-6">
+      <p class="eyebrow mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-black px-4 py-2">
+        <span class="h-2 w-2 rounded-full bg-up"></span> Markets open 24 / 5
+      </p>
+      <h1 class="d-xxl">Trade currency with clarity.</h1>
+      <p class="body-l mt-8 max-w-xl">Artix Capital gives serious traders institutional pricing, razor-thin spreads and execution in milliseconds. One account. Sixty currency pairs. No noise.</p>
+      <div class="mt-10 flex flex-col gap-4 sm:flex-row">
+        <a href="#cta" class="btn btn-black">Open live account
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg>
+        </a>
+        <a href="#cta" class="btn btn-ghost-black">Try free demo</a>
+      </div>
+      <div class="mt-12 grid grid-cols-3 gap-4 border-t border-black pt-8">
+        <div><p class="d-lg">0.0</p><p class="body-s mt-1">pip spreads on majors</p></div>
+        <div><p class="d-lg">35ms</p><p class="body-s mt-1">average execution</p></div>
+        <div><p class="d-lg">180k</p><p class="body-s mt-1">active traders</p></div>
+      </div>
+    </div>
+
+    <!-- Card stack -->
+    <div class="relative flex flex-col gap-6 lg:col-span-6 lg:block lg:h-[608px]">
+      <!-- Portfolio card -->
+      <article class="shadow-lift w-full rounded-3xl border border-black bg-white p-6 lg:absolute lg:left-0 lg:top-0 lg:w-[400px]" aria-label="Portfolio balance">
+        <div class="flex items-center justify-between">
+          <p class="eyebrow">Portfolio balance</p>
+          <span class="body-s inline-flex items-center gap-1 rounded-full border border-black px-3 py-1 font-semibold">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 10V2M2.5 5.5L6 2l3.5 3.5" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            +4.82%
+          </span>
+        </div>
+        <p class="mt-4 text-[40px] font-bold leading-[48px] tracking-tight">$128,430.52</p>
+        <p class="body-s mt-1">+$5,914.20 this month</p>
+        <svg class="mt-6 w-full" viewBox="0 0 352 120" fill="none" role="img" aria-label="Portfolio value rising over 30 days">
+          <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#10b981" stop-opacity=".25"/><stop offset="1" stop-color="#10b981" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0 96 L24 88 L48 92 L72 76 L96 80 L120 64 L144 70 L168 52 L192 58 L216 40 L240 48 L264 32 L288 38 L312 20 L352 12 V120 H0Z" fill="url(#pg)"/>
+          <path d="M0 96 L24 88 L48 92 L72 76 L96 80 L120 64 L144 70 L168 52 L192 58 L216 40 L240 48 L264 32 L288 38 L312 20 L352 12" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="352" cy="12" r="5" fill="#fff" stroke="#10b981" stroke-width="2.5"/>
+        </svg>
+        <div class="mt-4 flex justify-between body-s font-medium"><span>1W</span><span>1M</span><span>3M</span><span>1Y</span></div>
+      </article>
+
+      <!-- Converter card (black) -->
+      <article class="shadow-dark w-full rounded-3xl border border-white bg-black p-6 text-white lg:absolute lg:right-0 lg:top-[184px] lg:z-10 lg:w-[312px]" aria-label="Currency converter">
+        <p class="eyebrow">Currency converter</p>
+        <label class="mt-4 block rounded-2xl border border-white p-4">
+          <span class="body-s block text-white">You send</span>
+          <span class="mt-1 flex items-center justify-between gap-2">
+            <input id="cvIn" type="number" min="0" value="1000" class="w-full text-[24px] font-semibold leading-8 outline-none" style="color:#fff" aria-label="Amount in EUR">
+            <span class="rounded-full bg-white px-3 py-1 body-s font-semibold" style="color:#000">EUR</span>
+          </span>
+        </label>
+        <div class="my-2 flex justify-center">
+          <span class="flex h-8 w-8 items-center justify-center rounded-full bg-white">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg>
+          </span>
+        </div>
+        <div class="rounded-2xl border border-white p-4">
+          <span class="body-s block text-white">They receive</span>
+          <span class="mt-1 flex items-center justify-between gap-2">
+            <output id="cvOut" class="text-[24px] font-semibold leading-8 text-white">1,087.40</output>
+            <span class="rounded-full bg-white px-3 py-1 body-s font-semibold" style="color:#000">USD</span>
+          </span>
+        </div>
+        <p class="body-s mt-4 flex items-center gap-2 text-white"><span class="h-2 w-2 rounded-full bg-up"></span> 1 EUR = 1.0874 USD</p>
+      </article>
+
+      <!-- Recent trades -->
+      <article class="shadow-lift w-full rounded-3xl border border-black bg-white p-6 lg:absolute lg:bottom-0 lg:left-[48px] lg:z-20 lg:w-[384px]" aria-label="Recent trades">
+        <div class="flex items-center justify-between">
+          <p class="eyebrow">Recent trades</p>
+          <a href="#" class="body-s font-semibold underline underline-offset-4">View all</a>
+        </div>
+        <ul class="mt-4 divide-y divide-black">
+          <li class="flex items-center justify-between py-3">
+            <span class="flex items-center gap-3"><span class="flex h-8 w-8 items-center justify-center rounded-full bg-black"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 10V2M2.5 5.5L6 2l3.5 3.5" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="body-m block font-semibold">EUR/USD</span><span class="body-s block">Buy · 2.0 lots</span></span></span>
+            <span class="body-m font-semibold">+$412.00</span>
+          </li>
+          <li class="flex items-center justify-between py-3">
+            <span class="flex items-center gap-3"><span class="flex h-8 w-8 items-center justify-center rounded-full bg-black"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2.5 6.5L6 10l3.5-3.5" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="body-m block font-semibold">GBP/JPY</span><span class="body-s block">Sell · 1.0 lot</span></span></span>
+            <span class="body-m font-semibold">-$96.40</span>
+          </li>
+          <li class="flex items-center justify-between py-3">
+            <span class="flex items-center gap-3"><span class="flex h-8 w-8 items-center justify-center rounded-full bg-black"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 10V2M2.5 5.5L6 2l3.5 3.5" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="body-m block font-semibold">USD/CHF</span><span class="body-s block">Buy · 0.5 lot</span></span></span>
+            <span class="body-m font-semibold">+$158.75</span>
+          </li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section class="bg-white border-y border-black" aria-label="Trusted by and featured in">
+  <div class="mx-auto max-w-7xl px-6 py-12 lg:px-12">
+    <p class="eyebrow text-center">Recognised by the industry's most trusted names</p>
+    <div class="mt-8 grid grid-cols-2 gap-x-8 gap-y-6 text-center sm:grid-cols-3 lg:grid-cols-6">
+      <span class="text-[24px] font-bold leading-8 tracking-tight">Meridian</span>
+      <span class="text-[24px] font-semibold italic leading-8 tracking-tighter">Halcyon&nbsp;FX</span>
+      <span class="text-[24px] font-extrabold uppercase leading-8 tracking-widest">NORTHBAY</span>
+      <span class="text-[24px] font-medium leading-8 tracking-tight">Veridian.</span>
+      <span class="text-[24px] font-bold leading-8 tracking-tighter">Orbis&amp;Co</span>
+      <span class="text-[24px] font-semibold uppercase leading-8 tracking-wider">Kestrel</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="bg-white">
+  <div class="mx-auto max-w-7xl px-6 py-24 lg:px-12 lg:py-32">
+    <div class="grid gap-8 lg:grid-cols-12">
+      <div class="lg:col-span-4"><p class="eyebrow">The platform</p></div>
+      <h2 class="d-xl lg:col-span-8">Built for traders who value precision over promises.</h2>
+    </div>
+    <div class="mt-16 grid gap-x-16 lg:grid-cols-2">
+      <div class="border-t border-black py-8">
+        <div class="flex gap-6"><span class="d-lg w-12 shrink-0">01</span>
+          <div><h3 class="d-md">Institutional liquidity</h3><p class="body-m mt-3">Aggregated pricing from 20+ Tier-1 banks, so you trade on deep books with tight, transparent spreads.</p></div></div>
+      </div>
+      <div class="border-t border-black py-8">
+        <div class="flex gap-6"><span class="d-lg w-12 shrink-0">02</span>
+          <div><h3 class="d-md">Lightning execution</h3><p class="body-m mt-3">Orders route through co-located servers in London, New York and Tokyo with no requotes and no last look.</p></div></div>
+      </div>
+      <div class="border-t border-black py-8">
+        <div class="flex gap-6"><span class="d-lg w-12 shrink-0">03</span>
+          <div><h3 class="d-md">Risk tools that work</h3><p class="body-m mt-3">Guaranteed stops, negative balance protection and one-click position sizing keep every trade in bounds.</p></div></div>
+      </div>
+      <div class="border-t border-black py-8">
+        <div class="flex gap-6"><span class="d-lg w-12 shrink-0">04</span>
+          <div><h3 class="d-md">Segregated client funds</h3><p class="body-m mt-3">Your capital is held at tier-one custodians, separate from ours, with same-day withdrawals as standard.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETS (black) -->
+<section id="markets" class="bg-black text-white">
+  <div class="mx-auto max-w-7xl px-6 py-24 lg:px-12 lg:py-32">
+    <div class="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+      <div>
+        <p class="eyebrow">Live markets</p>
+        <h2 class="d-xl mt-4 max-w-2xl">Eight majors. One clean view.</h2>
+      </div>
+      <a href="#cta" class="btn btn-white w-fit">See all 60 pairs</a>
+    </div>
+    <div id="pairs" class="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"></div>
+    <p class="body-s mt-8 border-t border-white pt-6">Indicative prices, refreshed live. Spreads are variable and may widen around news events.</p>
+  </div>
+</section>
+
+<!-- LEARN -->
+<section id="learn" class="bg-white">
+  <div class="mx-auto max-w-7xl px-6 py-24 lg:px-12 lg:py-32">
+    <div class="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+      <div><p class="eyebrow">Education</p><h2 class="d-xl mt-4 max-w-2xl">Learn the market before it moves.</h2></div>
+      <a href="#" class="btn btn-ghost-black w-fit">Browse academy</a>
+    </div>
+    <div class="mt-16 grid gap-6 md:grid-cols-3">
+      <article class="shadow-soft flex flex-col rounded-3xl border border-black bg-white p-8">
+        <div class="flex h-32 items-center justify-center rounded-2xl bg-black" aria-hidden="true">
+          <svg width="96" height="64" viewBox="0 0 96 64" fill="none"><rect x="8" y="24" width="8" height="32" rx="2" fill="#fff"/><path d="M12 12v12M12 56v4" stroke="#fff" stroke-width="2"/><rect x="28" y="12" width="8" height="28" rx="2" fill="#10b981"/><path d="M32 4v8M32 40v12" stroke="#10b981" stroke-width="2"/><rect x="48" y="28" width="8" height="24" rx="2" fill="#f43f5e"/><path d="M52 16v12M52 52v8" stroke="#f43f5e" stroke-width="2"/><rect x="68" y="8" width="8" height="32" rx="2" fill="#10b981"/><path d="M72 4v4M72 40v8" stroke="#10b981" stroke-width="2"/></svg>
+        </div>
+        <p class="eyebrow mt-8">Course · 12 lessons</p>
+        <h3 class="d-md mt-3">Forex foundations</h3>
+        <p class="body-m mt-3 flex-1">Pips, lots, leverage and order types explained from first principles.</p>
+        <a href="#" class="body-m mt-8 inline-flex items-center gap-2 font-semibold underline underline-offset-4">Start learning
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </article>
+      <article class="shadow-soft flex flex-col rounded-3xl border border-black bg-white p-8">
+        <div class="flex h-32 items-center justify-center rounded-2xl bg-black" aria-hidden="true">
+          <svg width="96" height="64" viewBox="0 0 96 64" fill="none"><path d="M4 48C20 48 20 16 36 16s16 32 28 32 16-28 28-28" stroke="#10b981" stroke-width="3" stroke-linecap="round"/><path d="M4 56h88" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+        <p class="eyebrow mt-8">Guide · 8 min read</p>
+        <h3 class="d-md mt-3">Reading market structure</h3>
+        <p class="body-m mt-3 flex-1">Spot trends, ranges and reversals with support, resistance and volume.</p>
+        <a href="#" class="body-m mt-8 inline-flex items-center gap-2 font-semibold underline underline-offset-4">Read guide
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </article>
+      <article class="shadow-soft flex flex-col rounded-3xl border border-black bg-white p-8">
+        <div class="flex h-32 items-center justify-center rounded-2xl bg-black" aria-hidden="true">
+          <svg width="96" height="64" viewBox="0 0 96 64" fill="none"><circle cx="48" cy="32" r="24" stroke="#fff" stroke-width="3"/><path d="M48 32V16" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M48 32l12 8" stroke="#10b981" stroke-width="3" stroke-linecap="round"/></svg>
+        </div>
+        <p class="eyebrow mt-8">Webinar · Weekly</p>
+        <h3 class="d-md mt-3">Live with our analysts</h3>
+        <p class="body-m mt-3 flex-1">Every Monday: the week's macro calendar and the setups worth watching.</p>
+        <a href="#" class="body-m mt-8 inline-flex items-center gap-2 font-semibold underline underline-offset-4">Reserve a seat
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="bg-white border-t border-black">
+  <div class="mx-auto max-w-7xl px-6 py-24 lg:px-12 lg:py-32">
+    <div class="grid gap-8 lg:grid-cols-12">
+      <div class="lg:col-span-4"><p class="eyebrow">Pricing</p></div>
+      <div class="lg:col-span-8"><h2 class="d-xl">Choose the account that fits your volume.</h2><p class="body-l mt-6 max-w-xl">No hidden fees. No inactivity charges. Upgrade or downgrade whenever you like.</p></div>
+    </div>
+    <div class="shadow-soft mt-16 overflow-x-auto rounded-3xl border border-black bg-white">
+      <table class="w-full min-w-[720px] border-collapse text-left">
+        <thead>
+          <tr class="border-b border-black">
+            <th scope="col" class="p-6 body-s font-semibold">Compare</th>
+            <th scope="col" class="p-6"><span class="d-md block">Standard</span><span class="body-s block font-normal">For getting started</span></th>
+            <th scope="col" class="bg-black p-6 text-white"><span class="d-md block">Pro</span><span class="body-s block font-normal">Most popular</span></th>
+            <th scope="col" class="p-6"><span class="d-md block">Institutional</span><span class="body-s block font-normal">For funds &amp; desks</span></th>
+          </tr>
+        </thead>
+        <tbody class="body-m">
+          <tr class="border-b border-black"><th scope="row" class="p-6 font-semibold">Minimum deposit</th><td class="p-6">$100</td><td class="bg-black p-6 text-white">$2,500</td><td class="p-6">$100,000</td></tr>
+          <tr class="border-b border-black"><th scope="row" class="p-6 font-semibold">EUR/USD spread from</th><td class="p-6">1.0 pip</td><td class="bg-black p-6 text-white">0.2 pip</td><td class="p-6">0.0 pip</td></tr>
+          <tr class="border-b border-black"><th scope="row" class="p-6 font-semibold">Commission per lot</th><td class="p-6">None</td><td class="bg-black p-6 text-white">$3.00</td><td class="p-6">$1.50</td></tr>
+          <tr class="border-b border-black"><th scope="row" class="p-6 font-semibold">Maximum leverage</th><td class="p-6">1:30</td><td class="bg-black p-6 text-white">1:100</td><td class="p-6">1:200</td></tr>
+          <tr class="border-b border-black"><th scope="row" class="p-6 font-semibold">Guaranteed stops</th><td class="p-6"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" role="img" aria-label="Not included"><path d="M5 5l10 10M15 5L5 15"/></svg></td><td class="bg-black p-6"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Included"><path d="M4 10l4 4 8-8"/></svg></td><td class="p-6"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Included"><path d="M4 10l4 4 8-8"/></svg></td></tr>
+          <tr class="border-b border-black"><th scope="row" class="p-6 font-semibold">Dedicated manager</th><td class="p-6"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" role="img" aria-label="Not included"><path d="M5 5l10 10M15 5L5 15"/></svg></td><td class="bg-black p-6"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" role="img" aria-label="Not included"><path d="M5 5l10 10M15 5L5 15"/></svg></td><td class="p-6"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Included"><path d="M4 10l4 4 8-8"/></svg></td></tr>
+          <tr>
+            <th scope="row" class="p-6"></th>
+            <td class="p-6"><a href="#cta" class="btn btn-ghost-black">Choose Standard</a></td>
+            <td class="bg-black p-6"><a href="#cta" class="btn btn-white">Choose Pro</a></td>
+            <td class="p-6"><a href="#cta" class="btn btn-ghost-black">Contact sales</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL (black) -->
+<section class="bg-black text-white">
+  <div class="mx-auto max-w-5xl px-6 py-24 text-center lg:px-12 lg:py-32">
+    <svg class="mx-auto" width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M8 28c0-8 4-14 12-16v6c-4 1-6 4-6 8h6v12H8V28zm20 0c0-8 4-14 12-16v6c-4 1-6 4-6 8h6v12H28V28z" fill="#10b981"/></svg>
+    <blockquote class="mt-8">
+      <p class="text-[28px] font-semibold leading-[36px] tracking-tight sm:text-[40px] sm:leading-[48px] lg:text-[48px] lg:leading-[56px]" style="letter-spacing:-0.03em">"I moved my entire book to Artix in a weekend. Fills are cleaner, spreads are honest, and for the first time I trust the number on the screen."</p>
+      <footer class="mt-10 border-t border-white pt-8">
+        <p class="body-m font-semibold">Daniel Okafor</p>
+        <p class="body-s mt-1">Independent trader, London · Pro account since 2021</p>
+      </footer>
+    </blockquote>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta" class="bg-white">
+  <div class="mx-auto max-w-7xl px-6 py-24 lg:px-12 lg:py-32">
+    <div class="shadow-lift rounded-3xl border border-black bg-white p-8 text-center sm:p-16">
+      <p class="eyebrow">Get started in minutes</p>
+      <h2 class="d-xl mx-auto mt-4 max-w-3xl">Your next trade deserves a better platform.</h2>
+      <p class="body-l mx-auto mt-6 max-w-xl">Open an account in under five minutes, or practise risk-free with $50,000 in virtual funds.</p>
+      <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+        <a href="#" class="btn btn-black">Open live account</a>
+        <a href="#" class="btn btn-ghost-black">Try free demo</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER (black) -->
+<footer class="bg-black text-white">
+  <div class="mx-auto max-w-7xl px-6 py-16 lg:px-12">
+    <div class="grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <a href="#" class="flex items-center gap-3" aria-label="Artix Capital home">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect width="32" height="32" rx="16" fill="#fff"/><path d="M8 22L16 8l8 14" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.5 18h9" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/></svg>
+          <span class="text-[20px] font-bold leading-7 tracking-tight">Artix Capital</span>
+        </a>
+        <p class="body-m mt-6 max-w-xs">Institutional-grade forex trading for independent traders.</p>
+      </div>
+      <nav class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-8" aria-label="Footer">
+        <div><p class="eyebrow">Platform</p><ul class="body-m mt-4 flex flex-col gap-3"><li><a class="hover:underline" href="#features">Features</a></li><li><a class="hover:underline" href="#markets">Markets</a></li><li><a class="hover:underline" href="#pricing">Pricing</a></li></ul></div>
+        <div><p class="eyebrow">Company</p><ul class="body-m mt-4 flex flex-col gap-3"><li><a class="hover:underline" href="#">About</a></li><li><a class="hover:underline" href="#">Careers</a></li><li><a class="hover:underline" href="#">Contact</a></li></ul></div>
+        <div><p class="eyebrow">Legal</p><ul class="body-m mt-4 flex flex-col gap-3"><li><a class="hover:underline" href="#">Terms</a></li><li><a class="hover:underline" href="#">Privacy</a></li><li><a class="hover:underline" href="#">Risk disclosure</a></li></ul></div>
+      </nav>
+    </div>
+    <div class="mt-16 border-t border-white pt-8">
+      <p class="body-s"><strong>Risk warning:</strong> Trading foreign exchange and leveraged products carries a high level of risk and may not be suitable for all investors. You can lose more than your initial deposit. Past performance is not a reliable indicator of future results. Make sure you fully understand the risks and seek independent advice if necessary. Artix Capital does not provide investment advice. Services are not available in all jurisdictions.</p>
+      <p class="body-s mt-6">&copy; 2026 Artix Capital. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var btn = document.getElementById('menuBtn'), menu = document.getElementById('mobileMenu');
+  var io = document.getElementById('iconOpen'), ic = document.getElementById('iconClose');
+  function toggle(open) {
+    menu.classList.toggle('hidden', !open);
+    io.classList.toggle('hidden', open);
+    ic.classList.toggle('hidden', !open);
+    btn.setAttribute('aria-expanded', String(open));
+  }
+  btn.addEventListener('click', function () { toggle(btn.getAttribute('aria-expanded') !== 'true'); });
+  menu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { toggle(false); }); });
+  window.addEventListener('keydown', function (e) { if (e.key === 'Escape') toggle(false); });
+
+  var RATE = 1.0874, inp = document.getElementById('cvIn'), out = document.getElementById('cvOut');
+  function conv() {
+    var v = parseFloat(inp.value);
+    out.textContent = isFinite(v) && v >= 0 ? (v * RATE).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00';
+  }
+  inp.addEventListener('input', conv); conv();
+
+  var pairs = [
+    ['EUR/USD', 1.0874, 4, 0.12], ['GBP/USD', 1.2731, 4, -0.08], ['USD/JPY', 149.82, 2, 0.21], ['USD/CHF', 0.8846, 4, -0.15],
+    ['AUD/USD', 0.6512, 4, 0.05], ['USD/CAD', 1.3598, 4, -0.03], ['NZD/USD', 0.6014, 4, 0.09], ['EUR/GBP', 0.8541, 4, -0.11]
+  ];
+  var up = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 13V3M3.5 7.5L8 3l4.5 4.5" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var dn = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3.5 8.5L8 13l4.5-4.5" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var spark = function (u) {
+    var d = u ? 'M0 24L16 20L32 22L48 14L64 16L80 6' : 'M0 6L16 10L32 8L48 16L64 14L80 24';
+    return '<svg width="80" height="32" viewBox="0 0 80 32" fill="none" aria-hidden="true"><path d="' + d + '" stroke="' + (u ? '#10b981' : '#f43f5e') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  };
+  var grid = document.getElementById('pairs');
+  function render() {
+    grid.innerHTML = pairs.map(function (p) {
+      var u = p[3] >= 0;
+      return '<article class="shadow-dark rounded-2xl border border-white bg-black p-6">' +
+        '<div class="flex items-center justify-between"><h3 class="d-md">' + p[0] + '</h3>' + (u ? up : dn) + '</div>' +
+        '<p class="mt-4 text-[32px] font-bold leading-10 tracking-tight">' + p[1].toFixed(p[2]) + '</p>' +
+        '<div class="mt-4 flex items-end justify-between"><p class="body-s font-semibold">' + (u ? '+' : '') + p[3].toFixed(2) + '%</p>' + spark(u) + '</div></article>';
+    }).join('');
+  }
+  render();
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setInterval(function () {
+      pairs.forEach(function (p) {
+        var step = Math.pow(10, -p[2]) * (Math.random() * 4 - 2);
+        p[1] = Math.max(0, p[1] + step);
+        p[3] = Math.round((p[3] + (Math.random() - 0.5) * 0.04) * 100) / 100;
+      });
+      render();
+    }, 2000);
+  }
+})();
+</script>
+</body>
+</html>

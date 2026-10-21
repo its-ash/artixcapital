@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artix Capital | Forex Trading, Engineered for the Future</title>
+<meta name="description" content="Artix Capital: institutional-grade forex trading with sub-millisecond execution, raw spreads and AI-assisted risk control.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: { fontFamily: { sans: ['Space Grotesk', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'ui-monospace', 'monospace'] } } } };
+</script>
+<style>
+  :root { --cy: #22d3ee; --gr: #34d399; --rd: #fb7185; --bg: #05070d; --panel: rgba(255,255,255,.04); --line: rgba(255,255,255,.12); }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: #fff; font-family: 'Space Grotesk', system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  section[id] { scroll-margin-top: 80px; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .t-12 { font-size: 12px; line-height: 16px; }
+  .t-14 { font-size: 14px; line-height: 24px; }
+  .t-16 { font-size: 16px; line-height: 24px; }
+  .t-20 { font-size: 20px; line-height: 32px; }
+  .t-24 { font-size: 24px; line-height: 32px; }
+  .t-40 { font-size: 40px; line-height: 48px; }
+  .t-56 { font-size: 56px; line-height: 64px; }
+  .t-80 { font-size: 80px; line-height: 80px; }
+  @media (max-width: 767px) { .t-80 { font-size: 48px; line-height: 56px; } .t-56 { font-size: 40px; line-height: 48px; } .t-40 { font-size: 32px; line-height: 40px; } }
+  a:focus-visible, button:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 8px; }
+  .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 75%); animation: drift 12s linear infinite; }
+  @keyframes drift { to { background-position: 0 64px, 64px 0; } }
+  .scan { position: absolute; left: 0; right: 0; height: 160px; background: linear-gradient(180deg, transparent, rgba(34,211,238,.1), transparent); animation: scan 6s linear infinite; pointer-events: none; }
+  @keyframes scan { from { top: -160px; } to { top: 100%; } }
+  .orb { position: absolute; border-radius: 9999px; filter: blur(96px); opacity: .35; animation: float 14s ease-in-out infinite; }
+  @keyframes float { 50% { transform: translate(32px, -32px) scale(1.1); } }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); position: relative; transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease; }
+  .panel:hover { border-color: rgba(34,211,238,.6); transform: translateY(-4px); box-shadow: 0 0 40px rgba(34,211,238,.15); }
+  .corner::before, .corner::after { content: ""; position: absolute; width: 16px; height: 16px; border: 2px solid var(--cy); opacity: .8; }
+  .corner::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; border-top-left-radius: 16px; }
+  .corner::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; border-bottom-right-radius: 16px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 56px; padding: 0 32px; border-radius: 12px; font-weight: 700; font-size: 16px; white-space: nowrap; transition: transform .2s ease, box-shadow .2s ease, background .2s ease; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-solid { background: #fff; color: #000; box-shadow: 0 0 0 0 rgba(34,211,238,.6); animation: glow 2.4s ease-out infinite; }
+  .btn-solid:hover { box-shadow: 0 0 40px rgba(34,211,238,.5); }
+  .btn-ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.4); }
+  .btn-ghost:hover { background: rgba(255,255,255,.08); border-color: #fff; }
+  @keyframes glow { 0% { box-shadow: 0 0 0 0 rgba(34,211,238,.55); } 100% { box-shadow: 0 0 0 16px rgba(34,211,238,0); } }
+  .glitch { position: relative; display: inline-block; background: linear-gradient(90deg, #fff, #fff); -webkit-background-clip: text; background-clip: text; }
+  .glitch::before, .glitch::after { content: attr(data-t); position: absolute; inset: 0; opacity: 0; }
+  .glitch::before { color: #fff; text-shadow: -2px 0 var(--cy); animation: gl1 5s infinite; }
+  .glitch::after { color: #fff; text-shadow: 2px 0 var(--rd); animation: gl2 5s infinite; }
+  @keyframes gl1 { 0%, 92%, 100% { opacity: 0; transform: none; } 94% { opacity: .9; transform: translate(-3px, 1px); clip-path: inset(10% 0 55% 0); } 97% { opacity: .9; transform: translate(3px, -1px); clip-path: inset(60% 0 8% 0); } }
+  @keyframes gl2 { 0%, 92%, 100% { opacity: 0; transform: none; } 95% { opacity: .9; transform: translate(3px, 1px); clip-path: inset(40% 0 30% 0); } 98% { opacity: .9; transform: translate(-3px, 0); clip-path: inset(5% 0 70% 0); } }
+  .marquee { display: flex; width: max-content; animation: marq 40s linear infinite; }
+  .marquee:hover { animation-play-state: paused; }
+  @keyframes marq { to { transform: translateX(-50%); } }
+  .reveal { opacity: 0; transform: translateY(32px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .blink { animation: blink 1.2s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .dot { width: 8px; height: 8px; border-radius: 9999px; background: var(--gr); animation: ping 2s ease-out infinite; }
+  @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(52,211,153,.6); } 100% { box-shadow: 0 0 0 8px rgba(52,211,153,0); } }
+  .up { color: #fff; } .flash-up { animation: fu .6s ease-out; } .flash-dn { animation: fd .6s ease-out; }
+  @keyframes fu { from { background: rgba(52,211,153,.35); } to { background: transparent; } }
+  @keyframes fd { from { background: rgba(251,113,133,.35); } to { background: transparent; } }
+  .ring { animation: spin 24s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } }
+  .bar { height: 8px; border-radius: 9999px; background: rgba(255,255,255,.1); overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--cy), var(--gr)); transition: width 1.6s cubic-bezier(.16,1,.3,1); }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .reveal { opacity: 1; transform: none; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-[#05070d]/70 backdrop-blur-xl">
+  <nav class="max-w-7xl mx-auto h-16 px-4 md:px-8 flex items-center justify-between" aria-label="Primary">
+    <a href="#top" class="flex items-center gap-2 font-bold t-20" aria-label="Artix Capital home">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" stroke="#22d3ee" stroke-width="2"/><path d="M8 24 16 8l8 16M11.5 18h9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      ARTIX
+    </a>
+    <div class="hidden md:flex items-center gap-8 t-14 font-medium">
+      <a href="#markets" class="hover:text-cyan-300 transition-colors">Markets</a>
+      <a href="#tech" class="hover:text-cyan-300 transition-colors">Technology</a>
+      <a href="#flow" class="hover:text-cyan-300 transition-colors">How it works</a>
+      <a href="#pricing" class="hover:text-cyan-300 transition-colors">Pricing</a>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="#" class="hidden sm:inline-flex items-center h-10 px-4 rounded-lg t-14 font-medium hover:bg-white/10 transition-colors">Log in</a>
+      <a href="#cta" class="inline-flex items-center h-10 px-4 rounded-lg bg-white text-black t-14 font-bold hover:-translate-y-0.5 transition-transform">Open account</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<section class="relative min-h-screen pt-16 flex items-center overflow-hidden">
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="scan" aria-hidden="true"></div>
+  <div class="orb bg-cyan-400 w-80 h-80 -top-16 -left-16" aria-hidden="true"></div>
+  <div class="orb bg-fuchsia-500 w-96 h-96 bottom-0 right-0" style="animation-delay:-6s" aria-hidden="true"></div>
+  <canvas id="fx" class="absolute inset-0 w-full h-full opacity-60" aria-hidden="true"></canvas>
+
+  <div class="relative max-w-7xl mx-auto px-4 md:px-8 py-16 md:py-24 grid lg:grid-cols-12 gap-16 items-center w-full">
+    <div class="lg:col-span-7">
+      <div class="reveal inline-flex items-center gap-2 h-8 px-4 rounded-full border border-white/20 bg-white/5 mono t-12">
+        <span class="dot"></span> MARKETS LIVE · 24/5 · <span id="clock">00:00:00 UTC</span>
+      </div>
+      <h1 class="reveal t-80 font-bold mt-8 tracking-tight" style="transition-delay:.1s">
+        Trade the <span class="glitch" data-t="future">future</span><br>of currency.
+      </h1>
+      <p class="reveal t-20 mt-8 max-w-xl" style="transition-delay:.2s">
+        Quantum-fast execution, raw spreads from 0.0 pips and an AI risk engine that watches every position, every millisecond.
+      </p>
+      <div class="reveal flex flex-col sm:flex-row gap-4 mt-12" style="transition-delay:.3s">
+        <a href="#cta" class="btn btn-solid">Start trading
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#markets" class="btn btn-ghost">Explore live markets</a>
+      </div>
+      <dl class="reveal grid grid-cols-3 gap-4 mt-16 max-w-lg" style="transition-delay:.4s">
+        <div><dt class="t-12 mono">LATENCY</dt><dd class="t-24 font-bold mono"><span data-count="0.4" data-dec="1">0</span>ms</dd></div>
+        <div><dt class="t-12 mono">SPREAD FROM</dt><dd class="t-24 font-bold mono"><span data-count="0.0" data-dec="1">0</span> pips</dd></div>
+        <div><dt class="t-12 mono">PAIRS</dt><dd class="t-24 font-bold mono"><span data-count="80">0</span>+</dd></div>
+      </dl>
+    </div>
+
+    <!-- HUD -->
+    <div class="lg:col-span-5 reveal" style="transition-delay:.3s">
+      <div class="panel corner p-6" style="transform:none">
+        <div class="flex items-center justify-between mono t-12">
+          <span>EUR/USD · M1</span>
+          <span class="flex items-center gap-2"><span class="dot"></span>STREAMING</span>
+        </div>
+        <div class="flex items-end justify-between mt-4">
+          <div id="hudPrice" class="mono font-medium" style="font-size:40px;line-height:48px">1.08425</div>
+          <div id="hudChg" class="mono t-14 px-2 rounded border border-white/20">+0.12%</div>
+        </div>
+        <svg id="spark" viewBox="0 0 320 120" class="w-full h-32 mt-4" preserveAspectRatio="none" aria-label="Live price sparkline" role="img">
+          <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22d3ee" stop-opacity=".4"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></linearGradient></defs>
+          <path id="sArea" fill="url(#sg)"/><path id="sLine" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+        <div class="grid grid-cols-2 gap-4 mt-6">
+          <button class="h-12 rounded-lg bg-white text-black font-bold hover:-translate-y-0.5 transition-transform">BUY <span id="ask" class="mono t-14">1.08431</span></button>
+          <button class="h-12 rounded-lg border border-white/40 font-bold hover:bg-white/10 hover:-translate-y-0.5 transition">SELL <span id="bid" class="mono t-14">1.08425</span></button>
+        </div>
+        <div class="mt-6 space-y-2">
+          <div class="flex justify-between mono t-12"><span>AI RISK SCORE</span><span id="riskV">0%</span></div>
+          <div class="bar"><i id="risk" data-w="32"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<section class="border-y border-white/10 bg-white/[0.03] overflow-hidden" aria-label="Live rates">
+  <div class="marquee py-4 mono t-14" id="tape"></div>
+</section>
+
+<!-- MARKETS -->
+<section id="markets" class="relative py-24 md:py-32">
+  <div class="max-w-7xl mx-auto px-4 md:px-8">
+    <div class="reveal max-w-2xl">
+      <p class="mono t-12 text-cyan-300" style="color:#fff">// 01 — LIVE MARKETS</p>
+      <h2 class="t-56 font-bold mt-4">Every major pair. One terminal.</h2>
+    </div>
+    <div class="reveal panel corner mt-16 overflow-hidden" style="transform:none">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[640px] mono t-14 text-left">
+          <thead><tr class="border-b border-white/10 t-12">
+            <th class="p-4 font-medium">PAIR</th><th class="p-4 font-medium">BID</th><th class="p-4 font-medium">ASK</th><th class="p-4 font-medium">SPREAD</th><th class="p-4 font-medium">24H</th><th class="p-4 font-medium text-right">TREND</th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section id="tech" class="relative py-24 md:py-32 border-t border-white/10">
+  <div class="max-w-7xl mx-auto px-4 md:px-8">
+    <div class="reveal max-w-2xl">
+      <p class="mono t-12">// 02 — TECHNOLOGY</p>
+      <h2 class="t-56 font-bold mt-4">Built like a spacecraft. Priced like a utility.</h2>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
+      <article class="reveal panel p-8">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M26 4 10 28h12l-2 16 18-26H26z" stroke="#22d3ee" stroke-width="2" stroke-linejoin="round"/></svg>
+        <h3 class="t-24 font-bold mt-6">Sub-ms execution</h3>
+        <p class="t-16 mt-2">Co-located servers in LD4, NY4 and TY3 route orders at 0.4 ms median fill time.</p>
+      </article>
+      <article class="reveal panel p-8" style="transition-delay:.1s">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="8" stroke="#22d3ee" stroke-width="2"/><circle cx="24" cy="24" r="20" stroke="#fff" stroke-opacity=".4" stroke-width="2" stroke-dasharray="4 6" class="ring" style="transform-origin:24px 24px"/></svg>
+        <h3 class="t-24 font-bold mt-6">AI risk engine</h3>
+        <p class="t-16 mt-2">Neural exposure models flag drawdown risk and auto-hedge before volatility hits.</p>
+      </article>
+      <article class="reveal panel p-8" style="transition-delay:.2s">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M24 4 6 12v12c0 10 8 17 18 20 10-3 18-10 18-20V12z" stroke="#22d3ee" stroke-width="2" stroke-linejoin="round"/><path d="m16 24 6 6 10-12" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3 class="t-24 font-bold mt-6">Vaulted funds</h3>
+        <p class="t-16 mt-2">Segregated tier-1 accounts, negative balance protection and end-to-end encryption.</p>
+      </article>
+      <article class="reveal panel p-8">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M6 38V10m0 28h36" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"/><path d="m12 30 9-10 7 6 12-14" stroke="#22d3ee" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3 class="t-24 font-bold mt-6">Raw spreads</h3>
+        <p class="t-16 mt-2">Direct liquidity from 20+ banks. Pay a flat commission, never a hidden markup.</p>
+      </article>
+      <article class="reveal panel p-8" style="transition-delay:.1s">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true"><rect x="4" y="8" width="40" height="28" rx="4" stroke="#22d3ee" stroke-width="2"/><path d="M16 44h16M24 36v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        <h3 class="t-24 font-bold mt-6">Any screen</h3>
+        <p class="t-16 mt-2">Web, desktop, iOS and Android terminals sync positions in real time.</p>
+      </article>
+      <article class="reveal panel p-8" style="transition-delay:.2s">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M8 14h32M8 24h32M8 34h20" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"/><circle cx="38" cy="34" r="4" stroke="#fff" stroke-width="2"/></svg>
+        <h3 class="t-24 font-bold mt-6">Open API</h3>
+        <p class="t-16 mt-2">FIX 4.4, REST and WebSocket feeds for algorithmic and copy trading strategies.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section id="flow" class="relative py-24 md:py-32 border-t border-white/10 overflow-hidden">
+  <div class="orb bg-cyan-400 w-96 h-96 top-0 right-0" aria-hidden="true"></div>
+  <div class="relative max-w-7xl mx-auto px-4 md:px-8">
+    <div class="reveal max-w-2xl">
+      <p class="mono t-12">// 03 — LAUNCH SEQUENCE</p>
+      <h2 class="t-56 font-bold mt-4">From signup to first trade in 3 minutes.</h2>
+    </div>
+    <ol class="grid md:grid-cols-3 gap-6 mt-16">
+      <li class="reveal panel corner p-8"><span class="mono t-14">T-03:00</span><h3 class="t-24 font-bold mt-4">Register</h3><p class="t-16 mt-2">Verify identity digitally. No paperwork, no queues.</p></li>
+      <li class="reveal panel corner p-8" style="transition-delay:.1s"><span class="mono t-14">T-02:00</span><h3 class="t-24 font-bold mt-4">Fund</h3><p class="t-16 mt-2">Instant deposits by card, bank transfer or stablecoin.</p></li>
+      <li class="reveal panel corner p-8" style="transition-delay:.2s"><span class="mono t-14">T-00:00</span><h3 class="t-24 font-bold mt-4">Launch</h3><p class="t-16 mt-2">Open the terminal, pick a pair and place your first order.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="relative py-24 md:py-32 border-t border-white/10">
+  <div class="max-w-7xl mx-auto px-4 md:px-8">
+    <div class="reveal max-w-2xl">
+      <p class="mono t-12">// 04 — ACCOUNTS</p>
+      <h2 class="t-56 font-bold mt-4">Pick your orbit.</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6 mt-16 items-stretch">
+      <article class="reveal panel p-8 flex flex-col">
+        <h3 class="t-24 font-bold">Pilot</h3><p class="mono t-14 mt-1">From $100</p>
+        <p class="t-40 font-bold mt-6">1.0<span class="t-16 font-normal"> pip spread</span></p>
+        <ul class="t-16 mt-8 space-y-2 flex-1"><li>— 1:100 leverage</li><li>— Web terminal</li><li>— Email support</li></ul>
+        <a href="#cta" class="btn btn-ghost mt-8">Choose Pilot</a>
+      </article>
+      <article class="reveal panel corner p-8 flex flex-col" style="transition-delay:.1s;border-color:rgba(34,211,238,.7);box-shadow:0 0 48px rgba(34,211,238,.2)">
+        <div class="flex justify-between items-center"><h3 class="t-24 font-bold">Commander</h3><span class="mono t-12 px-2 border border-white/40 rounded">POPULAR</span></div><p class="mono t-14 mt-1">From $2,500</p>
+        <p class="t-40 font-bold mt-6">0.1<span class="t-16 font-normal"> pip spread</span></p>
+        <ul class="t-16 mt-8 space-y-2 flex-1"><li>— 1:200 leverage</li><li>— AI risk engine</li><li>— Priority 24/5 desk</li></ul>
+        <a href="#cta" class="btn btn-solid mt-8">Choose Commander</a>
+      </article>
+      <article class="reveal panel p-8 flex flex-col" style="transition-delay:.2s">
+        <h3 class="t-24 font-bold">Admiral</h3><p class="mono t-14 mt-1">From $25,000</p>
+        <p class="t-40 font-bold mt-6">0.0<span class="t-16 font-normal"> pip spread</span></p>
+        <ul class="t-16 mt-8 space-y-2 flex-1"><li>— Raw ECN pricing</li><li>— FIX API access</li><li>— Dedicated manager</li></ul>
+        <a href="#cta" class="btn btn-ghost mt-8">Choose Admiral</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta" class="relative py-24 md:py-32 border-t border-white/10 overflow-hidden">
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="relative max-w-3xl mx-auto px-4 md:px-8 text-center reveal">
+    <h2 class="t-56 font-bold">Ready for liftoff?</h2>
+    <p class="t-20 mt-6">Join 120,000 traders on the fastest forex network on Earth.</p>
+    <form class="flex flex-col sm:flex-row gap-4 mt-12 max-w-xl mx-auto" onsubmit="event.preventDefault();this.querySelector('button').textContent='Access granted ✓'">
+      <label for="em" class="sr-only">Email address</label>
+      <input id="em" type="email" required placeholder="you@domain.com" autocomplete="email" class="flex-1 h-14 px-4 rounded-xl bg-white/5 border border-white/30 text-white placeholder-white/60 mono t-14 focus:outline-none focus:border-cyan-300 focus:shadow-[0_0_24px_rgba(34,211,238,.35)] transition">
+      <button type="submit" class="btn btn-solid">Open account</button>
+    </form>
+    <p class="mono t-12 mt-6">Trading involves risk. Capital at risk.</p>
+  </div>
+</section>
+</main>
+
+<footer class="border-t border-white/10 py-12">
+  <div class="max-w-7xl mx-auto px-4 md:px-8 flex flex-col md:flex-row gap-6 justify-between t-14">
+    <p class="font-bold">ARTIX CAPITAL <span class="font-normal">© 2026</span></p>
+    <nav class="flex flex-wrap gap-6" aria-label="Footer"><a href="#" class="hover:text-cyan-300">Terms</a><a href="#" class="hover:text-cyan-300">Privacy</a><a href="#" class="hover:text-cyan-300">Risk disclosure</a><a href="#" class="hover:text-cyan-300">Contact</a></nav>
+  </div>
+  <p class="max-w-7xl mx-auto px-4 md:px-8 mt-6 t-12">Forex and CFDs are complex instruments and carry a high risk of losing money rapidly due to leverage.</p>
+</footer>
+
+<script>
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PAIRS = [['EUR/USD',1.0842,5],['GBP/USD',1.2715,5],['USD/JPY',151.32,3],['AUD/USD',0.6538,5],['USD/CAD',1.3564,5],['USD/CHF',0.8821,5],['NZD/USD',0.6012,5],['EUR/GBP',0.8527,5]];
+const st = PAIRS.map(([n,p,d]) => ({ n, p, o: p, d, h: Array.from({length: 24}, () => p) }));
+const fmt = (s, v) => v.toFixed(s.d);
+
+// reveal on scroll
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// count up
+document.querySelectorAll('[data-count]').forEach(el => {
+  const t = +el.dataset.count, d = +(el.dataset.dec || 0);
+  if (RM || !t) return void (el.textContent = t.toFixed(d));
+  const t0 = performance.now();
+  const f = now => { const k = Math.min((now - t0) / 1600, 1); el.textContent = (t * (1 - Math.pow(1 - k, 3))).toFixed(d); k < 1 && requestAnimationFrame(f); };
+  requestAnimationFrame(f);
+});
+
+// clock
+const clk = document.getElementById('clock');
+setInterval(() => clk.textContent = new Date().toISOString().slice(11, 19) + ' UTC', 1000);
+clk.textContent = new Date().toISOString().slice(11, 19) + ' UTC';
+
+// risk bar
+setTimeout(() => { const r = document.getElementById('risk'); r.style.width = r.dataset.w + '%'; document.getElementById('riskV').textContent = r.dataset.w + '%'; }, 600);
+
+// table + tape
+const rows = document.getElementById('rows'), tape = document.getElementById('tape');
+const spark = h => { const mn = Math.min(...h), mx = Math.max(...h), r = mx - mn || 1; return h.map((v, i) => `${i ? 'L' : 'M'}${(i / (h.length - 1)) * 64},${24 - ((v - mn) / r) * 24}`).join(''); };
+rows.innerHTML = st.map((s, i) => `<tr class="border-b border-white/5 hover:bg-white/5 transition-colors" id="r${i}">
+  <td class="p-4 font-medium">${s.n}</td><td class="p-4" data-b></td><td class="p-4" data-a></td><td class="p-4" data-s></td><td class="p-4" data-c></td>
+  <td class="p-4"><svg class="ml-auto" width="64" height="24" viewBox="0 0 64 24" aria-hidden="true"><path data-p fill="none" stroke="#22d3ee" stroke-width="1.5"/></svg></td></tr>`).join('');
+const tapeHTML = () => st.map(s => `<span class="inline-flex items-center gap-2 px-8">${s.n} <b>${fmt(s, s.p)}</b> <i class="not-italic" style="color:${s.p >= s.o ? '#34d399' : '#fb7185'}">${s.p >= s.o ? '▲' : '▼'}</i></span>`).join('');
+const drawTape = () => tape.innerHTML = tapeHTML() + tapeHTML();
+
+const tick = () => st.forEach((s, i) => {
+  const prev = s.p;
+  s.p = Math.max(s.p * (1 + (Math.random() - .5) * .0006), .0001);
+  s.h.push(s.p); s.h.shift();
+  const pip = Math.pow(10, -(s.d - 1)), sp = (i % 3 ? .6 : 1.2) * pip;
+  const tr = document.getElementById('r' + i), up = s.p >= prev;
+  const b = tr.querySelector('[data-b]'), c = tr.querySelector('[data-c]');
+  b.textContent = fmt(s, s.p); tr.querySelector('[data-a]').textContent = fmt(s, s.p + sp);
+  tr.querySelector('[data-s]').textContent = (sp / pip).toFixed(1);
+  const ch = (s.p / s.o - 1) * 100; c.textContent = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%';
+  tr.querySelector('[data-p]').setAttribute('d', spark(s.h));
+  b.className = 'p-4 ' + (up ? 'flash-up' : 'flash-dn'); void b.offsetWidth;
+});
+tick(); drawTape();
+
+// HUD
+const sL = document.getElementById('sLine'), sA = document.getElementById('sArea');
+const hist = Array.from({length: 60}, (_, i) => 1.0842 + Math.sin(i / 6) * .0003 + (Math.random() - .5) * .0002);
+const hud = () => {
+  const s = st[0]; hist.push(s.p); hist.shift();
+  const mn = Math.min(...hist), mx = Math.max(...hist), r = mx - mn || 1;
+  const d = hist.map((v, i) => `${i ? 'L' : 'M'}${(i / 59) * 320},${112 - ((v - mn) / r) * 104}`).join('');
+  sL.setAttribute('d', d); sA.setAttribute('d', d + 'L320,120L0,120Z');
+  document.getElementById('hudPrice').textContent = fmt(s, s.p);
+  document.getElementById('bid').textContent = fmt(s, s.p);
+  document.getElementById('ask').textContent = fmt(s, s.p + .00006);
+  const ch = (s.p / s.o - 1) * 100;
+  document.getElementById('hudChg').textContent = (ch >= 0 ? '+' : '') + ch.toFixed(2) + '%';
+};
+hud();
+if (!RM) setInterval(() => { tick(); hud(); }, 900);
+setInterval(drawTape, 10000);
+
+// canvas: candlestick wave + particles
+const cv = document.getElementById('fx'), cx = cv.getContext('2d');
+let W, H, DPR, pts = [];
+const size = () => {
+  DPR = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight;
+  cv.width = W * DPR; cv.height = H * DPR; cx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  pts = Array.from({length: Math.min(Math.floor(W / 24), 64)}, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3 }));
+};
+size(); addEventListener('resize', size);
+let mx = -999, my = -999;
+addEventListener('pointermove', e => { const r = cv.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
+const draw = t => {
+  cx.clearRect(0, 0, W, H);
+  // candles
+  const n = Math.floor(W / 24), base = H * .72;
+  for (let i = 0; i < n; i++) {
+    const x = i * 24 + 8, ph = i * .35 + t / 1200;
+    const c = Math.sin(ph) * 48 + Math.sin(ph * 2.3) * 24, h = 16 + Math.abs(Math.sin(ph * 1.7)) * 40, up = Math.cos(ph) > 0;
+    cx.strokeStyle = cx.fillStyle = up ? 'rgba(52,211,153,.35)' : 'rgba(251,113,133,.3)';
+    cx.beginPath(); cx.moveTo(x + 4, base + c - h); cx.lineTo(x + 4, base + c + h); cx.stroke();
+    cx.fillRect(x, base + c - h / 2, 8, h);
+  }
+  // particles + links
+  cx.fillStyle = 'rgba(34,211,238,.8)';
+  pts.forEach((p, i) => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1;
+    const dx = p.x - mx, dy = p.y - my, dd = Math.hypot(dx, dy);
+    if (dd < 120) { p.x += dx / dd * 1.5; p.y += dy / dd * 1.5; }
+    cx.beginPath(); cx.arc(p.x, p.y, 1.5, 0, 6.283); cx.fill();
+    for (let j = i + 1; j < pts.length; j++) {
+      const q = pts[j], d = Math.hypot(p.x - q.x, p.y - q.y);
+      if (d < 120) { cx.strokeStyle = `rgba(34,211,238,${(1 - d / 120) * .25})`; cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(q.x, q.y); cx.stroke(); }
+    }
+  });
+  if (!RM) requestAnimationFrame(draw);
+};
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
