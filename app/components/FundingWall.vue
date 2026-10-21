@@ -31,16 +31,16 @@ useMotion(root, ({ motion }) => {
   <section ref="root" class="relative py-24 md:py-32" aria-labelledby="fund-title">
     <div class="wrap grid items-center gap-12 lg:grid-cols-12">
       <div class="lg:col-span-5">
-        <h2 id="fund-title" v-reveal="'words'" class="text-4xl font-bold tracking-[-0.03em] md:text-5xl">Fund your account your way.</h2>
+        <h2 id="fund-title" v-reveal="'lines'" class="text-4xl font-bold tracking-[-0.03em] md:text-5xl">Fund your account <span class="grad-text pb-1">your way.</span></h2>
         <p v-reveal="'fade'" class="mt-5 max-w-md text-lg text-muted">Cards, e-wallets such as Skrill and Neteller, and crypto wallets. Manage every deposit and withdrawal from your client area.</p>
       </div>
       <ul class="f-grid relative grid grid-cols-2 gap-4 overflow-hidden rounded-3xl sm:grid-cols-3 lg:col-span-7">
         <li v-for="l in LOGOS" :key="l.name" class="f-tile">
           <div
-            class="group glass grid h-28 place-items-center rounded-3xl text-fg/70 transition-[color,transform] duration-300 hover:-translate-y-1"
+            class="group glass grid h-28 place-items-center rounded-3xl transition-[translate,border-color] duration-300 hover:-translate-y-1 hover:border-(--hue)"
             :style="{ '--hue': l.hue }"
           >
-            <span role="img" :aria-label="l.name" class="logo-mask size-12 transition-[background-color,scale] duration-300 group-hover:scale-110 group-hover:bg-[var(--hue)]" :style="{ '--src': `url(${l.src})` }" />
+            <span role="img" :aria-label="l.name" class="logo-mask size-12 bg-(--hue) transition-[scale] duration-300 group-hover:scale-110" :style="{ '--src': `url(${l.src})` }" />
           </div>
         </li>
         <span class="f-sweep pointer-events-none absolute inset-y-0 left-0 w-1/2 -skew-x-12 bg-linear-to-r from-transparent via-white/10 to-transparent" aria-hidden="true" />

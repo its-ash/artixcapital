@@ -16,7 +16,7 @@ useMotion(root, ({ motion }) => {
   <section id="faq" ref="root" class="relative py-28 md:py-36" aria-labelledby="faq-title">
     <div class="wrap grid gap-12 lg:grid-cols-12">
       <div class="lg:col-span-5">
-        <h2 id="faq-title" v-reveal="'chars'" class="text-4xl font-bold tracking-[-0.03em] md:text-6xl">Questions, answered.</h2>
+        <h2 id="faq-title" v-reveal="'lines'" class="text-4xl font-bold tracking-[-0.03em] md:text-6xl">Questions, <span class="grad-text">answered.</span></h2>
         <div id="contact" v-tilt="4" class="c-card spot glass mt-10 rounded-3xl p-7">
           <p class="text-xl font-bold">Talk to a real person</p>
           <p class="mt-2 text-muted">Our support team is available 24 hours a day, five days a week.</p>

@@ -30,5 +30,9 @@ export default defineNuxtConfig({
       noscript: [{ innerHTML: '<style>.preloader{display:none!important}</style>' }]
     }
   },
-  nitro: { prerender: { routes: ['/'] } }
+  ssr: true,
+  nitro: {
+    preset: 'static',
+    prerender: { routes: ['/'], crawlLinks: true, failOnError: true }
+  }
 })

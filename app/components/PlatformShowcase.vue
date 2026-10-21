@@ -67,7 +67,7 @@ useMotion(root, ({ motion, desktop }) => {
       <div class="wrap grid items-center gap-14 lg:grid-cols-12">
         <div class="lg:col-span-5">
           <p class="font-mono text-xs uppercase tracking-[0.2em] text-accent-soft">nTrader platform</p>
-          <h2 id="platform-title" v-reveal="'words'" class="mt-4 text-4xl font-bold tracking-[-0.03em] md:text-5xl">Built for precision, speed and simplicity.</h2>
+          <h2 id="platform-title" v-reveal="'lines'" class="mt-4 text-4xl font-bold tracking-[-0.03em] md:text-5xl">Built for <span class="grad-text">precision</span>, speed and simplicity.</h2>
           <p v-reveal="'fade'" class="mt-5 max-w-md text-lg text-muted">Real-time data and a clean, modern interface, on whichever screen you trade from.</p>
 
           <div class="mt-10 grid gap-2" role="tablist" aria-label="Platform">
@@ -80,7 +80,7 @@ useMotion(root, ({ motion, desktop }) => {
               <span class="relative w-px shrink-0 self-stretch bg-white/10" aria-hidden="true">
                 <span class="p-fill absolute inset-0 origin-top bg-accent" :class="pinned ? 'scale-y-0' : idx === i ? 'scale-y-100' : 'scale-y-0'" />
               </span>
-              <span class="grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 transition-colors duration-300" :class="idx === i ? 'bg-accent text-ink' : 'text-muted'" aria-hidden="true">
+              <span class="grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 transition-colors duration-300" :class="idx === i ? 'border-transparent text-ink' : 'text-muted'" :style="idx === i ? { background: p.hue } : {}" aria-hidden="true">
                 <component :is="p.icon" :size="20" />
               </span>
               <div class="min-w-0">

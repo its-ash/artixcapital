@@ -26,7 +26,7 @@ useMotion(root, ({ motion }) => {
 <template>
   <section id="accounts" ref="root" class="relative py-28 md:py-36" aria-labelledby="accounts-title">
     <div class="wrap">
-      <h2 id="accounts-title" v-reveal="'chars'" class="max-w-3xl text-4xl font-bold tracking-[-0.03em] md:text-6xl">Pick the account that fits how you trade.</h2>
+      <h2 id="accounts-title" v-reveal="'lines'" class="max-w-3xl text-4xl font-bold tracking-[-0.03em] md:text-6xl">Pick the account that fits <span class="grad-text pb-1">how you trade.</span></h2>
       <p v-reveal="'fade'" class="mt-5 max-w-xl text-lg text-muted">Every account runs on nTrader with access to FX, metals, indices, commodities, equities and crypto.</p>
 
       <ul class="a-grid mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-6">
@@ -42,7 +42,7 @@ useMotion(root, ({ motion }) => {
               <span class="holo-sheen" aria-hidden="true" />
             </template>
             <div class="flex items-center gap-3">
-              <span class="grid size-11 place-items-center rounded-2xl border border-white/10 transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110" :class="a.featured ? 'bg-accent text-ink' : 'bg-white/5 text-accent-soft'">
+              <span class="chip grid size-11 place-items-center rounded-2xl transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110" :style="{ '--hue': a.hue }">
                 <component :is="a.icon" :size="22" />
               </span>
               <h3 class="text-2xl font-bold tracking-tight">Artix {{ a.name }}</h3>

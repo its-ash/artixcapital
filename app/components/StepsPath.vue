@@ -31,7 +31,7 @@ useMotion(root, ({ motion, desktop }) => {
 <template>
   <section ref="root" class="relative py-28 md:py-36" aria-labelledby="steps-title">
     <div class="wrap">
-      <h2 id="steps-title" v-reveal="'words'" class="mx-auto max-w-3xl text-center text-4xl font-bold tracking-[-0.03em] md:text-6xl">From sign-up to first trade in three steps.</h2>
+      <h2 id="steps-title" v-reveal="'lines'" class="mx-auto max-w-3xl text-center text-4xl font-bold tracking-[-0.03em] md:text-6xl">From sign-up to first trade in <span class="grad-text">three steps.</span></h2>
 
       <div class="st-track relative mt-20">
         <div class="relative hidden aspect-6/1 lg:block" aria-hidden="true">
@@ -51,8 +51,8 @@ useMotion(root, ({ motion, desktop }) => {
             v-for="(x, i) in NODES"
             :key="x"
             class="absolute grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border transition-[background-color,border-color,color,scale] duration-500"
-            :class="reached >= i ? 'scale-110 border-accent bg-accent text-ink' : 'border-white/15 bg-surface text-muted'"
-            :style="{ left: `${(x / 1200) * 100}%`, top: '20%' }"
+            :class="reached >= i ? 'scale-110 border-transparent text-ink shadow-[0_0_32px_-4px_var(--hue)]' : 'border-white/15 bg-surface text-muted'"
+            :style="{ left: `${(x / 1200) * 100}%`, top: '20%', '--hue': STEPS[i]?.hue, ...(reached >= i ? { background: STEPS[i]?.hue } : {}) }"
           >
             <component :is="STEPS[i]?.icon" :size="26" />
           </span>
@@ -64,7 +64,7 @@ useMotion(root, ({ motion, desktop }) => {
           <li v-for="(s, i) in STEPS" :key="s.title" class="st-step relative pl-24 lg:pl-0 lg:text-center">
             <span
               class="absolute left-0 top-0 grid size-16 place-items-center rounded-full border transition-[background-color,border-color,color] duration-500 lg:hidden"
-              :class="reached >= i ? 'border-accent bg-accent text-ink' : 'border-white/15 bg-surface text-muted'"
+              :class="reached >= i ? 'border-transparent text-ink' : 'border-white/15 bg-surface text-muted'" :style="reached >= i ? { background: s.hue } : {}"
               aria-hidden="true"
             >
               <component :is="s.icon" :size="26" />

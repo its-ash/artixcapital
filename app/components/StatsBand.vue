@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import gsap from 'gsap'
 
-type Stat = { label: string; text: string; count?: { to: number; pre?: string; suf?: string } }
+type Stat = { label: string; text: string; hue: string; count?: { to: number; pre?: string; suf?: string } }
 
 const STATS: Stat[] = [
-  { label: 'Spreads from', text: '0.0 pips' },
-  { label: 'Maximum leverage', text: '1:200', count: { to: 200, pre: '1:' } },
-  { label: 'Commission on Core FX', text: '0%' },
-  { label: 'Global instruments', text: '150+', count: { to: 150, suf: '+' } },
-  { label: 'Human support', text: '24/5' }
+  { label: 'Spreads from', text: '0.0 pips', hue: '#22d3ee' },
+  { label: 'Maximum leverage', text: '1:200', hue: '#9ab6ff', count: { to: 200, pre: '1:' } },
+  { label: 'Commission on Core FX', text: '0%', hue: '#3fd17a' },
+  { label: 'Global instruments', text: '150+', hue: '#a78bfa', count: { to: 150, suf: '+' } },
+  { label: 'Human support', text: '24/5', hue: '#ff7aea' }
 ]
 
 const root = ref<HTMLElement | null>(null)
@@ -45,7 +45,7 @@ useMotion(root, ({ motion }) => {
         >
           <span v-if="i" class="s-div absolute left-0 top-6 bottom-6 hidden w-px origin-top bg-white/10 md:block" aria-hidden="true" />
           <dt class="text-sm text-muted">{{ s.label }}</dt>
-          <dd class="s-val mt-2 font-mono text-3xl font-medium tracking-tight tabular-nums text-fg lg:text-4xl">{{ s.text }}</dd>
+          <dd class="s-val mt-2 whitespace-nowrap font-mono text-2xl font-medium tracking-tight tabular-nums sm:text-3xl lg:text-4xl" :style="{ color: s.hue }">{{ s.text }}</dd>
         </div>
       </dl>
     </div>

@@ -11,6 +11,8 @@ useMotion(root, ({ motion }) => {
   if (!motion) return
   const q = gsap.utils.selector(root.value)
   const split = SplitText.create(q('.cta-title'), { type: 'words,chars', mask: 'words' })
+  const hue = gsap.utils.interpolate(['#22d3ee', '#9ab6ff', '#a78bfa', '#ff7aea', '#fbbf24'])
+  split.chars.forEach((ch, i) => gsap.set(ch, { color: hue(i / Math.max(1, split.chars.length - 1)) }))
   gsap.from(split.chars, {
     yPercent: i => 110 + (i % 4) * 25,
     rotate: i => (i % 2 ? 12 : -12),
@@ -28,11 +30,11 @@ useMotion(root, ({ motion }) => {
 <template>
   <section ref="root" class="relative grid min-h-[90dvh] place-items-center overflow-hidden py-28" aria-labelledby="cta-title">
     <div class="pointer-events-none absolute inset-0 grid place-items-center" aria-hidden="true">
-      <span class="cta-glow absolute size-[60rem] rounded-full bg-[radial-gradient(circle,rgb(81_132_255/0.35),rgb(255_122_234/0.08)_40%,transparent_65%)]" />
+      <span class="cta-glow absolute size-240 rounded-full bg-[radial-gradient(circle,rgb(81_132_255/0.35),rgb(255_122_234/0.08)_40%,transparent_65%)]" />
       <span
         v-for="r in RINGS"
         :key="r"
-        class="absolute size-[28rem] rounded-full border border-accent/30 motion-safe:animate-[ripple_6s_var(--ease-out-strong)_infinite]"
+        class="absolute size-112 rounded-full border border-accent/30 motion-safe:animate-[ripple_6s_var(--ease-out-strong)_infinite]"
         :style="{ animationDelay: `${(r - 1) * 1.5}s` }"
       />
     </div>

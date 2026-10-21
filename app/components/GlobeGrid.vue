@@ -63,8 +63,7 @@ const landDots = async () => {
   const c = off.getContext('2d', { willReadFrequently: true })
   if (!c) return new Float32Array()
   c.fillStyle = '#fff'
-  const geoms = 'features' in land ? land.features.map(f => f.geometry) : [land.geometry]
-  for (const g of geoms) {
+  for (const { geometry: g } of land.features) {
     const polys = g.type === 'MultiPolygon' ? (g as MultiPolygon).coordinates : g.type === 'Polygon' ? [(g as Polygon).coordinates] : []
     for (const poly of polys) {
       c.beginPath()
