@@ -21,12 +21,12 @@ useMotion(root, ({ motion }) => {
 </script>
 
 <template>
-  <footer ref="root" class="relative overflow-hidden border-t border-white/10 bg-[rgb(10_10_16/0.88)] pt-20">
+  <footer ref="root" class="relative overflow-hidden border-t border-white/8 bg-[rgb(10_10_16/0.88)] pt-20">
     <div class="wrap">
       <div class="grid gap-12 lg:grid-cols-12">
         <div class="ft-col lg:col-span-4">
           <BrandLogo class="h-9 w-auto text-fg" />
-          <p class="mt-5 max-w-xs text-muted">A forex and CFD broker giving traders access to global markets on nTrader and MetaTrader 5.</p>
+          <p class="mt-5 max-w-xs text-muted">A forex and CFD broker giving traders access to global markets on Vaultex and MetaTrader 5.</p>
           <ul class="mt-6 grid gap-2 text-sm">
             <li><a :href="`tel:${PHONE.replace(/\s/g, '')}`" class="hover:text-accent-soft">{{ PHONE }}</a></li>
             <li><a :href="`mailto:${EMAIL}`" class="hover:text-accent-soft">{{ EMAIL }}</a></li>
@@ -43,7 +43,7 @@ useMotion(root, ({ motion }) => {
         </nav>
       </div>
 
-      <div class="ft-col mt-16 grid gap-6 border-t border-white/10 pt-8 lg:grid-cols-12">
+      <div class="ft-col mt-16 grid gap-6 border-t border-white/8 pt-8 lg:grid-cols-12">
         <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted lg:col-span-9">
           <li v-for="p in POLICIES" :key="p.label"><a :href="p.href" class="hover:text-fg" target="_blank" rel="noopener">{{ p.label }}</a></li>
         </ul>
@@ -67,7 +67,7 @@ useMotion(root, ({ motion }) => {
         <BrandLogo class="w-full text-fg/90" label="" />
       </div>
 
-      <p class="border-t border-white/10 py-6 text-xs text-muted">&copy; {{ YEAR }} Artix Capital Ltd. All rights reserved.</p>
+      <p class="border-t border-white/8 py-6 text-xs text-muted">&copy; {{ YEAR }} Artix Capital Ltd. All rights reserved.</p>
     </div>
   </footer>
 </template>

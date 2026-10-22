@@ -26,8 +26,7 @@ export default defineNuxtConfig({
         { property: 'og:title', content: TITLE },
         { property: 'og:description', content: DESC },
         { name: 'twitter:card', content: 'summary' }
-      ],
-      noscript: [{ innerHTML: '<style>.preloader{display:none!important}</style>' }]
+      ]
     }
   },
   ssr: true,

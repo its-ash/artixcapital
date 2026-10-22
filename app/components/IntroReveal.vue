@@ -31,14 +31,14 @@ useMotion(root, ({ motion }) => {
         <defs><path id="ring-path" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" /></defs>
         <text class="font-mono text-[13px] tracking-[0.32em]" fill="currentColor"><textPath href="#ring-path">{{ RING }}</textPath></text>
       </svg>
-      <span class="pointer-events-none absolute -top-13 right-13 hidden size-14 rounded-full bg-accent/20 blur-xl md:block lg:right-19" aria-hidden="true" />
+      <span class="pointer-events-none absolute -top-13 right-13 hidden size-14 rounded-full bg-accent/15 blur-xl md:block lg:right-19" aria-hidden="true" />
 
       <h2 id="intro-title" class="sr-only">About Artix Capital</h2>
       <p class="i-text max-w-5xl text-3xl font-medium leading-[1.2] tracking-[-0.02em] md:text-5xl">
         Artix brings you the tools, the experience and direct access to
         <span class="hl grad-text">global markets</span>
         on a platform built for what comes next.
-        <span class="hl grad-text">nTrader</span>
+        <span class="hl grad-text">Vaultex</span>
         sits at the center of it: simple enough for a first trade, deep enough for a tenth year.
       </p>
 

@@ -38,9 +38,9 @@ useMotion(root, ({ motion, desktop }) => {
           <svg viewBox="0 0 1200 200" class="absolute inset-0 size-full overflow-visible">
             <defs>
               <linearGradient id="st-grad" x1="0" x2="1">
-                <stop offset="0" stop-color="#5184ff" />
-                <stop offset=".5" stop-color="#ff7aea" />
-                <stop offset="1" stop-color="#9ab6ff" />
+                <stop offset="0" stop-color="#8ea0bf" />
+                <stop offset=".5" stop-color="#c9a75d" />
+                <stop offset="1" stop-color="#e3cfa0" />
               </linearGradient>
             </defs>
             <path :d="PATH" fill="none" stroke="rgb(255 255 255 / .08)" stroke-width="2" stroke-dasharray="4 8" />
@@ -58,7 +58,7 @@ useMotion(root, ({ motion, desktop }) => {
           </span>
         </div>
 
-        <span class="st-vline absolute bottom-0 left-8 top-0 w-px origin-top bg-linear-to-b from-accent via-pink to-accent-soft lg:hidden" aria-hidden="true" />
+        <span class="st-vline absolute bottom-0 left-8 top-0 w-px origin-top bg-accent lg:hidden" aria-hidden="true" />
 
         <ol class="grid gap-12 lg:mt-6 lg:grid-cols-3 lg:gap-8">
           <li v-for="(s, i) in STEPS" :key="s.title" class="st-step relative pl-24 lg:pl-0 lg:text-center">

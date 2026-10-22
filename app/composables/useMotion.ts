@@ -19,14 +19,3 @@ export const useMotion = (root: Ref<HTMLElement | null>, fn: (f: MotionFlags, ct
   })
   onBeforeUnmount(() => mm?.revert())
 }
-
-export const useIntroDone = () => useState('intro-done', () => false)
-
-export const whenIntroDone = (done: Ref<boolean>, cb: () => void) => {
-  if (done.value) return cb()
-  const stop = watch(done, v => {
-    if (!v) return
-    stop()
-    cb()
-  })
-}

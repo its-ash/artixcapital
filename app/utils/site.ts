@@ -34,8 +34,8 @@ export const NAV: NavGroup[] = [
     label: 'Platforms',
     items: [
       { label: 'MetaTrader 5', href: page('meta-trader-5'), desc: 'The industry-standard terminal', icon: PhStack },
-      { label: 'nTrader for Windows', href: page('ntrader-for-windows'), desc: 'Full desktop workstation', icon: PhDesktop },
-      { label: 'nTrader for Mobile', href: page('ntrader-for-mobile'), desc: 'Trade from your phone', icon: PhDeviceMobile }
+      { label: 'Vaultex for Windows', href: page('ntrader-for-windows'), desc: 'Full desktop workstation', icon: PhDesktop },
+      { label: 'Vaultex for Mobile', href: page('ntrader-for-mobile'), desc: 'Trade from your phone', icon: PhDeviceMobile }
     ]
   },
   {
@@ -75,28 +75,28 @@ export const NAV: NavGroup[] = [
 export type Market = { id: string; name: string; desc: string; sym: string; popular: string[]; href: string; icon: Component; tint: string; hue: string }
 
 export const MARKETS: Market[] = [
-  { id: 'forex', name: 'Forex', desc: 'Trade major and minor currency pairs around the clock, five days a week.', sym: 'EUR/USD', popular: ['EUR/USD', 'GBP/USD', 'USD/JPY'], href: page('forex-trading'), icon: PhArrowsLeftRight, tint: '20% 0%', hue: '#5184ff' },
-  { id: 'commodities', name: 'Commodities', desc: 'Metals and energy markets that move on global supply and demand.', sym: 'XAU/USD', popular: ['XAU/USD', 'XAG/USD', 'WTI'], href: page('commodities-trading'), icon: PhBarbell, tint: '90% 10%', hue: '#fbbf24' },
-  { id: 'stocks', name: 'Stocks', desc: 'Take positions on shares of well-known global companies.', sym: 'AAPL', popular: ['AAPL', 'NVDA', 'TSLA'], href: page('stocks-trading'), icon: PhBuildings, tint: '10% 100%', hue: '#3fd17a' },
-  { id: 'indices', name: 'Indices', desc: 'Trade a view on an entire economy through benchmark indices.', sym: 'US500', popular: ['US500', 'NAS100', 'GER40'], href: page('indices-trading'), icon: PhChartBar, tint: '100% 90%', hue: '#a78bfa' },
-  { id: 'crypto', name: 'Crypto', desc: 'Major digital assets, priced against the US dollar.', sym: 'BTC/USD', popular: ['BTC/USD', 'ETH/USD'], href: page('crypto-trading'), icon: PhCurrencyBtc, tint: '50% 0%', hue: '#ff8a4c' }
+  { id: 'forex', name: 'Forex', desc: 'Major and minor currency pairs priced continuously across every session.', sym: 'EUR/USD', popular: ['EUR/USD', 'GBP/USD', 'USD/JPY'], href: page('forex-trading'), icon: PhArrowsLeftRight, tint: '20% 0%', hue: '#c9a75d' },
+  { id: 'commodities', name: 'Commodities', desc: 'Metals and energy benchmarks that follow global supply and demand.', sym: 'XAU/USD', popular: ['XAU/USD', 'XAG/USD', 'WTI'], href: page('commodities-trading'), icon: PhBarbell, tint: '90% 10%', hue: '#b8956a' },
+  { id: 'stocks', name: 'Stocks', desc: 'Equity CFDs on companies that anchor the global indices.', sym: 'AAPL', popular: ['AAPL', 'NVDA', 'TSLA'], href: page('stocks-trading'), icon: PhBuildings, tint: '10% 100%', hue: '#8ea0bf' },
+  { id: 'indices', name: 'Indices', desc: 'Benchmark index CFDs tracking whole economies in one position.', sym: 'US500', popular: ['US500', 'NAS100', 'GER40'], href: page('indices-trading'), icon: PhChartBar, tint: '100% 90%', hue: '#d6c08a' },
+  { id: 'crypto', name: 'Crypto', desc: 'Major digital assets, quoted against the US dollar around the clock.', sym: 'BTC/USD', popular: ['BTC/USD', 'ETH/USD'], href: page('crypto-trading'), icon: PhCurrencyBtc, tint: '50% 0%', hue: '#a8b4c9' }
 ]
 
 export const ASSET_CLASSES: { label: string; icon: Component; hue: string }[] = [
-  { label: 'Forex', icon: PhArrowsLeftRight, hue: '#5184ff' },
-  { label: 'Stocks', icon: PhBuildings, hue: '#3fd17a' },
-  { label: 'Indices', icon: PhChartBar, hue: '#a78bfa' },
-  { label: 'Commodities', icon: PhBarbell, hue: '#fbbf24' },
-  { label: 'Crypto', icon: PhCurrencyBtc, hue: '#ff8a4c' },
-  { label: 'CFDs', icon: PhCoins, hue: '#ff7aea' }
+  { label: 'Forex', icon: PhArrowsLeftRight, hue: '#c9a75d' },
+  { label: 'Stocks', icon: PhBuildings, hue: '#8ea0bf' },
+  { label: 'Indices', icon: PhChartBar, hue: '#d6c08a' },
+  { label: 'Commodities', icon: PhBarbell, hue: '#b8956a' },
+  { label: 'Crypto', icon: PhCurrencyBtc, hue: '#a8b4c9' },
+  { label: 'CFDs', icon: PhCoins, hue: '#e3cfa0' }
 ]
 
 export type Platform = { id: string; label: string; title: string; desc: string; href: string; cta: string; icon: Component; hue: string }
 
 export const PLATFORMS: Platform[] = [
-  { id: 'desktop', label: 'Desktop', title: 'A full workstation on Windows', desc: 'Every tool nTrader offers, with layouts you can shape around the way you trade.', href: page('ntrader-for-windows'), cta: 'nTrader for Windows', icon: PhDesktop, hue: '#22d3ee' },
-  { id: 'web', label: 'Web', title: 'Open a browser and trade', desc: 'Sign in from any computer and pick up where you left off. Nothing to install.', href: LOGIN, cta: 'Open web platform', icon: PhBrowser, hue: '#a78bfa' },
-  { id: 'mobile', label: 'Mobile', title: 'Markets in your pocket', desc: 'Real-time prices, charts and order entry, wherever the day takes you.', href: page('ntrader-for-mobile'), cta: 'nTrader for Mobile', icon: PhDeviceMobile, hue: '#ff7aea' }
+  { id: 'desktop', label: 'Desktop', title: 'A full workstation on Windows', desc: 'Every tool Vaultex offers, with layouts you can shape around the way you trade.', href: page('ntrader-for-windows'), cta: 'Vaultex for Windows', icon: PhDesktop, hue: '#c9a75d' },
+  { id: 'web', label: 'Web', title: 'Open a browser and trade', desc: 'Sign in from any computer and pick up where you left off. Nothing to install.', href: LOGIN, cta: 'Open web platform', icon: PhBrowser, hue: '#d6c08a' },
+  { id: 'mobile', label: 'Mobile', title: 'Markets in your pocket', desc: 'Real-time prices, charts and order entry, wherever the day takes you.', href: page('ntrader-for-mobile'), cta: 'Vaultex for Mobile', icon: PhDeviceMobile, hue: '#8ea0bf' }
 ]
 
 export type Spec = { k: string; v: string }
@@ -104,23 +104,23 @@ export type Account = { id: string; name: string; tag: string; href: string; ico
 
 export const ACCOUNTS: Account[] = [
   {
-    id: 'core', name: 'Core', tag: 'A low-cost start for new and growing traders.', href: page('artix-core'), icon: PhCube, span: 'lg:col-span-2', hue: '#22d3ee',
+    id: 'core', name: 'Core', tag: 'A low-cost start for new and growing traders.', href: page('artix-core'), icon: PhCube, span: 'lg:col-span-2', hue: '#8ea0bf',
     specs: [{ k: 'Min. deposit', v: '$500' }, { k: 'Spreads from', v: '1.5 pips' }, { k: 'FX commission', v: 'None' }, { k: 'Leverage', v: '1:200' }]
   },
   {
-    id: 'edge', name: 'Edge', tag: 'Raw pricing for experienced, active traders.', href: page('artix-edge'), icon: PhLightning, span: 'lg:col-span-2', hue: '#5184ff',
+    id: 'edge', name: 'Edge', tag: 'Raw pricing for experienced, active traders.', href: page('artix-edge'), icon: PhLightning, span: 'lg:col-span-2', hue: '#b8c6dd',
     specs: [{ k: 'Min. deposit', v: '$10,000' }, { k: 'Spreads from', v: '0.0 pips' }, { k: 'FX commission', v: '$5 / lot' }, { k: 'Leverage', v: '1:200' }]
   },
   {
-    id: 'elite', name: 'Elite', tag: 'Priority conditions for high-volume trading.', href: page('artix-elite'), icon: PhCrown, span: 'lg:col-span-2', featured: true, hue: '#a78bfa',
+    id: 'elite', name: 'Elite', tag: 'Priority conditions for high-volume trading.', href: page('artix-elite'), icon: PhCrown, span: 'lg:col-span-2', featured: true, hue: '#c9a75d',
     specs: [{ k: 'Min. deposit', v: '$25,000' }, { k: 'Spreads from', v: '0.0 pips' }, { k: 'FX commission', v: '$3.5 / lot' }, { k: 'Leverage', v: '1:200' }]
   },
   {
-    id: 'coverage', name: 'Coverage', tag: 'For disciplined traders who put capital preservation first.', href: page('artix-coverage-account'), icon: PhShieldCheck, span: 'lg:col-span-4', hue: '#3fd17a',
+    id: 'coverage', name: 'Coverage', tag: 'For disciplined traders who put capital preservation first.', href: page('artix-coverage-account'), icon: PhShieldCheck, span: 'lg:col-span-4', hue: '#a9853b',
     specs: [{ k: 'Min. deposit', v: '$50,000' }, { k: 'Spreads from', v: '0.0 pips' }, { k: 'FX commission', v: '$3.5 / lot' }, { k: 'Leverage', v: '1:200' }]
   },
   {
-    id: 'demo', name: 'Demo', tag: 'Test strategies on live prices with virtual funds. No risk, no deposit.', href: page('artix-demo-account'), icon: PhFlask, span: 'lg:col-span-2', hue: '#ff7aea',
+    id: 'demo', name: 'Demo', tag: 'Test strategies on live prices with virtual funds. No risk, no deposit.', href: page('artix-demo-account'), icon: PhFlask, span: 'lg:col-span-2', hue: '#d6c08a',
     specs: []
   }
 ]
@@ -128,16 +128,15 @@ export const ACCOUNTS: Account[] = [
 export const ACCOUNT_NOTES = ['Commission charged per side', 'Crypto: 0.10% of notional', '30% stop-out level', 'USD account currency']
 
 export const STEPS: { title: string; desc: string; icon: Component; hue: string }[] = [
-  { title: 'Register', desc: 'Create your profile with an email address and a few basic details.', icon: PhUserPlus, hue: '#22d3ee' },
-  { title: 'Verify', desc: 'Complete KYC by uploading your identity documents for review.', icon: PhIdentificationCard, hue: '#a78bfa' },
-  { title: 'Trade', desc: 'Fund your account and place your first trade on nTrader.', icon: PhChartLineUp, hue: '#ff7aea' }
+  { title: 'Register', desc: 'Create your profile with an email address and a few basic details.', icon: PhUserPlus, hue: '#8ea0bf' },
+  { title: 'Verify', desc: 'Complete KYC by uploading your identity documents for review.', icon: PhIdentificationCard, hue: '#c9a75d' },
+  { title: 'Trade', desc: 'Fund your account and place your first trade on Vaultex.', icon: PhChartLineUp, hue: '#e3cfa0' }
 ]
 
 export const FAQS: { q: string; a: string }[] = [
   { q: 'Is Artix Capital regulated?', a: 'Artix Capital Ltd is an International Business Company registered in Saint Lucia under number 2023-00122. It is an offshore company and is not licensed or regulated as a financial services provider in Saint Lucia.' },
-  { q: 'What can I trade?', a: 'Currencies, commodities, indices, stocks and cryptocurrencies, all from one account on nTrader.' },
-  { q: 'Which platforms can I use?', a: 'nTrader and MetaTrader 5. nTrader runs on desktop, in the browser and on mobile.' },
-  { q: 'How do I open an account?', a: 'Register with your email and basic details, complete KYC verification, then fund your account to start trading.' },
+  { q: 'What can I trade?', a: 'Currencies, commodities, indices, stocks and cryptocurrencies, all from one account on Vaultex.' },
+  { q: 'Which platforms can I use?', a: 'Vaultex and MetaTrader 5. Vaultex runs on desktop, in the browser and on mobile.' },
   { q: 'How can I deposit and withdraw?', a: 'We accept Visa, Mastercard, Neteller, Skrill, crypto wallets and other methods. Choose the one that suits you in your client area.' },
   { q: 'Who can not open an account?', a: 'Our services are not available to residents of the United States, Canada, North Korea, Iran, Syria, Cuba, Russia, Belarus, India, the United Arab Emirates or Myanmar.' }
 ]

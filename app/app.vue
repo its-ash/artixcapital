@@ -8,7 +8,7 @@ useHead({
 
 <template>
   <div>
-    <AppPreloader />
+    <BgCanvas />
     <BgCanvas />
     <SiteNav />
     <main id="main">

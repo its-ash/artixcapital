@@ -4,11 +4,11 @@ import gsap from 'gsap'
 type Stat = { label: string; text: string; hue: string; count?: { to: number; pre?: string; suf?: string } }
 
 const STATS: Stat[] = [
-  { label: 'Spreads from', text: '0.0 pips', hue: '#22d3ee' },
-  { label: 'Maximum leverage', text: '1:200', hue: '#9ab6ff', count: { to: 200, pre: '1:' } },
-  { label: 'Commission on Core FX', text: '0%', hue: '#3fd17a' },
-  { label: 'Global instruments', text: '150+', hue: '#a78bfa', count: { to: 150, suf: '+' } },
-  { label: 'Human support', text: '24/5', hue: '#ff7aea' }
+  { label: 'Spreads from', text: '0.0 pips', hue: '#e3cfa0' },
+  { label: 'Maximum leverage', text: '1:200', hue: '#c9a75d', count: { to: 200, pre: '1:' } },
+  { label: 'Commission on Core FX', text: '0%', hue: '#8ea0bf' },
+  { label: 'Global instruments', text: '150+', hue: '#d6c08a', count: { to: 150, suf: '+' } },
+  { label: 'Human support', text: '24/5', hue: '#b8c6dd' }
 ]
 
 const root = ref<HTMLElement | null>(null)

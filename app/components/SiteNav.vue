@@ -14,7 +14,6 @@ const closeBtn = ref<HTMLButtonElement | null>(null)
 const active = ref<number | null>(null)
 const menu = ref(false)
 const scrolled = ref(false)
-const done = useIntroDone()
 const { $lenis } = useNuxtApp()
 let timer: ReturnType<typeof setTimeout> | undefined
 
@@ -80,7 +79,7 @@ useMotion(root, ({ motion }) => {
   const tl = gsap.timeline({ paused: true })
     .fromTo(shell.value, { yPercent: -160, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1.1, ease: 'expo.out' })
     .fromTo(q('.nav-item'), { y: -16, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.05, duration: 0.8 }, 0.25)
-  whenIntroDone(done, () => tl.play())
+  tl.play()
   return () => st.kill()
 })
 </script>
@@ -100,7 +99,7 @@ useMotion(root, ({ motion }) => {
         </a>
 
         <ul class="relative hidden items-center lg:flex" @pointerleave="hidePill">
-          <span ref="pill" class="absolute left-0 top-1/2 h-10 w-0 -translate-y-1/2 rounded-full bg-white/7 opacity-0" aria-hidden="true" />
+          <span ref="pill" class="absolute left-0 top-1/2 h-10 w-0 -translate-y-1/2 rounded-full bg-white/8 opacity-0" aria-hidden="true" />
           <li
             v-for="(g, i) in NAV"
             :key="g.label"
@@ -121,10 +120,10 @@ useMotion(root, ({ motion }) => {
               <PhCaretDown :size="12" weight="bold" class="transition-transform duration-300" :class="active === i ? 'rotate-180' : ''" />
             </button>
             <div :id="`mega-${i}`" class="mega absolute left-1/2 top-full pt-3" :data-open="active === i">
-              <ul class="glass w-80 rounded-3xl bg-[rgb(18_19_30/0.9)] p-2">
+              <ul class="glass w-80 rounded-3xl bg-[rgb(14_15_22/0.92)] p-2">
                 <li v-for="(it, j) in g.items" :key="it.label" class="mega-item" :style="{ '--i': j }">
                   <a :href="it.href" class="group flex items-center gap-3 rounded-2xl p-3 transition-colors hover:bg-white/6" :tabindex="active === i ? 0 : -1">
-                    <span class="grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/4 text-accent-soft transition-[transform,background-color] duration-300 group-hover:scale-105 group-hover:bg-accent/15">
+                    <span class="grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/4 text-steel transition-[transform,background-color] duration-300 group-hover:scale-105 group-hover:bg-accent/10">
                       <component :is="it.icon" :size="20" />
                     </span>
                     <span class="min-w-0">
@@ -156,14 +155,14 @@ useMotion(root, ({ motion }) => {
         </div>
 
         <span class="pointer-events-none absolute inset-x-6 bottom-0 h-px overflow-hidden" aria-hidden="true">
-          <span ref="bar" class="block h-full origin-left scale-x-0 bg-linear-to-r from-accent via-pink to-accent" />
+          <span ref="bar" class="block h-full origin-left scale-x-0 bg-accent" />
         </span>
       </nav>
     </div>
 
     <div
       id="mobile-menu"
-      class="mobile fixed inset-0 z-70 overflow-y-auto bg-[rgb(12_12_19/0.97)] lg:hidden"
+      class="mobile fixed inset-0 z-70 overflow-y-auto bg-[rgb(10_11_16/0.97)] lg:hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Menu"

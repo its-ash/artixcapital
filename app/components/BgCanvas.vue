@@ -18,15 +18,15 @@ float T=t*.035;
 vec2 q=vec2(fbm(p*1.3+T),fbm(p*1.3+vec2(5.2,1.3)-T));
 vec2 w=vec2(fbm(p*1.5+3.*q+vec2(1.7,9.2)+T*1.4),fbm(p*1.5+3.*q+vec2(8.3,2.8)-T));
 float f=fbm(p*1.1+2.6*w);
-vec3 c1=mix(vec3(.318,.518,1.),vec3(.545,.361,.965),smoothstep(.25,.75,q.x));
-vec3 c2=mix(vec3(.133,.827,.933),vec3(1.,.478,.918),smoothstep(.3,.8,q.y));
+vec3 c1=mix(vec3(.557,.627,.749),vec3(.7,.71,.72),smoothstep(.25,.75,q.x));
+vec3 c2=mix(vec3(.788,.753,.627),vec3(.318,.518,1.),smoothstep(.3,.8,q.y));
 vec3 c=mix(c1,c2,smoothstep(.35,.7,w.x));
-vec3 col=vec3(.059,.059,.082);
-col=mix(col,c*.3,smoothstep(.22,.85,f));
-col+=c*.24*smoothstep(.5,1.,f*length(w)*1.25);
+vec3 col=vec3(.041,.043,.061);
+col=mix(col,c*.14,smoothstep(.22,.85,f));
+col+=c*.1*smoothstep(.5,1.,f*length(w)*1.25);
 float d=length((uv-m)*vec2(r.x/r.y,1.));
-col+=vec3(.318,.518,1.)*.09*exp(-d*d*6.);
-col*=1.-.35*smoothstep(.0,1.,s);
+col+=vec3(.788,.655,.365)*.07*exp(-d*d*6.);
+col*=1.-.3*smoothstep(.0,1.,s);
 gl_FragColor=vec4(col,1.);
 }`
 
@@ -125,7 +125,7 @@ onBeforeUnmount(() => stop())
     <canvas ref="cvs" class="absolute inset-0 size-full" />
     <div v-if="failed" class="bg-fallback absolute inset-0" />
     <div class="bg-grid absolute inset-0" />
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgb(10_10_16/0.7)_100%)]" />
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgb(7_7_11/0.75)_100%)]" />
     <div class="grain" />
   </div>
 </template>
@@ -134,9 +134,9 @@ onBeforeUnmount(() => stop())
 .bg-stage { background: var(--color-canvas); }
 .bg-fallback {
   background:
-    radial-gradient(40% 50% at 15% 10%, rgb(81 132 255 / 0.35), transparent 70%),
-    radial-gradient(35% 45% at 90% 25%, rgb(40 60 160 / 0.45), transparent 70%),
-    radial-gradient(30% 40% at 50% 100%, rgb(255 122 234 / 0.14), transparent 70%);
+    radial-gradient(40% 50% at 15% 10%, rgb(142 160 191 / 0.14), transparent 70%),
+    radial-gradient(35% 45% at 90% 25%, rgb(46 56 84 / 0.4), transparent 70%),
+    radial-gradient(30% 40% at 50% 100%, rgb(201 167 93 / 0.12), transparent 70%);
 }
 .bg-grid {
   background-image: linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px);

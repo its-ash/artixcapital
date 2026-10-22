@@ -8,12 +8,12 @@ import bitcoin from '~/assets/pay/bitcoin.svg?url'
 import tether from '~/assets/pay/tether.svg?url'
 
 const LOGOS = [
-  { name: 'Visa', src: visa, hue: '#1a6bff' },
-  { name: 'Mastercard', src: mastercard, hue: '#ff8a1f' },
-  { name: 'American Express', src: amex, hue: '#2e9bff' },
-  { name: 'Google Pay', src: gpay, hue: '#9ab6ff' },
-  { name: 'Bitcoin', src: bitcoin, hue: '#f7931a' },
-  { name: 'Tether', src: tether, hue: '#26a17b' }
+  { name: 'Visa', src: visa, hue: '#b8c6dd' },
+  { name: 'Mastercard', src: mastercard, hue: '#d6c08a' },
+  { name: 'American Express', src: amex, hue: '#8ea0bf' },
+  { name: 'Google Pay', src: gpay, hue: '#c9a75d' },
+  { name: 'Bitcoin', src: bitcoin, hue: '#a9853b' },
+  { name: 'Tether', src: tether, hue: '#e3cfa0' }
 ]
 
 const root = ref<HTMLElement | null>(null)
@@ -40,7 +40,7 @@ useMotion(root, ({ motion }) => {
             class="group glass grid h-28 place-items-center rounded-3xl transition-[translate,border-color] duration-300 hover:-translate-y-1 hover:border-(--hue)"
             :style="{ '--hue': l.hue }"
           >
-            <span role="img" :aria-label="l.name" class="logo-mask size-12 bg-(--hue) transition-[scale] duration-300 group-hover:scale-110" :style="{ '--src': `url(${l.src})` }" />
+            <span role="img" :aria-label="l.name" class="logo-mask size-12 bg-steel-soft transition-[scale] duration-300 group-hover:scale-110" :style="{ '--src': `url(${l.src})` }" />
           </div>
         </li>
         <span class="f-sweep pointer-events-none absolute inset-y-0 left-0 w-1/2 -skew-x-12 bg-linear-to-r from-transparent via-white/10 to-transparent" aria-hidden="true" />

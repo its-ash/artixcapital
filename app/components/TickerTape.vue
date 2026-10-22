@@ -45,7 +45,7 @@ useMotion(root, ({ motion, fine }) => {
 </script>
 
 <template>
-  <section ref="root" class="relative border-y border-white/10 bg-[rgb(12_12_19/0.82)]" aria-label="Indicative prices">
+  <section ref="root" class="relative border-y border-white/8 bg-[rgb(10_11_16/0.82)]" aria-label="Indicative prices">
     <div class="flex h-16 items-center overflow-x-auto motion-safe:overflow-hidden scrollbar-none">
       <div ref="track" class="flex w-max font-mono text-sm will-change-transform">
         <ul v-for="copy in 2" :key="copy" class="flex shrink-0" :aria-hidden="copy === 2">

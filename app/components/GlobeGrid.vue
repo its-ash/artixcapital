@@ -15,24 +15,23 @@ const ARC_PTS = 96
 const TRAIL = 0.42
 const TRAIL_SEGS = 10
 const RIM_FADE = 0.22
-const PALETTE = ['#22d3ee', '#5184ff', '#a78bfa', '#ff7aea']
+const PALETTE = ['#c9a75d', '#e3cfa0', '#8ea0bf', '#b8c6dd']
 
 const HUBS: Hub[] = [
-  { id: 'LDN', lat: 51.51, lon: -0.13, sym: 'GBP/USD', hue: '#5184ff' },
-  { id: 'NYC', lat: 40.71, lon: -74.0, sym: 'US500', hue: '#22d3ee' },
-  { id: 'FRA', lat: 50.11, lon: 8.68, sym: 'EUR/USD', hue: '#a78bfa' },
-  { id: 'TYO', lat: 35.68, lon: 139.69, sym: 'USD/JPY', hue: '#ff7aea' },
-  { id: 'SGP', lat: 1.35, lon: 103.82, sym: 'XAU/USD', hue: '#fbbf24' },
-  { id: 'SYD', lat: -33.87, lon: 151.21, sym: 'AUD/USD', hue: '#3fd17a' },
-  { id: 'HKG', lat: 22.32, lon: 114.17, sym: 'BTC/USD', hue: '#ff8a4c' },
-  { id: 'SLU', lat: 14.08, lon: -60.95, sym: 'NAS100', hue: '#9ab6ff' }
+  { id: 'LDN', lat: 51.51, lon: -0.13, sym: 'GBP/USD', hue: '#b8c6dd' },
+  { id: 'NYC', lat: 40.71, lon: -74.0, sym: 'US500', hue: '#c9a75d' },
+  { id: 'FRA', lat: 50.11, lon: 8.68, sym: 'EUR/USD', hue: '#d6c08a' },
+  { id: 'TYO', lat: 35.68, lon: 139.69, sym: 'USD/JPY', hue: '#8ea0bf' },
+  { id: 'SGP', lat: 1.35, lon: 103.82, sym: 'XAU/USD', hue: '#c9a75d' },
+  { id: 'SYD', lat: -33.87, lon: 151.21, sym: 'AUD/USD', hue: '#b8c6dd' },
+  { id: 'HKG', lat: 22.32, lon: 114.17, sym: 'BTC/USD', hue: '#e3cfa0' },
+  { id: 'SLU', lat: 14.08, lon: -60.95, sym: 'NAS100', hue: '#8ea0bf' }
 ]
 const ROUTES: [string, string][] = [['LDN', 'NYC'], ['NYC', 'TYO'], ['FRA', 'SGP'], ['LDN', 'HKG'], ['SGP', 'SYD'], ['SLU', 'LDN'], ['TYO', 'SYD'], ['NYC', 'SLU'], ['HKG', 'FRA']]
 
 const box = ref<HTMLElement | null>(null)
 const cvs = ref<HTMLCanvasElement | null>(null)
 const { quotes } = useMarketFeed()
-const done = useIntroDone()
 let stop = () => {}
 
 const vec = (lat: number, lon: number): V3 => {
@@ -122,7 +121,7 @@ onMounted(() => {
   let raf = 0
   let visible = true
   let drag: { x: number; y: number; t: number } | null = null
-  let fills: { halo: CanvasGradient; body: CanvasGradient; rim: CanvasGradient; pal: CanvasGradient } | null = null
+  let fills: { body: CanvasGradient; pal: CanvasGradient } | null = null
 
   const glow = document.createElement('canvas')
   glow.width = glow.height = 64
@@ -141,23 +140,15 @@ onMounted(() => {
     w = el.clientWidth
     c.width = c.height = Math.round(w * dpr)
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    R = w * 0.36
+    R = w * 0.42
     cx = cy = w / 2
-    const halo = ctx.createRadialGradient(cx, cy, R * 0.85, cx, cy, R * 1.45)
-    halo.addColorStop(0, 'rgba(81,132,255,0.35)')
-    halo.addColorStop(0.4, 'rgba(167,139,250,0.14)')
-    halo.addColorStop(1, 'rgba(255,122,234,0)')
     const body = ctx.createRadialGradient(cx - R * 0.35, cy - R * 0.4, R * 0.1, cx, cy, R)
-    body.addColorStop(0, 'rgba(40,52,110,0.95)')
-    body.addColorStop(0.7, 'rgba(16,18,40,0.96)')
-    body.addColorStop(1, 'rgba(10,11,26,0.98)')
-    const rim = ctx.createRadialGradient(cx, cy, R * 0.94, cx, cy, R * 1.03)
-    rim.addColorStop(0, 'rgba(154,182,255,0)')
-    rim.addColorStop(0.6, 'rgba(154,182,255,0.35)')
-    rim.addColorStop(1, 'rgba(255,122,234,0)')
+    body.addColorStop(0, 'rgba(36,42,60,0.95)')
+    body.addColorStop(0.7, 'rgba(16,19,30,0.96)')
+    body.addColorStop(1, 'rgba(10,11,16,0.98)')
     const pal = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R)
     PALETTE.forEach((col, i) => pal.addColorStop(i / (PALETTE.length - 1), col))
-    fills = { halo, body, rim, pal }
+    fills = { body, pal }
     if (reduce) draw(0)
   }
 
@@ -211,10 +202,6 @@ onMounted(() => {
     ctx.clearRect(0, 0, w, w)
 
     ctx.globalAlpha = rv
-    ctx.fillStyle = fills.halo
-    ctx.fillRect(0, 0, w, w)
-    ctx.beginPath()
-    ctx.arc(cx, cy, R * (0.92 + rv * 0.08), 0, Math.PI * 2)
     ctx.fillStyle = fills.body
     ctx.fill()
 
@@ -234,7 +221,7 @@ onMounted(() => {
           } else pen = false
         }
       }
-      ctx.strokeStyle = front ? fills.pal : 'rgba(154,182,255,0.07)'
+      ctx.strokeStyle = front ? fills.pal : 'rgba(201,167,93,0.08)'
       ctx.globalAlpha = (front ? 0.38 : 1) * rv
       ctx.stroke()
     }
@@ -335,15 +322,11 @@ onMounted(() => {
       ctx.strokeStyle = h.hue
       ctx.lineWidth = 1
       ctx.stroke()
-      ctx.fillStyle = q && q.dir < 0 ? '#ff8a90' : '#eef0f6'
+      ctx.fillStyle = q && q.dir < 0 ? '#c9a75d' : '#eef0f6'
       ctx.fillText(label, lx + 8, ly + 0.5)
     }
 
     ctx.globalAlpha = rv
-    ctx.fillStyle = fills.rim
-    ctx.beginPath()
-    ctx.arc(cx, cy, R * 1.03, 0, Math.PI * 2)
-    ctx.fill()
     ctx.globalAlpha = 1
   }
 
@@ -395,9 +378,7 @@ onMounted(() => {
   io.observe(el)
   resize()
 
-  whenIntroDone(done, () => {
-    if (!reduce) gsap.to(state, { reveal: 1, duration: 2.4, ease: 'power2.inOut' })
-  })
+  if (!reduce) gsap.to(state, { reveal: 1, duration: 2.4, ease: 'power2.inOut' })
 
   landDots().then(d => {
     dots = d
@@ -434,7 +415,7 @@ onBeforeUnmount(() => stop())
 </script>
 
 <template>
-  <div ref="box" class="relative aspect-square w-full">
+  <div ref="box" class="relative size-full">
     <canvas ref="cvs" class="absolute inset-0 size-full cursor-grab touch-pan-y" role="img" aria-label="Rotating globe linking London, New York, Frankfurt, Tokyo, Singapore, Sydney, Hong Kong and Saint Lucia with indicative prices" />
   </div>
 </template>

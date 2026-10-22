@@ -2,7 +2,7 @@
 const props = withDefaults(defineProps<{ hist: number[]; up: boolean; w?: number; h?: number }>(), { w: 240, h: 72 })
 const uid = useId()
 const p = computed(() => sparkPath(props.hist, props.w, props.h, 6))
-const color = computed(() => (props.up ? '#3fd17a' : '#ff5d64'))
+const color = computed(() => (props.up ? '#2fbf6d' : '#e2555f'))
 </script>
 
 <template>
