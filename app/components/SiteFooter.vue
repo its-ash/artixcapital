@@ -26,7 +26,7 @@ useMotion(root, ({ motion }) => {
       <div class="grid gap-12 lg:grid-cols-12">
         <div class="ft-col lg:col-span-4">
           <BrandLogo class="h-9 w-auto text-fg" />
-          <p class="mt-5 max-w-xs text-muted">A forex and CFD broker giving traders access to global markets on Vaultex and MetaTrader 5.</p>
+          <p class="mt-5 max-w-xs text-muted">A forex and CFD broker giving traders access to global markets on nTrader and MetaTrader 5.</p>
           <ul class="mt-6 grid gap-2 text-sm">
             <li><a :href="`tel:${PHONE.replace(/\s/g, '')}`" class="hover:text-accent-soft">{{ PHONE }}</a></li>
             <li><a :href="`mailto:${EMAIL}`" class="hover:text-accent-soft">{{ EMAIL }}</a></li>

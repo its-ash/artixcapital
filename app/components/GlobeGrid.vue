@@ -15,17 +15,17 @@ const ARC_PTS = 96
 const TRAIL = 0.42
 const TRAIL_SEGS = 10
 const RIM_FADE = 0.22
-const PALETTE = ['#c9a75d', '#e3cfa0', '#8ea0bf', '#b8c6dd']
+const PALETTE = ['#c41e2a', '#e0525c', '#7d8da8', '#a9b7cf']
 
 const HUBS: Hub[] = [
-  { id: 'LDN', lat: 51.51, lon: -0.13, sym: 'GBP/USD', hue: '#b8c6dd' },
-  { id: 'NYC', lat: 40.71, lon: -74.0, sym: 'US500', hue: '#c9a75d' },
-  { id: 'FRA', lat: 50.11, lon: 8.68, sym: 'EUR/USD', hue: '#d6c08a' },
-  { id: 'TYO', lat: 35.68, lon: 139.69, sym: 'USD/JPY', hue: '#8ea0bf' },
-  { id: 'SGP', lat: 1.35, lon: 103.82, sym: 'XAU/USD', hue: '#c9a75d' },
-  { id: 'SYD', lat: -33.87, lon: 151.21, sym: 'AUD/USD', hue: '#b8c6dd' },
-  { id: 'HKG', lat: 22.32, lon: 114.17, sym: 'BTC/USD', hue: '#e3cfa0' },
-  { id: 'SLU', lat: 14.08, lon: -60.95, sym: 'NAS100', hue: '#8ea0bf' }
+  { id: 'LDN', lat: 51.51, lon: -0.13, sym: 'GBP/USD', hue: '#a9b7cf' },
+  { id: 'NYC', lat: 40.71, lon: -74.0, sym: 'US500', hue: '#c41e2a' },
+  { id: 'FRA', lat: 50.11, lon: 8.68, sym: 'EUR/USD', hue: '#c41e2a' },
+  { id: 'TYO', lat: 35.68, lon: 139.69, sym: 'USD/JPY', hue: '#7d8da8' },
+  { id: 'SGP', lat: 1.35, lon: 103.82, sym: 'XAU/USD', hue: '#c41e2a' },
+  { id: 'SYD', lat: -33.87, lon: 151.21, sym: 'AUD/USD', hue: '#a9b7cf' },
+  { id: 'HKG', lat: 22.32, lon: 114.17, sym: 'BTC/USD', hue: '#e0525c' },
+  { id: 'SLU', lat: 14.08, lon: -60.95, sym: 'NAS100', hue: '#7d8da8' }
 ]
 const ROUTES: [string, string][] = [['LDN', 'NYC'], ['NYC', 'TYO'], ['FRA', 'SGP'], ['LDN', 'HKG'], ['SGP', 'SYD'], ['SLU', 'LDN'], ['TYO', 'SYD'], ['NYC', 'SLU'], ['HKG', 'FRA']]
 
@@ -322,7 +322,7 @@ onMounted(() => {
       ctx.strokeStyle = h.hue
       ctx.lineWidth = 1
       ctx.stroke()
-      ctx.fillStyle = q && q.dir < 0 ? '#c9a75d' : '#eef0f6'
+      ctx.fillStyle = q && q.dir < 0 ? '#c41e2a' : '#eef0f6'
       ctx.fillText(label, lx + 8, ly + 0.5)
     }
 

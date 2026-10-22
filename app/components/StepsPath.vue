@@ -38,9 +38,9 @@ useMotion(root, ({ motion, desktop }) => {
           <svg viewBox="0 0 1200 200" class="absolute inset-0 size-full overflow-visible">
             <defs>
               <linearGradient id="st-grad" x1="0" x2="1">
-                <stop offset="0" stop-color="#8ea0bf" />
-                <stop offset=".5" stop-color="#c9a75d" />
-                <stop offset="1" stop-color="#e3cfa0" />
+                <stop offset="0" stop-color="#7d8da8" />
+                <stop offset=".5" stop-color="#c41e2a" />
+                <stop offset="1" stop-color="#e0525c" />
               </linearGradient>
             </defs>
             <path :d="PATH" fill="none" stroke="rgb(255 255 255 / .08)" stroke-width="2" stroke-dasharray="4 8" />

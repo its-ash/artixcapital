@@ -8,12 +8,12 @@ import bitcoin from '~/assets/pay/bitcoin.svg?url'
 import tether from '~/assets/pay/tether.svg?url'
 
 const LOGOS = [
-  { name: 'Visa', src: visa, hue: '#b8c6dd' },
-  { name: 'Mastercard', src: mastercard, hue: '#d6c08a' },
-  { name: 'American Express', src: amex, hue: '#8ea0bf' },
-  { name: 'Google Pay', src: gpay, hue: '#c9a75d' },
-  { name: 'Bitcoin', src: bitcoin, hue: '#a9853b' },
-  { name: 'Tether', src: tether, hue: '#e3cfa0' }
+  { name: 'Visa', src: visa, hue: '#a9b7cf' },
+  { name: 'Mastercard', src: mastercard, hue: '#c41e2a' },
+  { name: 'American Express', src: amex, hue: '#7d8da8' },
+  { name: 'Google Pay', src: gpay, hue: '#c41e2a' },
+  { name: 'Bitcoin', src: bitcoin, hue: '#9a1c26' },
+  { name: 'Tether', src: tether, hue: '#e0525c' }
 ]
 
 const root = ref<HTMLElement | null>(null)

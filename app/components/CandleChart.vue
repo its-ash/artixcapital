@@ -91,7 +91,7 @@ onMounted(() => {
     })
     ctx.globalAlpha = 1
 
-    ctx.strokeStyle = '#b8c6dd'
+    ctx.strokeStyle = '#a9b7cf'
     ctx.lineWidth = 1.6
     ctx.beginPath()
     view.forEach((_, i) => {

@@ -11,8 +11,8 @@ withDefaults(defineProps<{ label?: string }>(), { label: 'Artix Capital' })
       </linearGradient>
       <linearGradient id="ax-x" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="#e8d9ae" />
-        <stop offset=".55" stop-color="#c9a75d" />
-        <stop offset="1" stop-color="#a9853b" />
+        <stop offset=".55" stop-color="#c41e2a" />
+        <stop offset="1" stop-color="#9a1c26" />
       </linearGradient>
     </defs>
     <g class="logo-word" fill="url(#ax-word)" fill-rule="evenodd" clip-rule="evenodd">

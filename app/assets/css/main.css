@@ -8,10 +8,10 @@
   --color-elevated: #151822;
   --color-fg: #eef0f6;
   --color-muted: #939aae;
-  --color-accent: #c9a75d;
-  --color-accent-soft: #e3cfa0;
-  --color-steel: #8ea0bf;
-  --color-steel-soft: #b8c6dd;
+  --color-accent: #c41e2a;
+  --color-accent-soft: #e0525c;
+  --color-steel: #7d8da8;
+  --color-steel-soft: #a9b7cf;
   --color-up: #2fbf6d;
   --color-down: #e2555f;
   --color-ink: #0a0b10;
@@ -38,7 +38,7 @@
   code, kbd, .font-mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
   h1, h2, h3 { text-wrap: balance; }
   p { text-wrap: pretty; }
-  ::selection { background: color-mix(in oklab, var(--color-accent) 60%, transparent); color: #fff; }
+  ::selection { background: color-mix(in oklab, var(--color-accent) 65%, transparent); color: #fff; }
   :focus-visible { outline: 2px solid var(--color-accent-soft); outline-offset: 3px; border-radius: 8px; }
   [id] { scroll-margin-top: 6rem; }
 }
@@ -79,9 +79,9 @@
   }
   .btn:active { scale: 0.97; }
   .btn-primary {
-    color: #14100a;
-    background: linear-gradient(180deg, #e8d9ae, var(--color-accent) 45%, #a9853b 130%);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45), 0 10px 28px -12px rgb(201 167 93 / 0.55);
+    color: #fff5f4;
+    background: linear-gradient(180deg, #d8535f, var(--color-accent) 45%, #9a1c26 130%);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 10px 28px -12px rgb(196 30 42 / 0.5);
   }
   .btn-primary::before {
     content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
@@ -100,30 +100,30 @@
   }
 
   .grad-text, .grad-text :is(.w, .ch) {
-    background: linear-gradient(95deg, var(--color-steel-soft), var(--color-accent) 55%, var(--color-accent-soft));
+    background: linear-gradient(95deg, var(--color-fg), var(--color-accent) 62%, var(--color-accent-soft));
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
   .grad-text-cta {
-    background: linear-gradient(95deg, var(--color-steel-soft), var(--color-accent) 55%, var(--color-accent-soft));
+    background: linear-gradient(95deg, var(--color-fg), var(--color-accent) 62%, var(--color-accent-soft));
     -webkit-background-clip: text; background-clip: text; color: transparent;
     text-box: trim-both cap alphabetic;
   }
-  .outline-text { color: transparent; -webkit-text-stroke: 1px rgb(142 160 191 / 0.14); }
+  .outline-text { color: transparent; -webkit-text-stroke: 1px rgb(125 141 168 / 0.14); }
 
-  .chip { background: color-mix(in oklab, var(--hue, var(--color-accent)) 14%, rgb(255 255 255 / 0.02)); color: var(--hue, var(--color-accent-soft)); border: 1px solid color-mix(in oklab, var(--hue, var(--color-accent)) 30%, transparent); }
+  .chip { background: color-mix(in oklab, var(--hue, var(--color-accent)) 14%, transparent); color: var(--hue, var(--color-accent-soft)); border: 1px solid color-mix(in oklab, var(--hue, var(--color-accent)) 30%, transparent); }
 
   .spot { position: relative; isolation: isolate; }
   .spot::after {
     content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1;
     padding: 1px; opacity: 0; transition: opacity 300ms ease;
-    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(201 167 93 / 0.55), transparent 45%);
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(224 82 92 / 0.55), transparent 45%);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor; mask-composite: exclude;
   }
   .spot::before {
     content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;
     opacity: 0; transition: opacity 300ms ease;
-    background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 50%), rgb(201 167 93 / 0.08), transparent 55%);
+    background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 50%), rgb(196 30 42 / 0.08), transparent 55%);
   }
   .spot:hover::after, .spot:hover::before, .spot:focus-within::after { opacity: 1; }
 

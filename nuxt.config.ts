@@ -1,7 +1,9 @@
 import tailwindcss from '@tailwindcss/vite'
+const SLUGS = ['forex-trading','commodities-trading','stocks-trading','indices-trading','crypto-trading','artix-core','artix-edge','artix-elite','artix-coverage-account','artix-demo-account','ntrader-for-windows','ntrader-for-mobile','meta-trader-5','introducing-broker','white-label-solution','economic-calendar','spread-table','expiry-dates-of-futures-contracts','about','contact-us']
 
 const TITLE = 'Artix Capital | Trade forex, stocks, indices and crypto'
 const DESC = 'Trade forex, stocks, indices, commodities and crypto from one account on nTrader, with spreads from 0.0 pips and 24/5 human support.'
+const SITE = 'https://artixcapital.com'
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-10-01',
@@ -18,20 +20,31 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
-      title: TITLE,
+      titleTemplate: '%s',
       meta: [
         { name: 'description', content: DESC },
-        { name: 'theme-color', content: '#0f0f15' },
+        { name: 'theme-color', content: '#0a0b10' },
+        { name: 'robots', content: 'index, follow, max-image-preview:large' },
+        { property: 'og:site_name', content: 'Artix Capital' },
         { property: 'og:type', content: 'website' },
         { property: 'og:title', content: TITLE },
         { property: 'og:description', content: DESC },
-        { name: 'twitter:card', content: 'summary' }
-      ]
+        { property: 'og:url', content: SITE },
+        { property: 'og:locale', content: 'en_US' },
+        { name: 'twitter:card', content: 'summary' },
+        { name: 'twitter:title', content: TITLE },
+        { name: 'twitter:description', content: DESC }
+      ],
+      link: [{ rel: 'canonical', href: SITE }]
     }
   },
   ssr: true,
   nitro: {
     preset: 'static',
-    prerender: { routes: ['/'], crawlLinks: true, failOnError: true }
+    prerender: {
+      routes: ['/', ...SLUGS.map(s => `/${s}`), '/sitemap.xml', '/robots.txt'],
+      crawlLinks: true,
+      failOnError: true
+    }
   }
 })

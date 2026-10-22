@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { PhArrowRight, PhCaretDown, PhList, PhX } from '@phosphor-icons/vue'
+import { PhCaretDown, PhCaretUp, PhList, PhX } from '@phosphor-icons/vue'
 
 const CLOSE_DELAY = 140
 
@@ -12,6 +12,7 @@ const bar = ref<HTMLElement | null>(null)
 const burger = ref<HTMLButtonElement | null>(null)
 const closeBtn = ref<HTMLButtonElement | null>(null)
 const active = ref<number | null>(null)
+const expandedGroup = ref<number | null>(0)
 const menu = ref(false)
 const scrolled = ref(false)
 const { $lenis } = useNuxtApp()
@@ -29,8 +30,11 @@ const toggle = (i: number) => { active.value = active.value === i ? null : i }
 
 const movePill = (e: PointerEvent | FocusEvent) => {
   const t = e.currentTarget as HTMLElement
-  if (!pill.value || !t) return
-  gsap.to(pill.value, { x: t.offsetLeft, width: t.offsetWidth, opacity: 1, duration: 0.45, ease: 'expo.out' })
+  const ul = pill.value?.parentElement as HTMLElement | null
+  if (!pill.value || !t || !ul) return
+  const a = t.getBoundingClientRect()
+  const b = ul.getBoundingClientRect()
+  gsap.to(pill.value, { x: a.left - b.left, width: a.width, opacity: 1, duration: 0.45, ease: 'expo.out', overwrite: 'auto' })
 }
 const hidePill = () => pill.value && gsap.to(pill.value, { opacity: 0, duration: 0.25 })
 
@@ -47,6 +51,17 @@ const onKey = (e: KeyboardEvent) => {
 }
 const onDoc = (e: PointerEvent) => {
   if (active.value !== null && !shell.value?.contains(e.target as Node)) active.value = null
+}
+const onDrawerKey = (e: KeyboardEvent) => {
+  if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return
+  const btns = [...(root.value?.querySelectorAll<HTMLButtonElement>('.drawer-group-btn')) ?? []]
+  if (!btns.length) return
+  e.preventDefault()
+  const i = btns.indexOf(document.activeElement as HTMLButtonElement)
+  const next = e.key === 'ArrowDown' ? Math.min(btns.length - 1, i + 1)
+    : e.key === 'ArrowUp' ? Math.max(0, i - 1)
+    : e.key === 'Home' ? 0 : btns.length - 1
+  btns[next]?.focus()
 }
 
 onMounted(() => {
@@ -87,16 +102,16 @@ useMotion(root, ({ motion }) => {
 <template>
   <header ref="root" class="fixed inset-x-0 top-0 z-50">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-60 focus:rounded-full focus:bg-fg focus:px-4 focus:py-2 focus:text-ink">Skip to main content</a>
-    <div class="wrap pt-3 sm:pt-4">
+    <div class="wrap pt-2.5 sm:pt-4">
       <nav
         ref="shell"
-        class="glass glass-blur relative flex h-16 items-center justify-between gap-4 rounded-full pl-5 pr-2 transition-[background-color,border-color] duration-300"
-        :class="scrolled ? 'bg-[rgb(16_17_26/0.72)]' : ''"
+        class="glass glass-blur relative flex h-14 items-center justify-between gap-2 rounded-2xl pl-3.5 pr-2 transition-[background-color,border-color] duration-300 sm:h-16 sm:rounded-full sm:pl-5"
+        :class="scrolled ? 'bg-[rgb(13_14_21/0.78)]' : ''"
         aria-label="Primary"
       >
-        <a href="#top" class="nav-item shrink-0" aria-label="Artix Capital home">
-          <BrandLogo class="h-7 w-auto text-fg" />
-        </a>
+        <NuxtLink to="/" class="nav-item shrink-0" aria-label="Artix Capital home">
+          <BrandLogo class="h-6 w-auto text-fg sm:h-7" />
+        </NuxtLink>
 
         <ul class="relative hidden items-center lg:flex" @pointerleave="hidePill">
           <span ref="pill" class="absolute left-0 top-1/2 h-10 w-0 -translate-y-1/2 rounded-full bg-white/8 opacity-0" aria-hidden="true" />
@@ -122,7 +137,7 @@ useMotion(root, ({ motion }) => {
             <div :id="`mega-${i}`" class="mega absolute left-1/2 top-full pt-3" :data-open="active === i">
               <ul class="glass w-80 rounded-3xl bg-[rgb(14_15_22/0.92)] p-2">
                 <li v-for="(it, j) in g.items" :key="it.label" class="mega-item" :style="{ '--i': j }">
-                  <a :href="it.href" class="group flex items-center gap-3 rounded-2xl p-3 transition-colors hover:bg-white/6" :tabindex="active === i ? 0 : -1">
+                  <NuxtLink :to="it.href" class="group flex items-center gap-3 rounded-2xl p-3 transition-colors hover:bg-white/6" :tabindex="active === i ? 0 : -1">
                     <span class="grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/4 text-steel transition-[transform,background-color] duration-300 group-hover:scale-105 group-hover:bg-accent/10">
                       <component :is="it.icon" :size="20" />
                     </span>
@@ -130,68 +145,88 @@ useMotion(root, ({ motion }) => {
                       <span class="block text-sm font-bold">{{ it.label }}</span>
                       <span class="block truncate text-xs text-muted">{{ it.desc }}</span>
                     </span>
-                    <PhArrowRight :size="14" class="ml-auto -translate-x-1 opacity-0 transition-[transform,opacity] duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
-                  </a>
+                    <PhCaretDown :size="13" class="ml-auto rotate-90 opacity-0 transition-opacity duration-300 group-hover:opacity-100 text-steel" />
+                  </NuxtLink>
                 </li>
               </ul>
             </div>
           </li>
         </ul>
 
-        <div class="flex shrink-0 items-center gap-2">
-          <a :href="LOGIN" class="nav-item btn btn-ghost hidden h-11 px-5 text-sm xl:inline-flex">Log in</a>
-          <a v-magnetic="0.25" :href="SIGNUP" class="nav-item btn btn-primary h-11 px-5 text-sm">Open account</a>
+        <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <a :href="LOGIN" class="nav-item btn btn-ghost hidden h-10 px-4 text-sm xl:inline-flex sm:h-11">Log in</a>
+          <a href="/contact-us/" class="nav-item btn btn-ghost hidden h-10 px-4 text-sm sm:inline-flex lg:hidden">Contact</a>
+          <a v-magnetic="0.25" :href="SIGNUP" class="nav-item btn btn-primary h-10 px-4 text-xs sm:h-11 sm:px-5 sm:text-sm">Open account</a>
           <button
             ref="burger"
             type="button"
-            class="nav-item grid size-11 place-items-center rounded-full border border-white/15 lg:hidden"
-            aria-controls="mobile-menu"
+            class="nav-item grid size-10 place-items-center rounded-xl border border-white/15 lg:hidden sm:size-11 sm:rounded-full"
+            aria-controls="mobile-drawer"
             :aria-expanded="menu"
             aria-label="Open menu"
             @click="setMenu(true)"
           >
-            <PhList :size="20" />
+            <PhList :size="19" />
           </button>
         </div>
 
-        <span class="pointer-events-none absolute inset-x-6 bottom-0 h-px overflow-hidden" aria-hidden="true">
+        <span class="pointer-events-none absolute inset-x-4 bottom-0 h-px overflow-hidden sm:inset-x-6" aria-hidden="true">
           <span ref="bar" class="block h-full origin-left scale-x-0 bg-accent" />
         </span>
       </nav>
     </div>
 
     <div
-      id="mobile-menu"
-      class="mobile fixed inset-0 z-70 overflow-y-auto bg-[rgb(10_11_16/0.97)] lg:hidden"
+      id="mobile-drawer"
+      class="drawer fixed inset-x-2 top-17 bottom-0 z-60 flex flex-col rounded-3xl bg-[rgb(12_13_20/0.97)] border border-white/10 shadow-[0_40px_80px_-30px_rgb(0_0_0/0.8)] overflow-hidden sm:top-21 lg:hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Menu"
       :data-open="menu"
       :inert="!menu"
     >
-      <div class="wrap flex min-h-full flex-col pb-10 pt-5">
-        <div class="flex items-center justify-between">
-          <BrandLogo class="h-7 w-auto text-fg" />
-          <button ref="closeBtn" type="button" class="grid size-11 place-items-center rounded-full border border-white/15" aria-label="Close menu" @click="setMenu(false)">
-            <PhX :size="20" />
+      <div class="flex items-center justify-between border-b border-white/8 px-5 h-14 shrink-0">
+        <span class="font-mono text-xs uppercase tracking-[0.2em] text-muted">Menu</span>
+        <button ref="closeBtn" type="button" class="grid size-10 place-items-center rounded-full border border-white/15" aria-label="Close menu" @click="setMenu(false)">
+          <PhX :size="18" />
+        </button>
+      </div>
+
+      <div class="min-h-0 flex-1 overflow-y-auto px-2.5 py-3" @keydown="onDrawerKey">
+        <div v-for="(g, i) in NAV" :key="g.label" class="d-group" :style="{ '--i': i }">
+          <button
+            type="button"
+            class="drawer-group-btn flex w-full items-center justify-between rounded-2xl px-3.5 py-3 text-left text-lg font-bold transition-colors hover:bg-white/4"
+            :aria-expanded="expandedGroup === i"
+            :aria-controls="`dgroup-${i}`"
+            @click="expandedGroup = expandedGroup === i ? null : i"
+          >
+            {{ g.label }}
+            <span class="grid size-8 shrink-0 place-items-center rounded-full border border-white/12 text-steel transition-colors" :class="expandedGroup === i ? 'bg-accent border-accent text-ink' : ''" aria-hidden="true">
+              <component :is="expandedGroup === i ? PhCaretUp : PhCaretDown" :size="13" weight="bold" />
+            </span>
           </button>
-        </div>
-        <div class="mt-10 grid gap-8 sm:grid-cols-2">
-          <section v-for="(g, i) in NAV" :key="g.label" class="m-item" :style="{ '--i': i }">
-            <h2 class="font-mono text-xs uppercase tracking-[0.2em] text-muted">{{ g.label }}</h2>
-            <ul class="mt-3 grid gap-1">
+          <div :id="`dgroup-${i}`" class="grid transition-[grid-template-rows] duration-500 ease-out" :class="expandedGroup === i ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+            <ul class="min-h-0 overflow-hidden pl-3.5">
               <li v-for="it in g.items" :key="it.label">
-                <a :href="it.href" class="flex items-center gap-3 py-1.5 text-xl font-medium" @click="setMenu(false)">
-                  <component :is="it.icon" :size="18" class="text-accent-soft" />{{ it.label }}
-                </a>
+                <NuxtLink :to="it.href" class="flex items-center gap-3 rounded-xl py-2.5 pr-3 text-base font-medium text-fg/85 transition-colors hover:text-fg" @click="setMenu(false)">
+                  <span class="grid size-8 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/4 text-steel" aria-hidden="true">
+                    <component :is="it.icon" :size="15" />
+                  </span>
+                  <span class="min-w-0">
+                    <span class="block">{{ it.label }}</span>
+                    <span class="block truncate text-xs text-muted">{{ it.desc }}</span>
+                  </span>
+                </NuxtLink>
               </li>
             </ul>
-          </section>
+          </div>
         </div>
-        <div class="m-item mt-auto flex gap-3 pt-10" :style="{ '--i': NAV.length }">
-          <a :href="LOGIN" class="btn btn-ghost h-12 flex-1 px-6">Log in</a>
-          <a :href="SIGNUP" class="btn btn-primary h-12 flex-1 px-6">Open account</a>
-        </div>
+      </div>
+
+      <div class="d-cta shrink-0 grid grid-cols-2 gap-2.5 border-t border-white/8 p-4">
+        <a :href="LOGIN" class="btn btn-ghost h-12 px-4 text-sm">Log in</a>
+        <a :href="SIGNUP" class="btn btn-primary h-12 px-4 text-sm">Open account</a>
       </div>
     </div>
   </header>
@@ -206,16 +241,14 @@ useMotion(root, ({ motion }) => {
 .mega-item { opacity: 0; transform: translateY(6px); transition: opacity 200ms ease, transform 260ms var(--ease-out-strong); }
 .mega[data-open="true"] .mega-item { opacity: 1; transform: none; transition-delay: calc(var(--i) * 35ms); }
 
-.mobile {
-  clip-path: circle(0% at calc(100% - 3rem) 2.5rem); visibility: hidden;
-  transition: clip-path 420ms var(--ease-in-out-strong), visibility 0s 420ms;
-}
-.mobile[data-open="true"] { clip-path: circle(150% at calc(100% - 3rem) 2.5rem); visibility: visible; transition: clip-path 700ms var(--ease-in-out-strong), visibility 0s; }
-.m-item { opacity: 0; transform: translateY(24px); transition: opacity 300ms ease, transform 500ms var(--ease-out-expo); }
-.mobile[data-open="true"] .m-item { opacity: 1; transform: none; transition-delay: calc(200ms + var(--i) * 60ms); }
+.drawer { visibility: hidden; }
+.drawer[data-open="true"] { visibility: visible; }
+.d-group { opacity: 0; transform: translateY(14px); transition: opacity 260ms ease, transform 420ms var(--ease-out-expo); }
+.drawer[data-open="true"] .d-group { opacity: 1; transform: none; transition-delay: calc(80ms + var(--i) * 55ms); }
+.d-cta { opacity: 0; transform: translateY(10px); transition: opacity 240ms ease, transform 380ms var(--ease-out-expo); }
+.drawer[data-open="true"] .d-cta { opacity: 1; transform: none; transition-delay: 480ms; }
 
 @media (prefers-reduced-motion: reduce) {
-  .mobile, .mobile[data-open="true"] { clip-path: none; transition: visibility 0s; }
-  .m-item, .mega-item { transform: none; }
+  .d-group, .d-cta { transform: none; transition: opacity 200ms ease; }
 }
 </style>
