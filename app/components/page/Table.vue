@@ -3,7 +3,7 @@ defineProps<{ head: readonly string[]; rows: readonly (readonly string[])[]; str
 </script>
 
 <template>
-  <div v-reveal="'fade'" class="overflow-x-auto rounded-2xl border border-line bg-surface">
+  <div class="overflow-x-auto rounded-2xl border border-line bg-surface">
     <table class="w-full min-w-120 text-left text-sm">
       <caption v-if="caption" class="sr-only">{{ caption }}</caption>
       <thead class="text-xs text-muted">

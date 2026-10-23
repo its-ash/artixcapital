@@ -10,7 +10,7 @@ useFaqLd(ITEMS)
   <section id="faq" class="wrap" aria-labelledby="faq-title">
     <div class="grid gap-14 border-t border-line py-24 md:py-32 lg:grid-cols-12">
       <div class="lg:col-span-4">
-        <h2 id="faq-title" v-reveal="'lines'" class="h-section text-4xl md:text-5xl">Questions, answered.</h2>
+        <h2 id="faq-title" class="h-section text-4xl md:text-5xl">Questions, answered.</h2>
         <div id="contact" class="mt-10">
           <p class="font-semibold">Talk to a real person</p>
           <p class="mt-2 max-w-xs text-sm leading-relaxed text-muted">Our support team is available 24 hours a day, five days a week.</p>

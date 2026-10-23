@@ -1,31 +1,9 @@
 <script setup lang="ts">
-import gsap from 'gsap'
-
-const props = defineProps<{ items: readonly (readonly [string, string])[] }>()
-
-const LAG = 0.2
-
-const root = ref<HTMLElement | null>(null)
-
-useMotion(root, ({ motion }) => {
-  if (!motion) return
-  const q = gsap.utils.selector(root.value)
-  const steps = q('.sp-step')
-  gsap.from(steps, { y: 24, opacity: 0, stagger: 0.12, duration: 0.9, scrollTrigger: { trigger: root.value, start: 'top 85%' } })
-  gsap.set(steps, { '--on': 0 })
-  gsap.set(q('.sp-fill-x'), { scaleX: 0 })
-  gsap.set(q('.sp-fill-y'), { scaleY: 0 })
-
-  const tl = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: root.value, start: 'top 70%', end: 'bottom 55%', scrub: 0.6 } })
-  steps.forEach((el, i) => {
-    tl.to(el, { '--on': 1, duration: LAG }, i)
-    if (i < props.items.length - 1) tl.to([el.querySelector('.sp-fill-x'), el.querySelector('.sp-fill-y')], { scaleX: 1, scaleY: 1, duration: 1 - LAG }, i + LAG)
-  })
-})
+defineProps<{ items: readonly (readonly [string, string])[] }>()
 </script>
 
 <template>
-  <ol ref="root" class="relative grid gap-10 md:grid-cols-3 md:gap-8">
+  <ol class="relative grid gap-10 md:grid-cols-3 md:gap-8">
     <li v-for="(s, i) in items" :key="s[0]" class="sp-step relative grid grid-cols-[2.5rem_1fr] gap-x-5 md:block">
       <span
         v-if="i < items.length - 1"

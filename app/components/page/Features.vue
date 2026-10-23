@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import gsap from 'gsap'
-
 const props = withDefaults(defineProps<{ items: readonly (readonly [string, string])[]; cols?: 2 | 3 }>(), { cols: 3 })
 
 const wide = (i: number) => {
@@ -8,17 +6,10 @@ const wide = (i: number) => {
   if (props.cols === 2) return n % 2 === 1 && i === n - 1
   return (n % 3 === 2 && i === 0) || (n % 3 === 1 && (i === 0 || i === n - 1))
 }
-
-const root = ref<HTMLElement | null>(null)
-
-useMotion(root, ({ motion }) => {
-  if (!motion) return
-  gsap.from(gsap.utils.selector(root.value)('li'), { y: 32, opacity: 0, scale: 0.98, stagger: 0.06, duration: 0.9, ease: 'expo.out', scrollTrigger: { trigger: root.value, start: 'top 85%' } })
-})
 </script>
 
 <template>
-  <ul ref="root" class="grid gap-3 sm:grid-cols-2" :class="cols === 3 ? 'lg:grid-cols-3' : ''">
+  <ul class="grid gap-3 sm:grid-cols-2" :class="cols === 3 ? 'lg:grid-cols-3' : ''">
     <li v-for="(f, i) in items" :key="f[0]" class="min-w-0" :class="wide(i) ? (cols === 3 ? 'lg:col-span-2' : 'sm:col-span-2') : ''">
       <article
         v-spot

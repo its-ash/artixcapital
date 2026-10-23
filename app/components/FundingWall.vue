@@ -22,7 +22,6 @@ useMotion(root, ({ motion }) => {
   if (!motion) return
   const q = gsap.utils.selector(root.value)
   const st = { trigger: q('.f-grid')[0], start: 'top 85%' }
-  gsap.from(q('.f-tile'), { rotateY: 90, opacity: 0, transformPerspective: 900, stagger: { each: 0.08, from: 'center' }, duration: 1.2, scrollTrigger: st })
   gsap.fromTo(q('.f-sweep'), { xPercent: -120 }, { xPercent: 120, duration: 1.6, ease: 'power2.inOut', delay: 0.6, scrollTrigger: st })
 })
 </script>
@@ -31,8 +30,8 @@ useMotion(root, ({ motion }) => {
   <section ref="root" class="relative py-24 md:py-32" aria-labelledby="fund-title">
     <div class="wrap grid items-center gap-12 lg:grid-cols-12">
       <div class="lg:col-span-5">
-        <h2 id="fund-title" v-reveal="'lines'" class="text-4xl font-bold tracking-[-0.03em] md:text-5xl">Fund your account <span class="grad-text pb-1">your way.</span></h2>
-        <p v-reveal="'fade'" class="mt-5 max-w-md text-lg text-muted">Cards, e-wallets such as Skrill and Neteller, and crypto wallets. Manage every deposit and withdrawal from your client area.</p>
+        <h2 id="fund-title" class="text-4xl font-bold tracking-[-0.03em] md:text-5xl">Fund your account <span class="grad-text pb-1">your way.</span></h2>
+        <p class="mt-5 max-w-md text-lg text-muted">Cards, e-wallets such as Skrill and Neteller, and crypto wallets. Manage every deposit and withdrawal from your client area.</p>
       </div>
       <ul class="f-grid relative grid grid-cols-2 gap-4 overflow-hidden rounded-3xl sm:grid-cols-3 lg:col-span-7">
         <li v-for="l in LOGOS" :key="l.name" class="f-tile">

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import gsap from 'gsap'
 import { PhArrowRight, PhCheck, PhLockSimple, PhSealCheck } from '@phosphor-icons/vue'
 
 const STOPS = [500, 1000, 2500, 5000, 10000, 25000, 50000, 100000]
 const HERO_SPEC = 'Spreads from'
+const STACK_QUERY = '(max-width: 1023.98px)'
 
 const LIVE = ACCOUNTS.filter(a => a.id !== 'demo').map(a => {
   const dep = a.specs.find(s => s.k === 'Min. deposit')?.v ?? '$0'
@@ -17,21 +17,22 @@ const amount = computed(() => STOPS[step.value] ?? STOPS[0]!)
 const label = computed(() => `${fmt.format(amount.value)}${step.value === STOPS.length - 1 ? '+' : ''}`)
 const pick = computed(() => [...LIVE].reverse().find(a => amount.value >= a.min)?.id)
 const fill = computed(() => `${(step.value / (STOPS.length - 1)) * 100}%`)
+const stacked = ref(false)
+const list = computed(() => stacked.value ? [...LIVE].sort((a, b) => Number(b.id === pick.value) - Number(a.id === pick.value)) : LIVE)
 
-const root = ref<HTMLElement | null>(null)
-
-useMotion(root, ({ motion }) => {
-  if (!motion) return
-  const q = gsap.utils.selector(root.value)
-  gsap.from(q('.ac-bar'), { y: 32, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: q('.ac-bar')[0], start: 'top 85%' } })
-  gsap.from(q('.ac-card'), { y: 48, opacity: 0, scale: 0.97, stagger: 0.08, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: q('.ac-grid')[0], start: 'top 82%' } })
+onMounted(() => {
+  const mq = matchMedia(STACK_QUERY)
+  const sync = () => { stacked.value = mq.matches }
+  sync()
+  mq.addEventListener('change', sync)
+  onBeforeUnmount(() => mq.removeEventListener('change', sync))
 })
 </script>
 
 <template>
-  <section id="accounts" ref="root" class="wrap" aria-labelledby="accounts-title">
+  <section id="accounts" class="wrap" aria-labelledby="accounts-title">
     <div class="border-t border-line py-24 md:py-32">
-      <h2 id="accounts-title" v-reveal="'lines'" class="h-section max-w-3xl text-4xl md:text-6xl">Pick the account that fits how you trade.</h2>
+      <h2 id="accounts-title" class="h-section max-w-3xl text-4xl md:text-6xl">Pick the account that fits how you trade.</h2>
       <p class="mt-5 max-w-xl text-lg leading-relaxed text-muted">Every account runs on nTrader with access to FX, metals, indices, commodities, equities and crypto.</p>
 
       <div class="ac-bar mt-14 grid gap-6 rounded-2xl border border-line bg-surface p-5 sm:p-7 md:grid-cols-[auto_1fr] md:items-center md:gap-10">
@@ -66,52 +67,52 @@ useMotion(root, ({ motion }) => {
         </div>
       </div>
 
-      <ul class="ac-grid mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <li v-for="a in LIVE" :key="a.id" class="ac-card min-w-0">
+      <TransitionGroup tag="ul" move-class="ac-move" class="ac-grid mt-3 grid grid-cols-2 gap-2.5 sm:mt-4 sm:gap-4 lg:grid-cols-4">
+        <li v-for="a in list" :key="a.id" class="ac-card min-w-0">
           <NuxtLink
             :to="a.href"
-            class="ac group relative isolate flex h-full flex-col overflow-hidden rounded-2xl border bg-surface p-6"
+            class="ac group relative isolate flex h-full flex-col overflow-hidden rounded-2xl border bg-surface p-4 sm:p-6"
             :data-state="a.id === pick ? 'match' : amount >= a.min ? 'open' : 'locked'"
           >
             <span class="ac-glow pointer-events-none absolute inset-0 -z-1" aria-hidden="true" />
 
-            <div class="flex items-start justify-between gap-3">
-              <span class="ac-icon grid size-11 place-items-center rounded-xl border border-line-strong bg-canvas text-accent-soft">
+            <div class="flex min-h-7 items-start justify-between gap-2 sm:gap-3">
+              <span class="ac-icon hidden size-11 sm:grid place-items-center rounded-xl border border-line-strong bg-canvas text-accent-soft">
                 <component :is="a.icon" :size="20" weight="duotone" />
               </span>
-              <span v-if="a.id === pick" class="inline-flex h-7 items-center gap-1.5 rounded-full bg-accent px-2.5 text-xs font-semibold text-on-accent">
+              <span v-if="a.id === pick" class="inline-flex h-7 items-center gap-1.5 whitespace-nowrap rounded-full bg-accent px-2.5 text-[11px] font-semibold text-on-accent sm:text-xs">
                 <PhSealCheck :size="14" weight="fill" />Best match
               </span>
-              <span v-else-if="amount < a.min" class="inline-flex h-7 items-center gap-1.5 rounded-full border border-line px-2.5 text-xs text-muted">
+              <span v-else-if="amount < a.min" class="inline-flex h-7 items-center gap-1.5 whitespace-nowrap rounded-full border border-line px-2.5 text-[11px] text-muted sm:text-xs">
                 <PhLockSimple :size="12" weight="bold" />From {{ fmt.format(a.min) }}
               </span>
-              <span v-else-if="a.featured" class="inline-flex h-7 items-center rounded-full border border-line-strong px-2.5 text-xs text-fg">Lowest cost</span>
+              <span v-else-if="a.featured" class="inline-flex h-7 items-center whitespace-nowrap rounded-full border border-line-strong px-2.5 text-[11px] text-fg sm:text-xs">Lowest cost</span>
             </div>
 
-            <h3 class="mt-6 text-2xl font-semibold tracking-tight">{{ a.name }}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-muted">{{ a.tag }}</p>
+            <h3 class="mt-4 text-xl font-semibold tracking-tight sm:mt-6 sm:text-2xl">{{ a.name }}</h3>
+            <p class="mt-1.5 line-clamp-2 text-xs leading-relaxed text-muted sm:mt-2 sm:line-clamp-none sm:text-sm">{{ a.tag }}</p>
 
-            <div class="mt-7 border-t border-line pt-5">
+            <div class="mt-4 border-t border-line pt-4 sm:mt-7 sm:pt-5">
               <p class="text-xs text-muted">{{ HERO_SPEC }}</p>
-              <p class="mt-1 font-mono text-4xl tabular-nums tracking-tight">{{ a.hero }}</p>
+              <p class="mt-1 font-mono text-2xl tabular-nums tracking-tight sm:text-4xl">{{ a.hero }}</p>
             </div>
 
-            <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-4">
-              <div v-for="s in a.rest" :key="s.k" class="min-w-0">
+            <dl class="mt-4 grid gap-3 sm:mt-5 sm:grid-cols-2 sm:gap-x-4 sm:gap-y-4">
+              <div v-for="(s, i) in a.rest" :key="s.k" class="min-w-0" :class="i ? 'max-sm:hidden' : ''">
                 <dt class="text-xs text-muted">{{ s.k }}</dt>
                 <dd class="mt-0.5 font-mono text-sm tabular-nums">{{ s.v }}</dd>
               </div>
             </dl>
 
-            <span class="ac-cta mt-auto flex items-center justify-between gap-2 pt-7 text-sm font-medium">
-              View {{ a.name }}
-              <span class="ac-arrow grid size-9 place-items-center rounded-full border border-line-strong" aria-hidden="true">
+            <span class="ac-cta mt-auto flex items-center justify-between gap-2 pt-5 text-sm font-medium sm:pt-7">
+              <span>View<span class="max-sm:sr-only"> {{ a.name }}</span></span>
+              <span class="ac-arrow grid size-8 sm:size-9 place-items-center rounded-full border border-line-strong" aria-hidden="true">
                 <PhArrowRight :size="14" weight="bold" />
               </span>
             </span>
           </NuxtLink>
         </li>
-      </ul>
+      </TransitionGroup>
 
       <ul class="mt-8 flex flex-wrap gap-2 text-sm text-muted">
         <li v-for="n in ACCOUNT_NOTES" :key="n" class="chip inline-flex h-9 items-center gap-2 rounded-full px-3.5"><PhCheck :size="14" weight="bold" class="text-accent-soft" />{{ n }}</li>
@@ -139,6 +140,8 @@ useMotion(root, ({ motion }) => {
 .ac[data-state="match"] .ac-arrow { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); }
 .ac[data-state="locked"] { opacity: 0.55; }
 
+.ac-move { transition: transform 520ms var(--ease-out-expo); }
+
 .ac:focus-visible { outline: 2px solid var(--color-accent-soft); outline-offset: 3px; }
 
 @media (hover: hover) and (pointer: fine) {
@@ -150,6 +153,7 @@ useMotion(root, ({ motion }) => {
 
 @media (prefers-reduced-motion: reduce) {
   .ac, .ac-icon, .ac-arrow { transition-property: opacity, background-color, border-color, color; }
+  .ac-move { transition: none; }
   .ac[data-state="match"] { translate: none; }
   .ac:hover .ac-icon { rotate: none; }
   .ac:hover .ac-arrow { translate: none; }

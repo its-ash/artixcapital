@@ -1,18 +1,9 @@
 <script setup lang="ts">
-import gsap from 'gsap'
-
 defineProps<{ rows: readonly (readonly [string, string])[]; label?: string }>()
-
-const root = ref<HTMLElement | null>(null)
-
-useMotion(root, ({ motion }) => {
-  if (!motion) return
-  gsap.from(gsap.utils.selector(root.value)('.sp-cell'), { y: 20, opacity: 0, stagger: 0.04, duration: 0.8, ease: 'expo.out', scrollTrigger: { trigger: root.value, start: 'top 88%' } })
-})
 </script>
 
 <template>
-  <dl ref="root" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" :aria-label="label">
+  <dl class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" :aria-label="label">
     <div
       v-for="(r, i) in rows"
       :key="r[0]"

@@ -81,8 +81,9 @@
   }
 
   .mql5-frame { overflow: hidden; border: 1px solid var(--color-line); border-radius: 1rem; background: var(--color-elevated); }
-  .mql5-strip { overflow: hidden; background: var(--color-elevated); }
+  .mql5-strip { overflow: hidden; background: transparent; }
   :is(.mql5-frame, .mql5-strip) iframe { display: block; max-width: none; width: calc(100% + 2px) !important; margin: -1px; color-scheme: normal; }
+  .mql5-strip iframe { filter: contrast(1.4); mix-blend-mode: lighten; }
 
   .grad-text, .grad-text-cta { color: var(--color-fg); }
   .outline-text { color: transparent; -webkit-text-stroke: 1px rgb(255 255 255 / 0.08); }

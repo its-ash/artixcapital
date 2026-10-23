@@ -34,7 +34,7 @@ useMotion(root, ({ motion }) => {
     <div class="wrap grid items-center gap-12 pt-14 pb-16 md:pt-20 md:pb-24" :class="slots.aside ? 'lg:grid-cols-12' : ''">
       <div :class="[slots.aside ? 'lg:col-span-7' : '', center ? 'mx-auto text-center' : '']">
         <p class="ph-in chip inline-flex h-8 items-center rounded-full px-3.5 text-xs font-medium text-accent-soft">{{ group }}</p>
-        <h1 v-reveal="'lines'" class="h-display mt-6 max-w-3xl text-balance text-4xl sm:text-5xl lg:text-6xl" :class="center ? 'mx-auto' : ''">{{ title }}</h1>
+        <h1 class="h-display mt-6 max-w-3xl text-balance text-4xl sm:text-5xl lg:text-6xl" :class="center ? 'mx-auto' : ''">{{ title }}</h1>
         <p class="ph-in mt-6 max-w-2xl text-lg leading-relaxed text-muted" :class="center ? 'mx-auto' : ''">{{ lead }}</p>
         <div v-if="slots.default" class="ph-in mt-9 flex flex-wrap gap-3" :class="center ? 'justify-center' : ''"><slot /></div>
         <div v-if="slots.below" class="ph-in mt-12"><slot name="below" /></div>

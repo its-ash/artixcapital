@@ -9,7 +9,6 @@ import type { Directive } from 'vue'
 
 type Cleanup = { __fx?: () => void }
 type El = HTMLElement & Cleanup
-type RevealMode = 'lines' | 'words' | 'chars' | 'fade'
 
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches
 const fine = () => matchMedia('(hover: hover) and (pointer: fine)').matches
@@ -85,44 +84,9 @@ const spot: Directive<El> = {
   beforeUnmount: el => el.__fx?.()
 }
 
-const reveal: Directive<El, RevealMode | undefined> = {
-  ...ssr,
-  mounted(el, { value = 'lines' }) {
-    if (reduced()) return
-    const trigger = { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
-    if (value === 'fade') {
-      const tw = gsap.fromTo(el, { autoAlpha: 0, y: 40, filter: 'blur(8px)' }, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 1.1, ease: 'expo.out', clearProps: 'filter', scrollTrigger: trigger })
-      el.__fx = () => { tw.scrollTrigger?.kill(); tw.revert() }
-      return
-    }
-    const split = SplitText.create(el, {
-      type: value === 'chars' ? 'words,chars' : value === 'words' ? 'lines,words' : 'lines',
-      mask: value === 'chars' ? 'words' : 'lines',
-      wordsClass: 'w',
-      charsClass: 'ch',
-      autoSplit: true,
-      onSplit: s => {
-        const targets = value === 'chars' ? s.chars : value === 'words' ? s.words : s.lines
-        return gsap.from(targets, {
-          yPercent: 115,
-          rotate: value === 'lines' ? 0 : 6,
-          opacity: value === 'lines' ? 1 : 0,
-          duration: value === 'chars' ? 0.9 : 1.15,
-          ease: 'expo.out',
-          stagger: value === 'chars' ? 0.018 : value === 'words' ? 0.035 : 0.09,
-          scrollTrigger: trigger
-        })
-      }
-    })
-    el.__fx = () => split.revert()
-  },
-  beforeUnmount: el => el.__fx?.()
-}
-
 export default defineNuxtPlugin(nuxtApp => {
   nuxtApp.vueApp.directive('magnetic', magnetic)
   nuxtApp.vueApp.directive('tilt', tilt)
-  nuxtApp.vueApp.directive('reveal', reveal)
   nuxtApp.vueApp.directive('spot', spot)
 
   if (import.meta.server) return { provide: { lenis: null as Lenis | null } }

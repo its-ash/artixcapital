@@ -27,7 +27,6 @@ const toTop = () => ($lenis ? $lenis.scrollTo(0, { duration: 1.2 }) : scrollTo({
 useMotion(root, ({ motion }) => {
   if (!motion) return
   const q = gsap.utils.selector(root.value)
-  gsap.from(q('.ft-col'), { y: 24, opacity: 0, duration: 0.8, stagger: 0.06, ease: 'expo.out', scrollTrigger: { trigger: q('.ft-cols')[0], start: 'top 90%' } })
   gsap.from(q('.ft-mark'), { yPercent: 45, ease: 'none', scrollTrigger: { trigger: q('.ft-mark')[0], start: 'top bottom', end: 'bottom bottom', scrub: true } })
 })
 </script>

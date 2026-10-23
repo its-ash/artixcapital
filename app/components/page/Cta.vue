@@ -11,8 +11,7 @@ const root = ref<HTMLElement | null>(null)
 useMotion(root, ({ motion }) => {
   if (!motion) return
   const q = gsap.utils.selector(root.value)
-  gsap.from(q('.cb-box'), { y: 48, opacity: 0, scale: 0.97, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: root.value, start: 'top 85%' } })
-  gsap.fromTo(q('.cb-glow'), { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, ease: 'none', scrollTrigger: { trigger: root.value, start: 'top bottom', end: 'center center', scrub: true } })
+  gsap.fromTo(q('.cb-glow'), { scale: 0.6 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: root.value, start: 'top bottom', end: 'center center', scrub: true } })
 })
 </script>
 
@@ -29,7 +28,7 @@ useMotion(root, ({ motion }) => {
         />
       </div>
       <div class="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
-        <h2 id="cta-band" v-reveal="'lines'" class="h-section max-w-2xl text-balance text-4xl md:text-5xl">{{ title }}</h2>
+        <h2 id="cta-band" class="h-section max-w-2xl text-balance text-4xl md:text-5xl">{{ title }}</h2>
         <div class="flex flex-wrap gap-3">
           <a v-magnetic="0.25" :href="SIGNUP" class="btn btn-primary h-14 px-8">
             Open account

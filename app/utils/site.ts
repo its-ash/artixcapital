@@ -1,5 +1,6 @@
 import type { Component } from 'vue'
 import {
+  PhAndroidLogo, PhAppleLogo, PhWindowsLogo,
   PhArrowsLeftRight, PhBarbell, PhBrowser, PhBuildings, PhCalendarBlank, PhChartBar, PhChartLineUp, PhClockCountdown,
   PhCoins, PhCrown, PhCube, PhCurrencyBtc, PhDesktop, PhDeviceMobile, PhFlask, PhHandshake,
   PhHourglassMedium, PhIdentificationCard, PhInfo, PhLightning, PhPaperPlaneTilt, PhRocketLaunch,
@@ -111,6 +112,13 @@ export const PLATFORMS: Platform[] = [
   { id: 'desktop', label: 'Desktop', title: 'A full workstation on Windows', desc: 'Every tool nTrader offers, with layouts you can shape around the way you trade.', href: page('ntrader-for-windows'), cta: 'nTrader for Windows', icon: PhDesktop, hue: '#c41e2a' },
   { id: 'web', label: 'Web', title: 'Open a browser and trade', desc: 'Sign in from any computer and pick up where you left off. Nothing to install.', href: LOGIN, cta: 'Open web platform', icon: PhBrowser, hue: '#c41e2a' },
   { id: 'mobile', label: 'Mobile', title: 'Markets in your pocket', desc: 'Real-time prices, charts and order entry, wherever the day takes you.', href: page('ntrader-for-mobile'), cta: 'nTrader for Mobile', icon: PhDeviceMobile, hue: '#7d8da8' }
+]
+
+export const MT5_DOWNLOADS: { id: string; label: string; title: string; href: string; icon: Component }[] = [
+  { id: 'windows', label: 'Windows', title: 'Desktop terminal', href: 'https://download.terminal.free/cdn/web/artix.capital.ltd/mt5/artixcapital5setup.exe', icon: PhWindowsLogo },
+  { id: 'web', label: 'Web', title: 'Trade in your browser', href: 'https://web.artixcapital.com/terminal', icon: PhBrowser },
+  { id: 'ios', label: 'iOS', title: 'iPhone and iPad', href: 'https://download.terminal.free/cdn/mobile/mt5/ios?server=ArtixCapital-Server', icon: PhAppleLogo },
+  { id: 'android', label: 'Android', title: 'Phone and tablet', href: 'https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.metatrader5.com&utm_campaign=install.metaquotes', icon: PhAndroidLogo }
 ]
 
 export type Spec = { k: string; v: string }

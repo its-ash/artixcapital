@@ -16,7 +16,7 @@ const CONTACT = [
     <div class="grid gap-12 border-t border-line py-16 md:py-24 lg:grid-cols-12 lg:gap-10">
       <div class="lg:col-span-4">
         <div class="lg:sticky lg:top-28">
-          <h2 :id="id" v-reveal="'lines'" class="h-section max-w-sm text-3xl md:text-4xl">{{ title }}</h2>
+          <h2 :id="id" class="h-section max-w-sm text-3xl md:text-4xl">{{ title }}</h2>
           <p class="mt-4 max-w-xs leading-relaxed text-muted">Short answers to what traders ask most. Anything else, our team is a message away.</p>
 
           <div v-spot class="card mt-8 p-5">

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import gsap from 'gsap'
-import { SplitText } from 'gsap/SplitText'
 import { PhArrowRight } from '@phosphor-icons/vue'
 
 const RINGS = 4
@@ -10,18 +9,7 @@ const root = ref<HTMLElement | null>(null)
 useMotion(root, ({ motion }) => {
   if (!motion) return
   const q = gsap.utils.selector(root.value)
-  const split = SplitText.create(q('.cta-title'), { type: 'words,chars', mask: 'words' })
-  gsap.from(split.chars, {
-    yPercent: i => 110 + (i % 4) * 25,
-    rotate: i => (i % 2 ? 12 : -12),
-    opacity: 0,
-    stagger: { each: 0.015, from: 'random' },
-    ease: 'none',
-    scrollTrigger: { trigger: root.value, start: 'top 80%', end: 'top 25%', scrub: 1 }
-  })
-  gsap.fromTo(q('.cta-glow'), { scale: 0.5, opacity: 0 }, { scale: 1.2, opacity: 1, ease: 'none', scrollTrigger: { trigger: root.value, start: 'top bottom', end: 'center center', scrub: true } })
-  gsap.from(q('.cta-btn'), { y: 40, opacity: 0, scale: 0.9, duration: 1.2, ease: 'back.out(1.8)', scrollTrigger: { trigger: q('.cta-btn')[0], start: 'top 95%' } })
-  return () => split.revert()
+  gsap.fromTo(q('.cta-glow'), { scale: 0.5 }, { scale: 1.2, ease: 'none', scrollTrigger: { trigger: root.value, start: 'top bottom', end: 'center center', scrub: true } })
 })
 </script>
 

@@ -1,19 +1,11 @@
 <script setup lang="ts">
-import gsap from 'gsap'
 import { PhPlus } from '@phosphor-icons/vue'
 
 defineProps<{ items: readonly (readonly [string, string])[]; name: string }>()
-
-const root = ref<HTMLElement | null>(null)
-
-useMotion(root, ({ motion }) => {
-  if (!motion) return
-  gsap.from(gsap.utils.selector(root.value)('details'), { y: 24, opacity: 0, stagger: 0.06, duration: 0.8, ease: 'expo.out', scrollTrigger: { trigger: root.value, start: 'top 85%' } })
-})
 </script>
 
 <template>
-  <div ref="root" class="faq grid gap-3">
+  <div class="faq grid gap-3">
     <details
       v-for="(f, i) in items"
       :key="f[0]"

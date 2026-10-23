@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import gsap from 'gsap'
 import { PhArrowRight, PhCheck } from '@phosphor-icons/vue'
 
 const DETAILS = [
@@ -9,27 +8,14 @@ const DETAILS = [
 ]
 
 const ITEMS = STEPS.map((s, i) => ({ ...s, details: DETAILS[i] ?? [] }))
-
-const root = ref<HTMLElement | null>(null)
-
-useMotion(root, ({ motion }) => {
-  if (!motion) return
-  const q = gsap.utils.selector(root.value)
-  const list = q('.st-list')[0]
-  gsap.fromTo(q('.st-fill'), { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: list, start: 'top 65%', end: 'bottom 65%', scrub: 0.6 } })
-  q('.st-item').forEach(el => {
-    gsap.fromTo(el, { '--on': 0 }, { '--on': 1, ease: 'none', scrollTrigger: { trigger: el, start: 'top 75%', end: 'top 50%', scrub: 0.4 } })
-    gsap.from(el.querySelector('.st-card'), { x: 40, opacity: 0, duration: 1, ease: 'expo.out', clearProps: 'opacity', scrollTrigger: { trigger: el, start: 'top 85%' } })
-  })
-})
 </script>
 
 <template>
-  <section ref="root" class="wrap" aria-labelledby="steps-title">
+  <section class="wrap" aria-labelledby="steps-title">
     <div class="grid gap-14 border-t border-line py-24 md:py-32 lg:grid-cols-12 lg:gap-10">
       <div class="lg:col-span-5">
         <div class="lg:sticky lg:top-28">
-          <h2 id="steps-title" v-reveal="'lines'" class="h-section max-w-md text-4xl md:text-6xl">From sign-up to first trade in three steps.</h2>
+          <h2 id="steps-title" class="h-section max-w-md text-4xl md:text-6xl">From sign-up to first trade in three steps.</h2>
           <p class="mt-5 max-w-sm text-lg leading-relaxed text-muted">Open, verify and fund from one client area. Your account is ready on nTrader once the checks clear.</p>
           <a v-magnetic="0.2" :href="SIGNUP" class="btn btn-primary mt-10 h-14 px-8">
             Open account
