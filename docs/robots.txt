@@ -1,3 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /200.html
+Disallow: /404.html
+
 Sitemap: https://artixcapital.com/sitemap.xml
