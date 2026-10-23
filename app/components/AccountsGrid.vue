@@ -25,11 +25,11 @@ useMotion(root, ({ motion }) => {
           <NuxtLink
             :to="a.href"
             class="group relative flex h-full flex-col rounded-2xl border p-6 transition-colors duration-300"
-            :class="a.featured ? 'border-accent/60 bg-[linear-gradient(180deg,rgb(214_20_28/0.12),transparent_45%)] bg-surface' : 'border-line bg-surface hover:border-line-strong'"
+            :class="a.featured ? 'border-accent/60 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--color-accent)_12%,transparent),transparent_45%)] bg-surface' : 'border-line bg-surface hover:border-line-strong'"
           >
             <div class="flex items-center justify-between gap-3">
               <h3 class="text-xl font-semibold tracking-tight">{{ a.name }}</h3>
-              <span v-if="a.featured" class="rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-white">Lowest cost</span>
+              <span v-if="a.featured" class="rounded-full bg-accent px-2.5 py-1 text-xs font-semibold text-on-accent">Lowest cost</span>
             </div>
             <p class="mt-3 text-sm leading-relaxed text-muted">{{ a.tag }}</p>
             <dl class="mt-8 grid gap-5">

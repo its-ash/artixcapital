@@ -10,7 +10,7 @@ const SPAN: Record<string, string> = {
   crypto: 'lg:col-span-6'
 }
 const FILL: Record<string, string> = {
-  forex: 'bg-surface bg-[radial-gradient(80%_70%_at_100%_0%,rgb(214_20_28/0.18),transparent_70%)]',
+  forex: 'bg-surface bg-[radial-gradient(80%_70%_at_100%_0%,color-mix(in_oklab,var(--color-accent)_18%,transparent),transparent_70%)]',
   stocks: 'bg-elevated',
   crypto: 'bg-surface bg-[linear-gradient(135deg,rgb(255_255_255/0.05),transparent_60%)]'
 }

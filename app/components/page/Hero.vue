@@ -5,7 +5,7 @@ const slots = useSlots()
 
 <template>
   <header class="relative overflow-hidden">
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-[36rem] bg-[radial-gradient(50%_60%_at_80%_0%,rgb(214_20_28/0.14),transparent_70%)]" aria-hidden="true" />
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-[36rem] bg-[radial-gradient(50%_60%_at_80%_0%,color-mix(in_oklab,var(--color-accent)_14%,transparent),transparent_70%)]" aria-hidden="true" />
     <div class="wrap relative grid items-center gap-12 pb-16 pt-12 md:pb-20 md:pt-20" :class="slots.aside ? 'lg:grid-cols-12' : ''">
       <div :class="[slots.aside ? 'lg:col-span-7' : '', center ? 'mx-auto text-center' : '']">
         <p class="text-sm font-medium text-accent-soft">{{ group }}</p>

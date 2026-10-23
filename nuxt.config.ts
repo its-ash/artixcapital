@@ -4,6 +4,7 @@ const SLUGS = ['forex-trading','commodities-trading','stocks-trading','indices-t
 const TITLE = 'Artix Capital | Trade forex, stocks, indices and crypto'
 const DESC = 'Trade forex, stocks, indices, commodities and crypto from one account on nTrader, with spreads from 0.0 pips and 24/5 human support.'
 const SITE = 'https://artixcapital.com'
+const ACCENT_BOOT = `try{var c=localStorage.getItem('artix-accent');if(/^#[0-9a-f]{6}$/i.test(c||'')){var h=[1,3,5].map(function(i){return parseInt(c.slice(i,i+2),16)}),l=h.map(function(v){v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)}),L=.2126*l[0]+.7152*l[1]+.0722*l[2],s=L<.2?'#'+h.map(function(v){return Math.round(v+(255-v)*.32).toString(16).padStart(2,'0')}).join(''):c,r=document.documentElement.style;r.setProperty('--color-accent',c);r.setProperty('--color-accent-soft',s);r.setProperty('--color-on-accent',1.05/(L+.05)>=(L+.05)/.05?'#ffffff':'#0b0c0e')}}catch(e){}`
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-10-01',
@@ -35,7 +36,8 @@ export default defineNuxtConfig({
         { name: 'twitter:title', content: TITLE },
         { name: 'twitter:description', content: DESC }
       ],
-      link: [{ rel: 'canonical', href: SITE }]
+      link: [{ rel: 'canonical', href: SITE }],
+      script: [{ innerHTML: ACCENT_BOOT, tagPosition: 'head' }]
     }
   },
   ssr: true,

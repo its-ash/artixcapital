@@ -3,5 +3,6 @@
     <SiteNav />
     <NuxtPage />
     <SiteFooter />
+    <ThemePicker />
   </div>
 </template>

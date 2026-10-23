@@ -25,16 +25,17 @@ const TRAIL_SEGS = 10
 const RIM_FADE = 0.22
 const COS_AX = Math.cos(AXIAL)
 const SIN_AX = Math.sin(AXIAL)
-const PALETTE = ['#d6141c', '#ff5a5f', '#9a9ca3', '#c4c6cc']
+const NEUTRALS = ['#9a9ca3', '#c4c6cc']
+const DOWN = '#ff5d64'
 
 const HUBS: Hub[] = [
   { id: 'LDN', lat: 51.51, lon: -0.13, sym: 'GBP/USD', hue: '#c4c6cc' },
-  { id: 'NYC', lat: 40.71, lon: -74.0, sym: 'US500', hue: '#d6141c' },
-  { id: 'FRA', lat: 50.11, lon: 8.68, sym: 'EUR/USD', hue: '#d6141c' },
+  { id: 'NYC', lat: 40.71, lon: -74.0, sym: 'US500', hue: 'accent' },
+  { id: 'FRA', lat: 50.11, lon: 8.68, sym: 'EUR/USD', hue: 'accent' },
   { id: 'TYO', lat: 35.68, lon: 139.69, sym: 'USD/JPY', hue: '#9a9ca3' },
-  { id: 'SGP', lat: 1.35, lon: 103.82, sym: 'XAU/USD', hue: '#d6141c' },
+  { id: 'SGP', lat: 1.35, lon: 103.82, sym: 'XAU/USD', hue: 'accent' },
   { id: 'SYD', lat: -33.87, lon: 151.21, sym: 'AUD/USD', hue: '#c4c6cc' },
-  { id: 'HKG', lat: 22.32, lon: 114.17, sym: 'BTC/USD', hue: '#ff5a5f' },
+  { id: 'HKG', lat: 22.32, lon: 114.17, sym: 'BTC/USD', hue: 'soft' },
   { id: 'SLU', lat: 14.08, lon: -60.95, sym: 'NAS100', hue: '#9a9ca3' }
 ]
 const ROUTES: [string, string][] = [['LDN', 'NYC'], ['NYC', 'TYO'], ['FRA', 'SGP'], ['LDN', 'HKG'], ['SGP', 'SYD'], ['SLU', 'LDN'], ['TYO', 'SYD'], ['NYC', 'SLU'], ['HKG', 'FRA']]
@@ -66,6 +67,9 @@ const locateUser = async (): Promise<Geo | null> => {
     clearTimeout(t)
   }
 }
+
+const tone = { accent: ACCENT_DEFAULT, soft: '#ff5a5f' }
+const hue = (h: string) => (h === 'accent' ? tone.accent : h === 'soft' ? tone.soft : h)
 
 const box = ref<HTMLElement | null>(null)
 const cvs = ref<HTMLCanvasElement | null>(null)
@@ -190,7 +194,8 @@ onMounted(() => {
     body.addColorStop(0.7, 'rgba(18,19,22,0.96)')
     body.addColorStop(1, 'rgba(11,12,14,0.98)')
     const pal = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R)
-    PALETTE.forEach((col, i) => pal.addColorStop(i / (PALETTE.length - 1), col))
+    const palette = [tone.accent, tone.soft, ...NEUTRALS]
+    palette.forEach((col, i) => pal.addColorStop(i / (palette.length - 1), col))
     fills = { body, pal }
     if (reduce) draw(0)
   }
@@ -315,7 +320,7 @@ onMounted(() => {
         a.sp[k * 3 + 1] = p[1]
         a.hid[k] = occluded(p[0], p[1], p[2]) ? 1 : 0
       }
-      ctx.strokeStyle = a.hue
+      ctx.strokeStyle = hue(a.hue)
       ctx.lineWidth = lw * 0.7
       ctx.globalAlpha = (reduce ? 0.6 : 0.16) * arcAlpha
       ctx.beginPath()
@@ -361,13 +366,13 @@ onMounted(() => {
       const vis = Math.min(1, p[2] / 0.35) * arcAlpha
       const pulse = reduce ? 0.5 : ((s + h.phase) % 2) / 2
       ctx.globalAlpha = vis * (1 - pulse)
-      ctx.strokeStyle = h.hue
+      ctx.strokeStyle = hue(h.hue)
       ctx.lineWidth = 1.5
       ctx.beginPath()
       ctx.arc(p[0], p[1], 3 + pulse * 16, 0, Math.PI * 2)
       ctx.stroke()
       ctx.globalAlpha = vis
-      ctx.fillStyle = h.hue
+      ctx.fillStyle = hue(h.hue)
       ctx.beginPath()
       ctx.arc(p[0], p[1], 3.2, 0, Math.PI * 2)
       ctx.fill()
@@ -382,10 +387,10 @@ onMounted(() => {
       ctx.beginPath()
       ctx.roundRect(lx, ly - 10, tw, 20, 10)
       ctx.fill()
-      ctx.strokeStyle = h.hue
+      ctx.strokeStyle = hue(h.hue)
       ctx.lineWidth = 1
       ctx.stroke()
-      ctx.fillStyle = q && q.dir < 0 ? '#d6141c' : '#ecedee'
+      ctx.fillStyle = q && q.dir < 0 ? DOWN : '#ecedee'
       ctx.fillText(label, lx + 8, ly + 0.5)
     }
 
@@ -441,6 +446,17 @@ onMounted(() => {
   }
   const leave = () => { state.hover = 0 }
 
+  const onAccent = (e: Event) => {
+    const d = (e as CustomEvent<{ accent: string; soft: string }>).detail
+    tone.accent = d.accent
+    tone.soft = d.soft
+    resize()
+  }
+  const root = getComputedStyle(document.documentElement)
+  tone.accent = root.getPropertyValue('--color-accent').trim() || tone.accent
+  tone.soft = root.getPropertyValue('--color-accent-soft').trim() || tone.soft
+  addEventListener('accentchange', onAccent)
+
   const ro = new ResizeObserver(resize)
   ro.observe(el)
   const io = new IntersectionObserver(([e]) => { visible = !!e?.isIntersecting })
@@ -486,6 +502,7 @@ onMounted(() => {
 
   stop = () => {
     cancelAnimationFrame(raf)
+    removeEventListener('accentchange', onAccent)
     ro.disconnect()
     io.disconnect()
     gsap.killTweensOf(state)

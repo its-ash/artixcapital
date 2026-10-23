@@ -13,6 +13,7 @@
   --color-muted: #8f9198;
   --color-accent: #d6141c;
   --color-accent-soft: #ff5a5f;
+  --color-on-accent: #ffffff;
   --color-steel: #9a9ca3;
   --color-steel-soft: #c4c6cc;
   --color-up: #3fd17a;
@@ -41,7 +42,7 @@
   code, kbd, .font-mono { font-family: var(--font-mono); font-feature-settings: "zero" 1; }
   h1, h2, h3 { text-wrap: balance; }
   p { text-wrap: pretty; }
-  ::selection { background: color-mix(in oklab, var(--color-accent) 70%, transparent); color: #fff; }
+  ::selection { background: color-mix(in oklab, var(--color-accent) 70%, transparent); color: var(--color-on-accent); }
   :focus-visible { outline: 2px solid var(--color-accent-soft); outline-offset: 3px; border-radius: 6px; }
   [id] { scroll-margin-top: 6rem; }
 }
@@ -67,7 +68,7 @@
     transition: scale 140ms var(--ease-out-strong), background-color 180ms ease, border-color 180ms ease, color 180ms ease;
   }
   .btn:active { scale: 0.97; }
-  .btn-primary { background: var(--color-accent); color: #fff; }
+  .btn-primary { background: var(--color-accent); color: var(--color-on-accent); }
   .btn-ghost { border: 1px solid var(--color-line-strong); color: var(--color-fg); }
   .btn-icon { position: relative; display: inline-grid; overflow: hidden; }
   .btn-icon > * { grid-area: 1 / 1; transition: transform 320ms var(--ease-out-expo); }
