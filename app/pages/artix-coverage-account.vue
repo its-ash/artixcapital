@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({
+usePageSeo({
   title: 'Artix Coverage account | Artix Capital',
   description: 'The account for capital preservation: hedging without restrictions, deep liquidity, professional pricing from $50,000.'
 })

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({
+usePageSeo({
   title: 'White label solution | Artix Capital',
   description: 'Launch your own brokerage: fully branded nTrader, tier-1 liquidity, flexible commissions and compliance support, live in weeks.'
 })

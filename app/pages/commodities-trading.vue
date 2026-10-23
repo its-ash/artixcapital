@@ -1,6 +1,6 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'Commodities trading | Artix Capital',
+usePageSeo({
+  title: 'Trade gold, oil and commodity CFDs | Artix Capital',
   description: 'Trade gold, silver, oil and gas with CFDs on nTrader. No storage, no delivery, both directions, leverage to 1:200.'
 })
 
@@ -55,7 +55,7 @@ const faqs = [
 
     <PageSection v-for="g in groups" :id="g.id" :key="g.id" :title="g.title" :lead="g.lead">
       <ul class="grid gap-4 sm:grid-cols-2" :class="g.rows.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'">
-        <li v-for="m in g.rows" :key="m[0]" class="rounded-2xl border border-line bg-surface p-6">
+        <li v-for="m in g.rows" :key="m[0]" v-spot class="card p-6">
           <span class="font-mono text-sm text-accent-soft">{{ m[0] }}</span>
           <h3 class="mt-4 text-lg font-semibold tracking-tight">{{ m[1] }}</h3>
           <p class="mt-2 text-sm leading-relaxed text-muted">{{ m[2] }}</p>
@@ -67,9 +67,7 @@ const faqs = [
       <Mql5Widget type="overview" :symbols="['XAUUSD', 'XAGUSD', 'XPTUSD', 'XPDUSD', 'XTIUSD', 'XBRUSD', 'XNGUSD']" />
     </PageSection>
 
-    <PageSection id="cm-faq" title="Commodity questions">
-      <PageFaq :items="faqs" name="cm-faq" />
-    </PageSection>
+    <PageFaqSection id="cm-faq" title="Commodity questions" :items="faqs" />
 
     <PageCta />
   </main>

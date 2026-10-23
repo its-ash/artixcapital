@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({
+usePageSeo({
   title: 'Artix Capital | Trade forex, stocks, indices and crypto',
   description: 'Trade forex, stocks, indices, commodities and crypto from one account on nTrader, with spreads from 0.0 pips and 24/5 human support.'
 })
@@ -10,7 +10,7 @@ useSeoMeta({
     <HeroSection />
     <TickerTape />
     <StatsBand />
-    <IntroReveal />
+    <!-- <IntroReveal /> -->
     <MarketsGrid />
     <PlatformShowcase />
     <AccountsGrid />

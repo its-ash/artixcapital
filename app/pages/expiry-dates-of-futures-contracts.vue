@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({
+usePageSeo({
   title: 'Futures contract expiry dates | Artix Capital',
   description: 'Expiration and last trading days for futures-linked CFDs: quarterly currencies, monthly crypto micros, energies and metals.'
 })
@@ -39,7 +39,7 @@ const protocol = [
 
     <PageSection id="ex-cycles" title="The three cycles">
       <div class="grid gap-4 lg:grid-cols-3">
-        <div v-for="c in cycles" :key="c.label" class="rounded-2xl border border-line bg-surface p-7">
+        <div v-for="c in cycles" :key="c.label" v-spot class="card p-7">
           <h3 class="text-xl font-semibold tracking-tight">{{ c.label }}</h3>
           <p class="mt-1 font-mono text-xs text-accent-soft">{{ c.desc }}</p>
           <ul class="mt-6 flex flex-wrap gap-2 text-sm">

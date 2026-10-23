@@ -1,6 +1,6 @@
 import type { Component } from 'vue'
 import {
-  PhArrowsLeftRight, PhBarbell, PhBrowser, PhBuildings, PhCalendarBlank, PhChartBar, PhChartLineUp,
+  PhArrowsLeftRight, PhBarbell, PhBrowser, PhBuildings, PhCalendarBlank, PhChartBar, PhChartLineUp, PhClockCountdown,
   PhCoins, PhCrown, PhCube, PhCurrencyBtc, PhDesktop, PhDeviceMobile, PhFlask, PhHandshake,
   PhHourglassMedium, PhIdentificationCard, PhInfo, PhLightning, PhPaperPlaneTilt, PhRocketLaunch,
   PhShieldCheck, PhStack, PhTable, PhUserPlus
@@ -12,7 +12,20 @@ export const SIGNUP = `${PORTAL}/#/client/signup`
 export const LOGIN = `${PORTAL}/#/login`
 export const PHONE = '+44 7822 018441'
 export const EMAIL = 'support@artixcapital.com'
-export const OFFICE = 'Rodney Bay, Gros-Islet, Saint Lucia'
+export const COMPANY = 'Artix Capital Ltd'
+export const REG_NO = '2023-00122'
+export const OFFICE = 'Unit 1, La Place Creole Building, Rodney Village, Rodney Bay, Gros-Islet, Saint Lucia'
+export const RESTRICTED: { name: string; code: string }[] = [
+  { name: 'the United States', code: 'us' },
+  { name: 'Cuba', code: 'cu' },
+  { name: 'Iraq', code: 'iq' },
+  { name: 'Myanmar', code: 'mm' },
+  { name: 'North Korea', code: 'kp' },
+  { name: 'Sudan', code: 'sd' },
+  { name: 'the United Arab Emirates', code: 'ae' },
+  { name: 'India', code: 'in' }
+]
+export const RESTRICTED_LIST = `${RESTRICTED.slice(0, -1).map(r => r.name).join(', ')} and ${RESTRICTED.at(-1)?.name}`
 
 const page = (slug: string) => `/${slug}/`
 
@@ -27,15 +40,16 @@ export const NAV: NavGroup[] = [
       { label: 'Commodities', href: page('commodities-trading'), desc: 'Metals and energy', icon: PhBarbell },
       { label: 'Stocks', href: page('stocks-trading'), desc: 'Global company shares', icon: PhBuildings },
       { label: 'Indices', href: page('indices-trading'), desc: 'Benchmark market indices', icon: PhChartBar },
-      { label: 'Crypto', href: page('crypto-trading'), desc: 'Major digital assets', icon: PhCurrencyBtc }
+      { label: 'Crypto', href: page('crypto-trading'), desc: 'Major digital assets', icon: PhCurrencyBtc },
+      { label: 'Futures', href: page('futures-trading'), desc: 'Energy, metal and index futures', icon: PhClockCountdown }
     ]
   },
   {
     label: 'Platforms',
     items: [
       { label: 'MetaTrader 5', href: page('meta-trader-5'), desc: 'The industry-standard terminal', icon: PhStack },
-      { label: 'Vaultex for Windows', href: page('ntrader-for-windows'), desc: 'Full desktop workstation', icon: PhDesktop },
-      { label: 'Vaultex for Mobile', href: page('ntrader-for-mobile'), desc: 'Trade from your phone', icon: PhDeviceMobile }
+      { label: 'nTrader for Windows', href: page('ntrader-for-windows'), desc: 'Full desktop workstation', icon: PhDesktop },
+      { label: 'nTrader for Mobile', href: page('ntrader-for-mobile'), desc: 'Trade from your phone', icon: PhDeviceMobile }
     ]
   },
   {
@@ -94,9 +108,9 @@ export const ASSET_CLASSES: { label: string; icon: Component; hue: string }[] = 
 export type Platform = { id: string; label: string; title: string; desc: string; href: string; cta: string; icon: Component; hue: string }
 
 export const PLATFORMS: Platform[] = [
-  { id: 'desktop', label: 'Desktop', title: 'A full workstation on Windows', desc: 'Every tool Vaultex offers, with layouts you can shape around the way you trade.', href: page('ntrader-for-windows'), cta: 'Vaultex for Windows', icon: PhDesktop, hue: '#c41e2a' },
+  { id: 'desktop', label: 'Desktop', title: 'A full workstation on Windows', desc: 'Every tool nTrader offers, with layouts you can shape around the way you trade.', href: page('ntrader-for-windows'), cta: 'nTrader for Windows', icon: PhDesktop, hue: '#c41e2a' },
   { id: 'web', label: 'Web', title: 'Open a browser and trade', desc: 'Sign in from any computer and pick up where you left off. Nothing to install.', href: LOGIN, cta: 'Open web platform', icon: PhBrowser, hue: '#c41e2a' },
-  { id: 'mobile', label: 'Mobile', title: 'Markets in your pocket', desc: 'Real-time prices, charts and order entry, wherever the day takes you.', href: page('ntrader-for-mobile'), cta: 'Vaultex for Mobile', icon: PhDeviceMobile, hue: '#7d8da8' }
+  { id: 'mobile', label: 'Mobile', title: 'Markets in your pocket', desc: 'Real-time prices, charts and order entry, wherever the day takes you.', href: page('ntrader-for-mobile'), cta: 'nTrader for Mobile', icon: PhDeviceMobile, hue: '#7d8da8' }
 ]
 
 export type Spec = { k: string; v: string }
@@ -130,15 +144,15 @@ export const ACCOUNT_NOTES = ['Commission charged per side', 'Crypto: 0.10% of n
 export const STEPS: { title: string; desc: string; icon: Component; hue: string }[] = [
   { title: 'Register', desc: 'Create your profile with an email address and a few basic details.', icon: PhUserPlus, hue: '#7d8da8' },
   { title: 'Verify', desc: 'Complete KYC by uploading your identity documents for review.', icon: PhIdentificationCard, hue: '#c41e2a' },
-  { title: 'Trade', desc: 'Fund your account and place your first trade on Vaultex.', icon: PhChartLineUp, hue: '#e0525c' }
+  { title: 'Trade', desc: 'Fund your account and place your first trade on nTrader.', icon: PhChartLineUp, hue: '#e0525c' }
 ]
 
 export const FAQS: { q: string; a: string }[] = [
   { q: 'Is Artix Capital regulated?', a: 'Artix Capital Ltd is an International Business Company registered in Saint Lucia under number 2023-00122. It is an offshore company and is not licensed or regulated as a financial services provider in Saint Lucia.' },
-  { q: 'What can I trade?', a: 'Currencies, commodities, indices, stocks and cryptocurrencies, all from one account on Vaultex.' },
-  { q: 'Which platforms can I use?', a: 'Vaultex and MetaTrader 5. Vaultex runs on desktop, in the browser and on mobile.' },
+  { q: 'What can I trade?', a: 'Currencies, commodities, indices, stocks and cryptocurrencies, all from one account on nTrader.' },
+  { q: 'Which platforms can I use?', a: 'nTrader and MetaTrader 5. nTrader runs on desktop, in the browser and on mobile.' },
   { q: 'How can I deposit and withdraw?', a: 'We accept Visa, Mastercard, Neteller, Skrill, crypto wallets and other methods. Choose the one that suits you in your client area.' },
-  { q: 'Who can not open an account?', a: 'Our services are not available to residents of the United States, Canada, North Korea, Iran, Syria, Cuba, Russia, Belarus, India, the United Arab Emirates or Myanmar.' }
+  { q: 'Who can not open an account?', a: `Artix Capital Ltd does not provide services for citizens or residents of ${RESTRICTED_LIST}.` }
 ]
 
 export const POLICIES: { label: string; href: string }[] = [

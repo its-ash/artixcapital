@@ -1,6 +1,6 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'Crypto trading | Artix Capital',
+usePageSeo({
+  title: 'Crypto CFD trading: Bitcoin and Ether | Artix Capital',
   description: 'Trade Bitcoin, Ethereum and major crypto CFDs in USD. 24/7 access, no wallet needed, 0.10% commission, leverage and full risk tools.'
 })
 
@@ -50,9 +50,7 @@ const faqs = [
       <PageStats :items="cost" />
     </PageSection>
 
-    <PageSection id="cr-faq" title="Crypto questions">
-      <PageFaq :items="faqs" name="cr-faq" />
-    </PageSection>
+    <PageFaqSection id="cr-faq" title="Crypto questions" :items="faqs" />
 
     <PageCta />
   </main>

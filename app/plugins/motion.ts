@@ -70,6 +70,21 @@ const tilt: Directive<El, number | undefined> = {
   beforeUnmount: el => el.__fx?.()
 }
 
+const spot: Directive<El> = {
+  ...ssr,
+  mounted(el) {
+    if (!fine()) return
+    const move = (e: PointerEvent) => {
+      const r = el.getBoundingClientRect()
+      el.style.setProperty('--mx', `${e.clientX - r.left}px`)
+      el.style.setProperty('--my', `${e.clientY - r.top}px`)
+    }
+    el.addEventListener('pointermove', move)
+    el.__fx = () => el.removeEventListener('pointermove', move)
+  },
+  beforeUnmount: el => el.__fx?.()
+}
+
 const reveal: Directive<El, RevealMode | undefined> = {
   ...ssr,
   mounted(el, { value = 'lines' }) {
@@ -108,6 +123,7 @@ export default defineNuxtPlugin(nuxtApp => {
   nuxtApp.vueApp.directive('magnetic', magnetic)
   nuxtApp.vueApp.directive('tilt', tilt)
   nuxtApp.vueApp.directive('reveal', reveal)
+  nuxtApp.vueApp.directive('spot', spot)
 
   if (import.meta.server) return { provide: { lenis: null as Lenis | null } }
 

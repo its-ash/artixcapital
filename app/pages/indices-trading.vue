@@ -1,6 +1,6 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'Indices trading | Artix Capital',
+usePageSeo({
+  title: 'Indices trading: US500, NAS100, GER40 | Artix Capital',
   description: 'Trade whole economies with index CFDs: US500, NAS100, GER40, UK100, JPN225 and more, with raw pricing and leverage to 1:200.'
 })
 
@@ -52,9 +52,7 @@ const faqs = [
       </div>
     </PageSection>
 
-    <PageSection id="ix-faq" title="Index questions">
-      <PageFaq :items="faqs" name="ix-faq" />
-    </PageSection>
+    <PageFaqSection id="ix-faq" title="Index questions" :items="faqs" />
 
     <PageCta />
   </main>

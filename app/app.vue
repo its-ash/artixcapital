@@ -1,3 +1,38 @@
+<script setup lang="ts">
+import { SITE_URL } from '#shared/routes'
+
+useJsonLd('ld-org', {
+  '@graph': [
+    {
+      '@type': 'FinancialService',
+      '@id': `${SITE_URL}/#org`,
+      name: COMPANY,
+      legalName: COMPANY,
+      url: SITE_URL,
+      logo: `${SITE_URL}/assets/logo.png`,
+      image: `${SITE_URL}/og.png`,
+      email: EMAIL,
+      telephone: PHONE.replace(/\s/g, ''),
+      identifier: { '@type': 'PropertyValue', name: 'Saint Lucia IBC registration number', value: REG_NO },
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Unit 1, La Place Creole Building, Rodney Village',
+        addressLocality: 'Rodney Bay, Gros-Islet',
+        addressCountry: 'LC'
+      },
+      contactPoint: { '@type': 'ContactPoint', contactType: 'customer support', email: EMAIL, telephone: PHONE.replace(/\s/g, ''), availableLanguage: 'English' }
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: 'Artix Capital',
+      publisher: { '@id': `${SITE_URL}/#org` }
+    }
+  ]
+})
+</script>
+
 <template>
   <div class="min-h-dvh">
     <SiteNav />

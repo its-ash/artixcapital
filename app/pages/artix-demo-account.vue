@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({
+usePageSeo({
   title: 'Artix Demo account | Artix Capital',
   description: 'Practise on live market prices with virtual funds. Full nTrader access, no deposit, no risk, one-click upgrade to live.'
 })

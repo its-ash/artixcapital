@@ -1,6 +1,6 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'About Artix Capital',
+usePageSeo({
+  title: 'About Artix Capital | Forex and CFD broker',
   description: 'A pure agency multi-asset broker: FX, CFDs, commodities, indices and global markets, executed institutionally with no proprietary book.'
 })
 
@@ -45,7 +45,7 @@ const principles = [
 
     <PageSection id="ab-principles" title="Three rules we keep">
       <div class="grid gap-4 md:grid-cols-3">
-        <div v-for="p in principles" :key="p[0]" class="rounded-2xl border border-line bg-surface p-7">
+        <div v-for="p in principles" :key="p[0]" v-spot class="card p-7">
           <h3 class="text-xl font-semibold tracking-tight">{{ p[0] }}</h3>
           <p class="mt-2 leading-relaxed text-muted">{{ p[1] }}</p>
         </div>

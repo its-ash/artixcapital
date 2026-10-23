@@ -23,7 +23,7 @@ useMotion(root, ({ motion }) => {
       <h2 id="intro-title" class="sr-only">About Artix Capital</h2>
       <p class="i-text max-w-5xl text-3xl font-medium leading-[1.2] tracking-[-0.025em] md:text-5xl">
         Artix brings you the tools, the experience and direct access to global markets on a platform built for what comes next.
-        <span class="text-muted">Vaultex sits at the center of it: simple enough for a first trade, deep enough for a tenth year.</span>
+        <span class="text-muted">nTrader sits at the center of it: simple enough for a first trade, deep enough for a tenth year.</span>
       </p>
       <ul class="i-pills mt-14 flex flex-wrap gap-2.5">
         <li v-for="a in ASSET_CLASSES" :key="a.label" class="i-pill">

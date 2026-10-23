@@ -1,6 +1,6 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'MetaTrader 5 | Artix Capital',
+usePageSeo({
+  title: 'MetaTrader 5 trading platform | Artix Capital',
   description: 'Run the industry-standard terminal with Artix pricing: MQL5 automation, strategy testing, Level 2 depth across five devices.'
 })
 
@@ -45,7 +45,7 @@ const spec = [
 
     <PageSection id="mt-two" title="Two ways to use it">
       <div class="grid gap-4 md:grid-cols-2">
-        <div v-for="s in styles" :key="s[0]" class="rounded-2xl border border-line bg-surface p-8">
+        <div v-for="s in styles" :key="s[0]" v-spot class="card p-8">
           <h3 class="text-xl font-semibold tracking-tight">{{ s[0] }}</h3>
           <p class="mt-3 leading-relaxed text-muted">{{ s[1] }}</p>
         </div>

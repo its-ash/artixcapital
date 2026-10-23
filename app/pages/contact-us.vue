@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PhArrowRight, PhClock, PhEnvelopeSimple, PhMapPin, PhPhone } from '@phosphor-icons/vue'
 
-useSeoMeta({
+usePageSeo({
   title: 'Contact us | Artix Capital',
   description: 'Reach the Artix Capital support desk: +44 7822 018441 and support@artixcapital.com, staffed 24 hours a day, five days a week.'
 })
@@ -36,13 +36,13 @@ const channels = [
       </a>
       <a :href="`tel:${tel(PHONE)}`" class="btn btn-ghost h-13 px-7">Call now</a>
       <template #aside>
-        <ul class="grid gap-px overflow-hidden rounded-2xl border border-line bg-line">
-          <li v-for="c in channels" :key="c.label" class="flex items-center gap-4 bg-surface px-6 py-5">
-            <component :is="c.icon" :size="22" class="shrink-0 text-accent-soft" aria-hidden="true" />
+        <ul class="grid gap-3">
+          <li v-for="c in channels" :key="c.label" v-spot class="card flex items-center gap-4 px-5 py-4">
+            <span class="card-icon shrink-0" aria-hidden="true"><component :is="c.icon" :size="20" weight="duotone" /></span>
             <span class="min-w-0">
               <span class="block text-xs text-muted">{{ c.label }}</span>
-              <a v-if="c.href" :href="c.href" class="block truncate text-lg transition-colors hover:text-accent-soft" :class="c.mono ? 'font-mono' : ''">{{ c.value }}</a>
-              <span v-else class="block text-lg">{{ c.value }}</span>
+              <a v-if="c.href" :href="c.href" class="block break-words text-base transition-colors after:absolute after:inset-0 hover:text-accent-soft md:text-lg" :class="c.mono ? 'font-mono' : ''">{{ c.value }}</a>
+              <span v-else class="block text-base leading-snug md:text-lg">{{ c.value }}</span>
             </span>
           </li>
         </ul>

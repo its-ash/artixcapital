@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({
+usePageSeo({
   title: 'Artix Edge account | Artix Capital',
   description: 'Raw interbank pricing: 0.0 spreads, $5 per lot per side, sub-second execution. The account for active and scalping strategies.'
 })
@@ -52,9 +52,7 @@ const faqs = [
       <PageTable :head="head" :rows="compare" :strong="1" caption="Artix Edge compared with Artix Core" />
     </PageSection>
 
-    <PageSection id="ed-faq" title="Edge questions">
-      <PageFaq :items="faqs" name="ed-faq" />
-    </PageSection>
+    <PageFaqSection id="ed-faq" title="Edge questions" :items="faqs" />
 
     <PageCta />
   </main>

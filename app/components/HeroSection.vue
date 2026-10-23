@@ -34,7 +34,7 @@ useMotion(root, ({ motion }) => {
     <div class="pointer-events-none relative z-1 wrap grid min-h-[calc(100dvh-4rem)] items-start pb-14 pt-16 *:pointer-events-auto md:items-center md:py-14 lg:grid-cols-12 lg:py-20">
       <div class="lg:col-span-7">
         <p class="h-label text-sm font-medium text-accent-soft">Forex and CFD brokerage</p>
-        <h1 id="hero-title" class="h-title h-display mt-5 max-w-[14ch] text-5xl sm:text-6xl xl:text-7xl">Capital, treated with conviction.</h1>
+        <h1 id="hero-title" class="h-title h-display mt-5 max-w-[14ch] text-5xl sm:text-6xl xl:text-7xl">Quiet money. Loud success.</h1>
         <p class="h-sub mt-7 max-w-lg text-lg leading-relaxed text-muted">
           Institutional pricing and a professional terminal across forex, stocks, indices, commodities and crypto.
         </p>

@@ -104,10 +104,41 @@
   .faq details .faq-icon { transition: transform 260ms var(--ease-out-strong); }
   .faq details[open] .faq-icon { transform: rotate(45deg); }
 
+  .card {
+    --mx: 50%; --my: 0%;
+    position: relative; isolation: isolate; overflow: hidden;
+    border: 1px solid var(--color-line); border-radius: 1rem; background: var(--color-surface);
+    transition: border-color 240ms ease, translate 320ms var(--ease-out-expo);
+  }
+  .card::before, .card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 300ms ease; }
+  .card::before { z-index: -1; background: radial-gradient(26rem circle at var(--mx) var(--my), color-mix(in oklab, var(--color-accent) 13%, transparent), transparent 60%); }
+  .card::after {
+    padding: 1px;
+    background: radial-gradient(16rem circle at var(--mx) var(--my), color-mix(in oklab, var(--color-accent-soft) 75%, transparent), transparent 70%);
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  }
+  .card-icon {
+    display: grid; place-items: center; inline-size: 2.75rem; block-size: 2.75rem; border-radius: 0.75rem;
+    border: 1px solid var(--color-line-strong); background: var(--color-canvas); color: var(--color-accent-soft);
+    transition: background-color 240ms ease, border-color 240ms ease, color 240ms ease, rotate 420ms var(--ease-out-expo), scale 420ms var(--ease-out-expo);
+  }
+  .card:focus-within::after { opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover { border-color: var(--color-line-strong); translate: 0 -3px; }
+    .card:hover::before, .card:hover::after { opacity: 1; }
+    .card:hover .card-icon { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); rotate: -6deg; scale: 1.06; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card, .card-icon { transition-property: opacity, background-color, border-color, color; }
+    .card:hover { translate: none; }
+    .card:hover .card-icon { rotate: none; scale: none; }
+  }
+
   .tick-up { animation: tick-up 900ms ease-out; }
   .tick-down { animation: tick-down 900ms ease-out; }
 }
 
+@keyframes ripple { from { scale: 0.55; opacity: 0.9; } to { scale: 1.7; opacity: 0; } }
 @keyframes tick-up { from { color: var(--color-up); } }
 @keyframes tick-down { from { color: var(--color-down); } }
 

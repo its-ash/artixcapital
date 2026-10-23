@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({
+usePageSeo({
   title: 'nTrader for Mobile | Artix Capital',
   description: 'Real-time trading on iOS and Android: live quotes, full order entry, charts, alerts and synced sessions with desktop.'
 })

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'Forex trading | Artix Capital',
+usePageSeo({
+  title: 'Forex trading: 60+ currency pairs | Artix Capital',
   description: 'Trade the most liquid market in the world. 60+ currency pairs, 24/5 sessions, spreads from 0.0 pips and leverage to 1:200 on nTrader.'
 })
 
@@ -56,10 +56,9 @@ const faqs = [
       <Mql5Widget type="overview" :symbols="['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'USDCAD', 'USDCHF', 'NZDUSD', 'EURGBP', 'EURJPY', 'GBPJPY']" />
     </PageSection>
 
-    <PageSection id="fx-faq" title="Common questions">
-      <PageFaq :items="faqs" name="fx-faq" />
+    <PageFaqSection id="fx-faq" title="Common questions" :items="faqs">
       <p class="mt-6 text-xs text-muted">Prices shown on this page are indicative only. Check individual account types for full trading conditions.</p>
-    </PageSection>
+    </PageFaqSection>
 
     <PageCta />
   </main>

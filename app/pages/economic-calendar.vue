@@ -1,6 +1,6 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'Economic calendar | Artix Capital',
+usePageSeo({
+  title: 'Live economic calendar | Artix Capital',
   description: 'Track the data releases that move markets: rate decisions, inflation, employment and growth prints with impact ratings in your own time zone.'
 })
 

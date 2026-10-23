@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({
+usePageSeo({
   title: 'Artix Elite account | Artix Capital',
   description: 'The professional tier: zero spreads, $3.5 per lot per side, priority liquidity and a dedicated service lane for high-volume trading.'
 })

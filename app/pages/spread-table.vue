@@ -1,6 +1,6 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'Spread table | Artix Capital',
+usePageSeo({
+  title: 'Spread table: typical spreads by symbol | Artix Capital',
   description: 'Typical spreads by instrument and account type: FX from 0.0 pips, raw metals and indices, crypto at 0.10% of notional.'
 })
 

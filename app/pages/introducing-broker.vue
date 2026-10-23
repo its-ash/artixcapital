@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({
+usePageSeo({
   title: 'Introducing broker program | Artix Capital',
   description: 'Turn your network into revenue: competitive per-lot commissions, real-time referral reporting, marketing materials and a dedicated partner team.'
 })

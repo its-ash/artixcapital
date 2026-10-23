@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({
+usePageSeo({
   title: 'nTrader for Windows | Artix Capital',
   description: 'The desktop workstation: unlimited charts, one-click trading, Level 2 depth, Fibonacci and Elliott tools. For Windows 10 and later.'
 })

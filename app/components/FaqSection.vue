@@ -2,6 +2,8 @@
 import { PhEnvelopeSimple, PhMapPin, PhPhone } from '@phosphor-icons/vue'
 
 const ITEMS = FAQS.map(f => [f.q, f.a] as const)
+
+useFaqLd(ITEMS)
 </script>
 
 <template>

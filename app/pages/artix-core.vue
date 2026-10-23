@@ -1,5 +1,5 @@
 <script setup lang="ts">
-useSeoMeta({
+usePageSeo({
   title: 'Artix Core account | Artix Capital',
   description: 'The beginner-friendly account: $500 minimum deposit, spreads from 1.5 pips, no FX or metals commission, all six asset classes on nTrader.'
 })

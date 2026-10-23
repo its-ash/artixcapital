@@ -1,6 +1,6 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: 'Stocks trading | Artix Capital',
+usePageSeo({
+  title: 'Stock CFD trading on global shares | Artix Capital',
   description: 'Speculate on Apple, NVIDIA, Tesla and more with stock CFDs. Go long or short, dividend-adjusted, from one USD account.'
 })
 
@@ -43,16 +43,14 @@ const faqs = [
 
     <PageSection id="st-how" title="Both directions, one ticket">
       <div class="grid gap-4 md:grid-cols-2">
-        <div v-for="s in sides" :key="s.title" class="rounded-2xl border border-line bg-surface p-8">
+        <div v-for="s in sides" :key="s.title" v-spot class="card p-8">
           <h3 class="text-xl font-semibold tracking-tight" :class="s.tone">{{ s.title }}</h3>
           <p class="mt-4 text-lg leading-relaxed text-muted">{{ s.text }}</p>
         </div>
       </div>
     </PageSection>
 
-    <PageSection id="st-faq" title="Stock questions">
-      <PageFaq :items="faqs" name="st-faq" />
-    </PageSection>
+    <PageFaqSection id="st-faq" title="Stock questions" :items="faqs" />
 
     <PageCta title="Earnings season is where stock CFDs earn their keep." />
   </main>

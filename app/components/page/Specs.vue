@@ -1,17 +1,27 @@
 <script setup lang="ts">
+import gsap from 'gsap'
+
 defineProps<{ rows: readonly (readonly [string, string])[]; label?: string }>()
+
+const root = ref<HTMLElement | null>(null)
+
+useMotion(root, ({ motion }) => {
+  if (!motion) return
+  gsap.from(gsap.utils.selector(root.value)('.sp-cell'), { y: 20, opacity: 0, stagger: 0.04, duration: 0.8, ease: 'expo.out', scrollTrigger: { trigger: root.value, start: 'top 88%' } })
+})
 </script>
 
 <template>
-  <dl class="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2" :aria-label="label">
+  <dl ref="root" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" :aria-label="label">
     <div
       v-for="(r, i) in rows"
       :key="r[0]"
-      class="bg-surface px-6 py-5"
-      :class="i === rows.length - 1 && rows.length % 2 ? 'sm:col-span-2' : ''"
+      v-spot
+      class="sp-cell card px-5 py-5 md:px-6"
+      :class="i === 0 ? 'border-[color-mix(in_oklab,var(--color-accent)_40%,transparent)] bg-[linear-gradient(160deg,color-mix(in_oklab,var(--color-accent)_12%,transparent),transparent_60%)]' : ''"
     >
       <dt class="text-sm text-muted">{{ r[0] }}</dt>
-      <dd class="mt-1.5 font-mono text-[15px] leading-relaxed tabular-nums text-fg">{{ r[1] }}</dd>
+      <dd class="mt-2 font-mono text-base leading-relaxed tabular-nums text-fg md:text-lg">{{ r[1] }}</dd>
     </div>
   </dl>
 </template>
