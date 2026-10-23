@@ -7,27 +7,65 @@ type V3 = [number, number, number]
 type Hub = { id: string; lat: number; lon: number; sym: string; hue: string }
 type Arc = { world: Float32Array; sp: Float32Array; hid: Uint8Array; hue: string; offset: number; speed: number }
 
-const DOTS = 12000
-const SPIN = 0.0022
-const TILT = -0.32
+const DOTS = 24000
+const SPIN = 0.0015
+const TILT = -0.22
+const AXIAL = (23.4 * Math.PI) / 180
+const GEO_URL = 'https://get.geojs.io/v1/ip/geo.json'
+const GEO_KEY = 'artix-geo'
+const USER_HUE = '#3fd17a'
+const USER_SPOT: [number, number] = [-0.32, -0.22]
+const USER_SPOT_SM: [number, number] = [-0.22, -0.55]
+const SWAY = 0.4
+const SWAY_SPEED = 0.16
 const GRID_STEP = 15
 const ARC_PTS = 96
 const TRAIL = 0.42
 const TRAIL_SEGS = 10
 const RIM_FADE = 0.22
-const PALETTE = ['#c41e2a', '#e0525c', '#7d8da8', '#a9b7cf']
+const COS_AX = Math.cos(AXIAL)
+const SIN_AX = Math.sin(AXIAL)
+const PALETTE = ['#d6141c', '#ff5a5f', '#9a9ca3', '#c4c6cc']
 
 const HUBS: Hub[] = [
-  { id: 'LDN', lat: 51.51, lon: -0.13, sym: 'GBP/USD', hue: '#a9b7cf' },
-  { id: 'NYC', lat: 40.71, lon: -74.0, sym: 'US500', hue: '#c41e2a' },
-  { id: 'FRA', lat: 50.11, lon: 8.68, sym: 'EUR/USD', hue: '#c41e2a' },
-  { id: 'TYO', lat: 35.68, lon: 139.69, sym: 'USD/JPY', hue: '#7d8da8' },
-  { id: 'SGP', lat: 1.35, lon: 103.82, sym: 'XAU/USD', hue: '#c41e2a' },
-  { id: 'SYD', lat: -33.87, lon: 151.21, sym: 'AUD/USD', hue: '#a9b7cf' },
-  { id: 'HKG', lat: 22.32, lon: 114.17, sym: 'BTC/USD', hue: '#e0525c' },
-  { id: 'SLU', lat: 14.08, lon: -60.95, sym: 'NAS100', hue: '#7d8da8' }
+  { id: 'LDN', lat: 51.51, lon: -0.13, sym: 'GBP/USD', hue: '#c4c6cc' },
+  { id: 'NYC', lat: 40.71, lon: -74.0, sym: 'US500', hue: '#d6141c' },
+  { id: 'FRA', lat: 50.11, lon: 8.68, sym: 'EUR/USD', hue: '#d6141c' },
+  { id: 'TYO', lat: 35.68, lon: 139.69, sym: 'USD/JPY', hue: '#9a9ca3' },
+  { id: 'SGP', lat: 1.35, lon: 103.82, sym: 'XAU/USD', hue: '#d6141c' },
+  { id: 'SYD', lat: -33.87, lon: 151.21, sym: 'AUD/USD', hue: '#c4c6cc' },
+  { id: 'HKG', lat: 22.32, lon: 114.17, sym: 'BTC/USD', hue: '#ff5a5f' },
+  { id: 'SLU', lat: 14.08, lon: -60.95, sym: 'NAS100', hue: '#9a9ca3' }
 ]
 const ROUTES: [string, string][] = [['LDN', 'NYC'], ['NYC', 'TYO'], ['FRA', 'SGP'], ['LDN', 'HKG'], ['SGP', 'SYD'], ['SLU', 'LDN'], ['TYO', 'SYD'], ['NYC', 'SLU'], ['HKG', 'FRA']]
+
+const props = defineProps<{ locate?: boolean }>()
+
+type Geo = { lat: number; lon: number; city: string }
+
+const locateUser = async (): Promise<Geo | null> => {
+  try {
+    const hit = sessionStorage.getItem(GEO_KEY)
+    if (hit) return JSON.parse(hit) as Geo
+  } catch {}
+  const ctl = new AbortController()
+  const t = setTimeout(() => ctl.abort(), 4000)
+  try {
+    const r = await fetch(GEO_URL, { signal: ctl.signal })
+    if (!r.ok) return null
+    const d = await r.json() as { latitude?: string; longitude?: string; city?: string; country_code?: string }
+    const lat = Number(d.latitude)
+    const lon = Number(d.longitude)
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) return null
+    const geo = { lat, lon, city: String(d.city || d.country_code || 'You').slice(0, 24).toUpperCase() }
+    try { sessionStorage.setItem(GEO_KEY, JSON.stringify(geo)) } catch {}
+    return geo
+  } catch {
+    return null
+  } finally {
+    clearTimeout(t)
+  }
+}
 
 const box = ref<HTMLElement | null>(null)
 const cvs = ref<HTMLCanvasElement | null>(null)
@@ -90,13 +128,10 @@ onMounted(() => {
   if (!el || !c || !ctx) return
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
-  const hubs = HUBS.map(h => ({ ...h, v: vec(h.lat, h.lon), phase: Math.random() * 2 }))
+  const hubs: (Hub & { v: V3; phase: number; user?: boolean })[] = HUBS.map(h => ({ ...h, v: vec(h.lat, h.lon), phase: Math.random() * 2 }))
   const byId = Object.fromEntries(hubs.map(h => [h.id, h]))
-  const arcs: Arc[] = ROUTES.flatMap(([a, b], i) => {
-    const A = byId[a]
-    const B = byId[b]
-    if (!A || !B) return []
-    const dist = Math.acos(A.v[0] * B.v[0] + A.v[1] * B.v[1] + A.v[2] * B.v[2])
+  const makeArc = (A: { v: V3; hue: string }, B: { v: V3 }, i: number): Arc => {
+    const dist = Math.acos(Math.min(1, A.v[0] * B.v[0] + A.v[1] * B.v[1] + A.v[2] * B.v[2]))
     const world = new Float32Array((ARC_PTS + 1) * 3)
     for (let k = 0; k <= ARC_PTS; k++) {
       const t = k / ARC_PTS
@@ -104,7 +139,12 @@ onMounted(() => {
       const h = 1 + Math.sin(Math.PI * t) * (0.08 + dist * 0.12)
       world.set([p[0] * h, p[1] * h, p[2] * h], k * 3)
     }
-    return [{ world, sp: new Float32Array((ARC_PTS + 1) * 3), hid: new Uint8Array(ARC_PTS + 1), hue: A.hue, offset: (i * 0.29) % 1, speed: 0.34 + (i % 3) * 0.05 }]
+    return { world, sp: new Float32Array((ARC_PTS + 1) * 3), hid: new Uint8Array(ARC_PTS + 1), hue: A.hue, offset: (i * 0.29) % 1, speed: 0.34 + (i % 3) * 0.05 }
+  }
+  const arcs: Arc[] = ROUTES.flatMap(([a, b], i) => {
+    const A = byId[a]
+    const B = byId[b]
+    return A && B ? [makeArc(A, B, i)] : []
   })
   const grid: V3[][] = []
   for (let lon = -180; lon < 180; lon += GRID_STEP) grid.push(Array.from({ length: 61 }, (_, k) => vec(-90 + k * 3, lon)))
@@ -112,6 +152,9 @@ onMounted(() => {
 
   let dots = new Float32Array()
   const state = { yaw: 0.6, tilt: TILT, vYaw: SPIN, reveal: reduce ? 1 : 0, dots: 0, hover: 0 }
+  let anchor: { yaw: number; tilt: number } | null = null
+  let waiting = !!props.locate
+  const born = performance.now()
   const tmp: V3 = [0, 0, 0]
   const pt: V3 = [0, 0, 0]
   let w = 0
@@ -143,9 +186,9 @@ onMounted(() => {
     R = w * 0.42
     cx = cy = w / 2
     const body = ctx.createRadialGradient(cx - R * 0.35, cy - R * 0.4, R * 0.1, cx, cy, R)
-    body.addColorStop(0, 'rgba(36,42,60,0.95)')
-    body.addColorStop(0.7, 'rgba(16,19,30,0.96)')
-    body.addColorStop(1, 'rgba(10,11,16,0.98)')
+    body.addColorStop(0, 'rgba(30,31,36,0.95)')
+    body.addColorStop(0.7, 'rgba(18,19,22,0.96)')
+    body.addColorStop(1, 'rgba(11,12,14,0.98)')
     const pal = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R)
     PALETTE.forEach((col, i) => pal.addColorStop(i / (PALETTE.length - 1), col))
     fills = { body, pal }
@@ -162,10 +205,28 @@ onMounted(() => {
     const vz = v[o + 2] ?? 0
     const x = vx * cyw + vz * syw
     const z1 = -vx * syw + vz * cyw
-    out[0] = cx + x * R
-    out[1] = cy - (vy * ct - z1 * st) * R
+    const y = -(vy * ct - z1 * st)
+    out[0] = cx + (x * COS_AX - y * SIN_AX) * R
+    out[1] = cy + (x * SIN_AX + y * COS_AX) * R
     out[2] = vy * st + z1 * ct
     return out
+  }
+  const aim = (lat: number, lon: number) => {
+    const [dx, dy] = matchMedia('(min-width: 768px)').matches ? USER_SPOT : USER_SPOT_SM
+    const X = dx * COS_AX + dy * SIN_AX
+    const Y = -dx * SIN_AX + dy * COS_AX
+    const la = (lat * Math.PI) / 180
+    const lo = (lon * Math.PI) / 180
+    const a = Math.asin(gsap.utils.clamp(-1, 1, X / Math.max(0.2, Math.cos(la))))
+    const A = Math.sin(la)
+    const B = Math.cos(la) * Math.cos(a)
+    const phi = Math.atan2(B, A)
+    const k = Math.acos(gsap.utils.clamp(-1, 1, -Y / Math.hypot(A, B)))
+    const tilt = [k - phi, -k - phi]
+      .map(t => Math.atan2(Math.sin(t), Math.cos(t)))
+      .filter(t => A * Math.sin(t) + B * Math.cos(t) > 0)
+      .sort((p, q) => Math.abs(p) - Math.abs(q))[0] ?? la
+    return { yaw: a - lo, tilt: gsap.utils.clamp(-1.1, 1.1, tilt) }
   }
   const occluded = (x: number, y: number, z: number) => z < 0 && Math.hypot(x - cx, y - cy) < R
 
@@ -203,6 +264,8 @@ onMounted(() => {
 
     ctx.globalAlpha = rv
     ctx.fillStyle = fills.body
+    ctx.beginPath()
+    ctx.arc(cx, cy, R, 0, Math.PI * 2)
     ctx.fill()
 
     ctx.lineWidth = 1
@@ -221,13 +284,13 @@ onMounted(() => {
           } else pen = false
         }
       }
-      ctx.strokeStyle = front ? fills.pal : 'rgba(201,167,93,0.08)'
+      ctx.strokeStyle = front ? fills.pal : 'rgba(255,255,255,0.06)'
       ctx.globalAlpha = (front ? 0.38 : 1) * rv
       ctx.stroke()
     }
 
     if (dots.length) {
-      const sz = Math.max(1.4, R / 120)
+      const sz = Math.min(2.6, Math.max(1.4, R / 120))
       for (const rimPass of [true, false]) {
         ctx.beginPath()
         for (let i = 0; i < dots.length; i += 3) {
@@ -242,7 +305,7 @@ onMounted(() => {
     }
 
     const arcAlpha = Math.max(0, rv * 2 - 1)
-    const lw = 1.4 * (w / 560 + 0.4)
+    const lw = 1.4 * Math.min(1.6, w / 560 + 0.4)
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
     for (const a of arcs) {
@@ -290,7 +353,7 @@ onMounted(() => {
       }
     }
 
-    ctx.font = `500 ${Math.max(9, Math.round(w / 56))}px "JetBrains Mono", ui-monospace, monospace`
+    ctx.font = `500 ${Math.min(12, Math.max(9, Math.round(w / 64)))}px "Geist Mono", ui-monospace, monospace`
     ctx.textBaseline = 'middle'
     for (const h of hubs) {
       const p = proj(h.v, 0, tmp)
@@ -309,20 +372,20 @@ onMounted(() => {
       ctx.arc(p[0], p[1], 3.2, 0, Math.PI * 2)
       ctx.fill()
       if (p[2] < 0.45) continue
-      const q = quotes.value.find(x => x.sym === h.sym)
-      const label = `${h.id}  ${h.sym}  ${q ? fmt(q.price, Math.min(q.dp, 4)) : ''}`
+      const q = h.user ? undefined : quotes.value.find(x => x.sym === h.sym)
+      const label = h.user ? `YOU  ${h.sym}` : `${h.id}  ${h.sym}  ${q ? fmt(q.price, Math.min(q.dp, 4)) : ''}`
       const tw = ctx.measureText(label).width + 16
       const lx = p[0] + 10
       const ly = p[1] - 16
       ctx.globalAlpha = vis * 0.92
-      ctx.fillStyle = 'rgba(14,15,28,0.85)'
+      ctx.fillStyle = 'rgba(18,19,22,0.85)'
       ctx.beginPath()
       ctx.roundRect(lx, ly - 10, tw, 20, 10)
       ctx.fill()
       ctx.strokeStyle = h.hue
       ctx.lineWidth = 1
       ctx.stroke()
-      ctx.fillStyle = q && q.dir < 0 ? '#c41e2a' : '#eef0f6'
+      ctx.fillStyle = q && q.dir < 0 ? '#d6141c' : '#ecedee'
       ctx.fillText(label, lx + 8, ly + 0.5)
     }
 
@@ -333,11 +396,17 @@ onMounted(() => {
   const loop = (now: number) => {
     raf = requestAnimationFrame(loop)
     if (!visible || document.hidden) return
-    if (!drag) {
+    if (drag) state.yaw += state.vYaw
+    else if (anchor) {
+      const target = anchor.yaw + Math.sin((now / 1000) * SWAY_SPEED) * SWAY
+      state.vYaw *= 0.94
+      state.yaw += state.vYaw + (target - state.yaw) * 0.02
+      state.tilt += (anchor.tilt + state.hover - state.tilt) * 0.03
+    } else if (!waiting) {
       state.vYaw += (SPIN - state.vYaw) * 0.02
       state.tilt += (TILT + state.hover - state.tilt) * 0.04
+      state.yaw += state.vYaw
     }
-    state.yaw += state.vYaw
     draw(now)
   }
 
@@ -387,6 +456,23 @@ onMounted(() => {
       draw(0)
     } else gsap.to(state, { dots: 1, duration: 1.6, delay: 0.6, ease: 'power2.out' })
   }).catch(() => { dots = new Float32Array() })
+
+  if (props.locate) locateUser().then(g => {
+    waiting = false
+    if (!g) return
+    const me = { id: 'YOU', lat: g.lat, lon: g.lon, sym: g.city, hue: USER_HUE, v: vec(g.lat, g.lon), phase: 0, user: true }
+    const near = hubs.reduce((a, h) => (h.v[0] * me.v[0] + h.v[1] * me.v[1] + h.v[2] * me.v[2] > a.v[0] * me.v[0] + a.v[1] * me.v[1] + a.v[2] * me.v[2] ? h : a))
+    hubs.push(me)
+    arcs.push(makeArc(me, near, arcs.length))
+    anchor = aim(g.lat, g.lon)
+    anchor.yaw += Math.round((state.yaw - anchor.yaw) / (Math.PI * 2)) * Math.PI * 2
+    if (reduce || performance.now() - born < 3000) {
+      state.yaw = anchor.yaw
+      state.tilt = anchor.tilt
+      state.vYaw = 0
+      if (reduce) draw(0)
+    }
+  })
 
   if (reduce) draw(0)
   else {

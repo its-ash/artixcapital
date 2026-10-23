@@ -8,15 +8,13 @@ useSeoMeta({
 <template>
   <main id="main">
     <HeroSection />
-    <StatsBand />
     <TickerTape />
+    <StatsBand />
     <IntroReveal />
-    <MarketsScroller />
+    <MarketsGrid />
     <PlatformShowcase />
     <AccountsGrid />
     <StepsPath />
-    <FundingWall />
     <FaqSection />
-    <CtaFinale />
   </main>
 </template>

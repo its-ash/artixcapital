@@ -1,63 +1,49 @@
 <script setup lang="ts">
 import gsap from 'gsap'
 import { SplitText } from 'gsap/SplitText'
-import { PhArrowRight, PhPlay } from '@phosphor-icons/vue'
+import { PhArrowRight } from '@phosphor-icons/vue'
 
 const root = ref<HTMLElement | null>(null)
 
 useMotion(root, ({ motion }) => {
   if (!motion) return
   const q = gsap.utils.selector(root.value)
-  const title = SplitText.create(q('.h-l1'), { type: 'lines,words,chars', mask: 'lines' })
-  const sub = SplitText.create(q('.h-sub'), { type: 'lines', mask: 'lines' })
-
-  const tl = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } })
-    .from(q('.h-eyebrow'), { y: 20, opacity: 0, scale: 0.94, duration: 0.9 })
-    .from(title.chars, { yPercent: 120, rotateX: -90, opacity: 0, transformOrigin: '50% 100% -30px', stagger: 0.025, duration: 1.2 }, 0.1)
-    .fromTo(q('.h-l2'), { clipPath: 'inset(-10% 100% -30% 0%)', filter: 'blur(12px)', x: -30 }, { clipPath: 'inset(-10% 0% -30% 0%)', filter: 'blur(0px)', x: 0, duration: 1.4, ease: 'expo.inOut', clearProps: 'clipPath,filter' }, 0.35)
-    .from(sub.lines, { yPercent: 110, stagger: 0.08, duration: 1 }, 0.7)
-    .fromTo(q('.h-cta'), { y: 30, opacity: 0, scale: 0.95 }, { y: 0, opacity: 1, scale: 1, stagger: 0.08, duration: 1 }, 0.85)
-    .fromTo(q('.h-globe'), { opacity: 0, scale: 0.85, rotate: -8 }, { opacity: 1, scale: 1, rotate: 0, duration: 2, ease: 'expo.out' }, 0.2)
-  tl.play()
-
-  gsap.timeline({ scrollTrigger: { trigger: root.value, start: 'top top', end: 'bottom top', scrub: true } })
-    .to(q('.h-copy'), { y: -140, opacity: 0.1, ease: 'none' }, 0)
-    .to(q('.h-globe'), { y: 60, opacity: 0.35, ease: 'none' }, 0)
-
-  return () => {
-    title.revert()
-    sub.revert()
-  }
+  const title = SplitText.create(q('.h-title'), { type: 'lines', mask: 'lines' })
+  gsap.timeline({ defaults: { ease: 'expo.out' } })
+    .from(q('.h-label'), { y: 12, opacity: 0, duration: 0.7 })
+    .from(title.lines, { yPercent: 110, stagger: 0.08, duration: 1.1 }, 0.05)
+    .from(q('.h-sub'), { y: 16, opacity: 0, duration: 0.9 }, 0.35)
+    .from(q('.h-cta'), { y: 16, opacity: 0, stagger: 0.06, duration: 0.8 }, 0.45)
+    .fromTo(q('.h-globe'), { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 1.8 }, 0.1)
+  gsap.fromTo(q('.h-globe-inner'), { yPercent: 0, opacity: 1 }, { yPercent: 8, opacity: 0.4, ease: 'none', immediateRender: false, scrollTrigger: { trigger: root.value, start: 'top top', end: 'bottom top', scrub: true } })
+  return () => title.revert()
 })
 </script>
 
 <template>
-  <section id="top" ref="root" class="relative flex min-h-dvh items-center overflow-hidden pb-16 pt-28 lg:pt-24">
-    <div class="pointer-events-none absolute inset-0 hidden md:block" aria-hidden="true">
-      <div class="h-globe absolute left-[60%] top-1/2 aspect-square h-[125%] max-w-none -translate-x-1/2 -translate-y-1/2">
-        <GlobeGrid />
+  <section id="top" ref="root" class="relative overflow-hidden" aria-labelledby="hero-title">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(45%_55%_at_85%_10%,rgb(214_20_28/0.16),transparent_70%),radial-gradient(35%_40%_at_0%_100%,rgb(255_255_255/0.03),transparent_70%)]" aria-hidden="true" />
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      <div class="h-globe absolute -bottom-[64vw] -right-[42vw] size-[130vw] opacity-60 md:-right-[39.5vw] md:bottom-auto md:top-[62%] md:size-[119vw] md:-translate-y-1/2 md:opacity-100">
+        <div class="h-globe-inner size-full">
+          <GlobeGrid locate class="pointer-events-auto" />
+        </div>
       </div>
+      <div class="absolute inset-y-0 left-0 hidden w-1/2 bg-linear-to-r from-canvas via-canvas/80 to-transparent md:block" />
     </div>
-    <div class="wrap relative z-2 grid items-center gap-6 lg:grid-cols-12 lg:gap-6">
-      <div class="h-copy relative z-10 lg:col-span-7">
-        <p class="h-eyebrow glass inline-flex h-9 items-center gap-2.5 rounded-full px-4 font-mono text-xs uppercase tracking-[0.18em] text-fg/85">
-          <span class="pulse-dot size-2 rounded-full bg-accent" aria-hidden="true" />Forex and CFD brokerage
+    <div class="pointer-events-none relative z-1 wrap grid min-h-[calc(100dvh-4rem)] items-start pb-14 pt-16 *:pointer-events-auto md:items-center md:py-14 lg:grid-cols-12 lg:py-20">
+      <div class="lg:col-span-7">
+        <p class="h-label text-sm font-medium text-accent-soft">Forex and CFD brokerage</p>
+        <h1 id="hero-title" class="h-title h-display mt-5 max-w-[14ch] text-5xl sm:text-6xl xl:text-7xl">Capital, treated with conviction.</h1>
+        <p class="h-sub mt-7 max-w-lg text-lg leading-relaxed text-muted">
+          Institutional pricing and a professional terminal across forex, stocks, indices, commodities and crypto.
         </p>
-        <h1 class="mt-7 text-5xl font-bold tracking-[-0.035em] sm:text-6xl xl:text-7xl">
-          <span class="h-l1 block leading-[1.05]">Capital, treated</span>
-          <span class="h-l2 grad-text block pb-2 leading-[1.1]">with conviction.</span>
-        </h1>
-        <p class="h-sub mt-6 max-w-xl text-lg leading-8 text-muted">
-          Institutional pricing and a professional terminal for your portfolio across forex, stocks, indices, commodities and crypto.
-        </p>
-        <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-4">
-          <a v-magnetic :href="SIGNUP" class="h-cta btn btn-primary h-14 px-8 text-base">
+        <div class="mt-10 flex flex-wrap gap-3">
+          <a v-magnetic="0.2" :href="SIGNUP" class="h-cta btn btn-primary h-14 px-8 text-base">
             Open account
-            <span class="btn-icon" aria-hidden="true"><PhArrowRight :size="20" weight="bold" /><PhArrowRight :size="20" weight="bold" /></span>
+            <span class="btn-icon" aria-hidden="true"><PhArrowRight :size="18" weight="bold" /><PhArrowRight :size="18" weight="bold" /></span>
           </a>
-          <a v-magnetic :href="NAV[2]?.items[4]?.href" class="h-cta btn btn-ghost h-14 px-8 text-base font-medium">
-            <PhPlay :size="18" weight="fill" class="text-accent" />Try demo
-          </a>
+          <NuxtLink to="/artix-demo-account/" class="h-cta btn btn-ghost h-14 px-8 text-base">Try demo</NuxtLink>
         </div>
       </div>
     </div>

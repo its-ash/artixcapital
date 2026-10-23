@@ -9,11 +9,11 @@ import tether from '~/assets/pay/tether.svg?url'
 
 const LOGOS = [
   { name: 'Visa', src: visa, hue: '#a9b7cf' },
-  { name: 'Mastercard', src: mastercard, hue: '#c41e2a' },
+  { name: 'Mastercard', src: mastercard, hue: '#31a150' },
   { name: 'American Express', src: amex, hue: '#7d8da8' },
-  { name: 'Google Pay', src: gpay, hue: '#c41e2a' },
-  { name: 'Bitcoin', src: bitcoin, hue: '#9a1c26' },
-  { name: 'Tether', src: tether, hue: '#e0525c' }
+  { name: 'Google Pay', src: gpay, hue: '#31a150' },
+  { name: 'Bitcoin', src: bitcoin, hue: '#31a150' },
+  { name: 'Tether', src: tether, hue: '#31a150' }
 ]
 
 const root = ref<HTMLElement | null>(null)

@@ -6,16 +6,19 @@ Static clone of artixcapital.com, built with Nuxt 4 and served from `docs/` on G
 - Nuxt 4 (`app/` directory, no pages router, single page in `app/app.vue`)
 - Tailwind CSS v4 through `@tailwindcss/vite`. Tokens are in `app/assets/css/main.css` under `@theme`.
 - GSAP 3.15 (ScrollTrigger, SplitText, DrawSVG, ScrambleText, MotionPath) and Lenis smooth scroll, set up in `app/plugins/motion.ts`
-- `@nuxt/fonts` self-hosts Space Grotesk and JetBrains Mono
+- `@nuxt/fonts` self-hosts Geist and Geist Mono
 - Icons: `@phosphor-icons/vue` only
 
 ## Conventions
 - Page content and links live in `app/utils/site.ts`. Change `SITE` there to switch absolute links to relative paths.
-- Market prices are a simulated feed (`app/composables/useMarketFeed.ts`). Label them as indicative.
+- Live prices and the economic calendar use MQL5 widgets through `Mql5Widget` (`ticker`, `overview`, `chart`, `calendar`). MQL5 symbol names have no slash (`XAUUSD`, `US500`, `USTEC`, `DE40`). Widgets sit in `.mql5-frame` / `.mql5-strip`, which match the widget dark theme (`--color-elevated` `#1a1d22`).
+- The simulated feed (`app/composables/useMarketFeed.ts`) only drives the globe labels and platform illustration charts. Label it as indicative.
+- The hero globe (`GlobeGrid locate`) shows the visitor's approximate location from `get.geojs.io`, cached in `sessionStorage`.
+- Subpages use the shared parts in `app/components/page/` (`PageHero`, `PageSection`, `PageFeatures`, `PageSpecs`, `PageStats`, `PageTable`, `PageFaq`, `PageSteps`, `PageCta`).
 - Every animation goes through `useMotion(root, fn)` so it uses `gsap.matchMedia` and reverts on unmount.
 - Respect `prefers-reduced-motion`: the `reduce` branch must show final content with no movement.
 - Directives: `v-reveal` (`lines` | `words` | `chars` | `fade`), `v-magnetic`, `v-tilt`.
-- Brand: background `#0f0f15`, accent `#5184ff`, up `#3fd17a`, down `#ff5d64`. Cards 24px radius, buttons pill.
+- Brand: background `#0b0c0e`, accent `#d6141c` (text `#ff5a5f`, from the logo red), up `#3fd17a`, down `#ff5d64`. Containers 16px radius (`rounded-2xl`), buttons pill. No gradient text, no glass cards.
 - Never add a GitHub Actions deploy workflow.
 
 ## Commands

@@ -80,7 +80,7 @@ onMounted(() => {
       const mid = (y(d.o) + y(d.c)) / 2
       const k = (v: number) => mid + (y(v) - mid) * g
       const up = d.c >= d.o
-      ctx.strokeStyle = ctx.fillStyle = up ? '#2fbf6d' : '#e2555f'
+      ctx.strokeStyle = ctx.fillStyle = up ? '#3fd17a' : '#ff5d64'
       ctx.globalAlpha = 0.35 + g * 0.65
       ctx.beginPath()
       ctx.moveTo(Math.round(x) + 0.5, k(d.h))
@@ -91,7 +91,7 @@ onMounted(() => {
     })
     ctx.globalAlpha = 1
 
-    ctx.strokeStyle = '#a9b7cf'
+    ctx.strokeStyle = '#9a9ca3'
     ctx.lineWidth = 1.6
     ctx.beginPath()
     view.forEach((_, i) => {
@@ -105,7 +105,7 @@ onMounted(() => {
     const cur = view.at(-1)
     if (!cur) return
     const py = Math.round(y(cur.c)) + 0.5
-    const col = cur.c >= cur.o ? '#2fbf6d' : '#e2555f'
+    const col = cur.c >= cur.o ? '#3fd17a' : '#ff5d64'
     ctx.setLineDash([3, 4])
     ctx.strokeStyle = col
     ctx.lineWidth = 1
@@ -118,7 +118,7 @@ onMounted(() => {
     ctx.beginPath()
     ctx.roundRect(w - 54, py - 9, 52, 18, 4)
     ctx.fill()
-    ctx.fillStyle = '#0a0b10'
+    ctx.fillStyle = '#1a1d22'
     ctx.font = '500 10px "JetBrains Mono", ui-monospace, monospace'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'

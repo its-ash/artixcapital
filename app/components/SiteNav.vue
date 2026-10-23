@@ -75,46 +75,24 @@ onBeforeUnmount(() => {
 })
 
 useMotion(root, ({ motion }) => {
-  let hidden = false
-  const st = ScrollTrigger.create({
-    start: 0,
-    end: 'max',
-    onUpdate: self => {
-      scrolled.value = self.scroll() > 40
-      if (!motion || menu.value) return
-      const hide = self.direction === 1 && self.scroll() > 240 && active.value === null
-      if (hide === hidden) return
-      hidden = hide
-      gsap.to(shell.value, { yPercent: hide ? -160 : 0, duration: 0.5, ease: hide ? 'power3.in' : 'expo.out', overwrite: 'auto' })
-    }
-  })
+  const st = ScrollTrigger.create({ start: 0, end: 'max', onUpdate: self => { scrolled.value = self.scroll() > 8 } })
   if (bar.value) gsap.to(bar.value, { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } })
-  if (!motion) return () => st.kill()
-  const q = gsap.utils.selector(root.value)
-  const tl = gsap.timeline({ paused: true })
-    .fromTo(shell.value, { yPercent: -160, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1.1, ease: 'expo.out' })
-    .fromTo(q('.nav-item'), { y: -16, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.05, duration: 0.8 }, 0.25)
-  tl.play()
+  if (motion) gsap.fromTo(gsap.utils.selector(root.value)('.nav-item'), { y: -8, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.04, duration: 0.7 })
   return () => st.kill()
 })
 </script>
 
 <template>
-  <header ref="root" class="fixed inset-x-0 top-0 z-50">
+  <header ref="root" class="sticky top-0 z-50">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-60 focus:rounded-full focus:bg-fg focus:px-4 focus:py-2 focus:text-ink">Skip to main content</a>
-    <div class="wrap pt-2.5 sm:pt-4">
-      <nav
-        ref="shell"
-        class="glass glass-blur relative flex h-14 items-center justify-between gap-2 rounded-2xl pl-3.5 pr-2 transition-[background-color,border-color] duration-300 sm:h-16 sm:rounded-full sm:pl-5"
-        :class="scrolled ? 'bg-[rgb(13_14_21/0.78)]' : ''"
-        aria-label="Primary"
-      >
+    <div ref="shell" class="glass relative border-b transition-colors duration-300" :class="scrolled ? 'border-line' : 'border-transparent'">
+      <nav class="wrap relative flex h-16 items-center justify-between gap-4" aria-label="Primary">
         <NuxtLink to="/" class="nav-item shrink-0" aria-label="Artix Capital home">
-          <BrandLogo class="h-6 w-auto text-fg sm:h-7" />
+          <BrandLogo class="h-7 w-auto sm:h-8" />
         </NuxtLink>
 
         <ul class="relative hidden items-center lg:flex" @pointerleave="hidePill">
-          <span ref="pill" class="absolute left-0 top-1/2 h-10 w-0 -translate-y-1/2 rounded-full bg-white/8 opacity-0" aria-hidden="true" />
+          <span ref="pill" class="absolute left-0 top-1/2 h-9 w-0 -translate-y-1/2 rounded-full bg-white/6 opacity-0" aria-hidden="true" />
           <li
             v-for="(g, i) in NAV"
             :key="g.label"
@@ -124,7 +102,8 @@ useMotion(root, ({ motion }) => {
           >
             <button
               type="button"
-              class="relative flex h-10 items-center gap-1 rounded-full px-3.5 text-sm font-medium text-fg/80 transition-colors hover:text-fg"
+              class="relative flex h-9 items-center gap-1 rounded-full px-3.5 text-sm text-fg/75 transition-colors hover:text-fg"
+              :class="active === i ? 'text-fg' : ''"
               :aria-expanded="active === i"
               :aria-controls="`mega-${i}`"
               @pointerenter="movePill"
@@ -132,20 +111,19 @@ useMotion(root, ({ motion }) => {
               @click="toggle(i)"
             >
               {{ g.label }}
-              <PhCaretDown :size="12" weight="bold" class="transition-transform duration-300" :class="active === i ? 'rotate-180' : ''" />
+              <PhCaretDown :size="11" weight="bold" class="text-muted transition-transform duration-200" :class="active === i ? 'rotate-180' : ''" />
             </button>
             <div :id="`mega-${i}`" class="mega absolute left-1/2 top-full pt-3" :data-open="active === i">
-              <ul class="glass w-80 rounded-3xl bg-[rgb(14_15_22/0.92)] p-2">
+              <ul class="w-80 rounded-2xl border border-line bg-surface p-2 shadow-[0_24px_60px_-24px_rgb(0_0_0/0.8)]">
                 <li v-for="(it, j) in g.items" :key="it.label" class="mega-item" :style="{ '--i': j }">
-                  <NuxtLink :to="it.href" class="group flex items-center gap-3 rounded-2xl p-3 transition-colors hover:bg-white/6" :tabindex="active === i ? 0 : -1">
-                    <span class="grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/4 text-steel transition-[transform,background-color] duration-300 group-hover:scale-105 group-hover:bg-accent/10">
-                      <component :is="it.icon" :size="20" />
+                  <NuxtLink :to="it.href" class="group flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-white/4" :tabindex="active === i ? 0 : -1" @click="active = null">
+                    <span class="grid size-9 shrink-0 place-items-center rounded-full border border-line text-muted transition-colors group-hover:text-accent-soft">
+                      <component :is="it.icon" :size="18" />
                     </span>
                     <span class="min-w-0">
-                      <span class="block text-sm font-bold">{{ it.label }}</span>
+                      <span class="block text-sm font-medium">{{ it.label }}</span>
                       <span class="block truncate text-xs text-muted">{{ it.desc }}</span>
                     </span>
-                    <PhCaretDown :size="13" class="ml-auto rotate-90 opacity-0 transition-opacity duration-300 group-hover:opacity-100 text-steel" />
                   </NuxtLink>
                 </li>
               </ul>
@@ -153,66 +131,61 @@ useMotion(root, ({ motion }) => {
           </li>
         </ul>
 
-        <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          <a :href="LOGIN" class="nav-item btn btn-ghost hidden h-10 px-4 text-sm xl:inline-flex sm:h-11">Log in</a>
-          <a href="/contact-us/" class="nav-item btn btn-ghost hidden h-10 px-4 text-sm sm:inline-flex lg:hidden">Contact</a>
-          <a v-magnetic="0.25" :href="SIGNUP" class="nav-item btn btn-primary h-10 px-4 text-xs sm:h-11 sm:px-5 sm:text-sm">Open account</a>
+        <div class="flex shrink-0 items-center gap-2">
+          <a :href="LOGIN" class="nav-item hidden h-10 items-center px-3 text-sm text-fg/75 transition-colors hover:text-fg xl:inline-flex">Log in</a>
+          <a :href="SIGNUP" class="nav-item btn btn-primary h-10 px-5 text-sm">Open account</a>
           <button
             ref="burger"
             type="button"
-            class="nav-item grid size-10 place-items-center rounded-xl border border-white/15 lg:hidden sm:size-11 sm:rounded-full"
+            class="nav-item grid size-10 place-items-center rounded-full border border-line-strong lg:hidden"
             aria-controls="mobile-drawer"
             :aria-expanded="menu"
             aria-label="Open menu"
             @click="setMenu(true)"
           >
-            <PhList :size="19" />
+            <PhList :size="18" />
           </button>
         </div>
 
-        <span class="pointer-events-none absolute inset-x-4 bottom-0 h-px overflow-hidden sm:inset-x-6" aria-hidden="true">
-          <span ref="bar" class="block h-full origin-left scale-x-0 bg-accent" />
-        </span>
       </nav>
+      <span class="pointer-events-none absolute inset-x-0 -bottom-px h-px overflow-hidden" aria-hidden="true">
+        <span ref="bar" class="block h-full origin-left scale-x-0 bg-accent-soft" />
+      </span>
     </div>
 
     <div
       id="mobile-drawer"
-      class="drawer fixed inset-x-2 top-17 bottom-0 z-60 flex flex-col rounded-3xl bg-[rgb(12_13_20/0.97)] border border-white/10 shadow-[0_40px_80px_-30px_rgb(0_0_0/0.8)] overflow-hidden sm:top-21 lg:hidden"
+      class="drawer fixed inset-0 z-60 flex flex-col bg-canvas lg:hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Menu"
       :data-open="menu"
       :inert="!menu"
     >
-      <div class="flex items-center justify-between border-b border-white/8 px-5 h-14 shrink-0">
-        <span class="font-mono text-xs uppercase tracking-[0.2em] text-muted">Menu</span>
-        <button ref="closeBtn" type="button" class="grid size-10 place-items-center rounded-full border border-white/15" aria-label="Close menu" @click="setMenu(false)">
+      <div class="wrap flex h-16 shrink-0 items-center justify-between border-b border-line">
+        <BrandLogo class="h-7 w-auto" />
+        <button ref="closeBtn" type="button" class="grid size-10 place-items-center rounded-full border border-line-strong" aria-label="Close menu" @click="setMenu(false)">
           <PhX :size="18" />
         </button>
       </div>
 
-      <div class="min-h-0 flex-1 overflow-y-auto px-2.5 py-3" @keydown="onDrawerKey">
-        <div v-for="(g, i) in NAV" :key="g.label" class="d-group" :style="{ '--i': i }">
+      <div class="wrap min-h-0 flex-1 overflow-y-auto py-4" @keydown="onDrawerKey">
+        <div v-for="(g, i) in NAV" :key="g.label" class="d-group border-b border-line" :style="{ '--i': i }">
           <button
             type="button"
-            class="drawer-group-btn flex w-full items-center justify-between rounded-2xl px-3.5 py-3 text-left text-lg font-bold transition-colors hover:bg-white/4"
+            class="drawer-group-btn flex w-full items-center justify-between py-4 text-left text-xl font-semibold tracking-tight"
             :aria-expanded="expandedGroup === i"
             :aria-controls="`dgroup-${i}`"
             @click="expandedGroup = expandedGroup === i ? null : i"
           >
             {{ g.label }}
-            <span class="grid size-8 shrink-0 place-items-center rounded-full border border-white/12 text-steel transition-colors" :class="expandedGroup === i ? 'bg-accent border-accent text-ink' : ''" aria-hidden="true">
-              <component :is="expandedGroup === i ? PhCaretUp : PhCaretDown" :size="13" weight="bold" />
-            </span>
+            <component :is="expandedGroup === i ? PhCaretUp : PhCaretDown" :size="14" weight="bold" class="text-muted" aria-hidden="true" />
           </button>
-          <div :id="`dgroup-${i}`" class="grid transition-[grid-template-rows] duration-500 ease-out" :class="expandedGroup === i ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
-            <ul class="min-h-0 overflow-hidden pl-3.5">
+          <div :id="`dgroup-${i}`" class="grid transition-[grid-template-rows,opacity] duration-300 ease-out" :class="expandedGroup === i ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+            <ul class="min-h-0 overflow-hidden">
               <li v-for="it in g.items" :key="it.label">
-                <NuxtLink :to="it.href" class="flex items-center gap-3 rounded-xl py-2.5 pr-3 text-base font-medium text-fg/85 transition-colors hover:text-fg" @click="setMenu(false)">
-                  <span class="grid size-8 shrink-0 place-items-center rounded-lg border border-white/10 bg-white/4 text-steel" aria-hidden="true">
-                    <component :is="it.icon" :size="15" />
-                  </span>
+                <NuxtLink :to="it.href" class="flex items-center gap-3 py-2.5 text-fg/85 transition-colors hover:text-fg" :tabindex="expandedGroup === i ? 0 : -1" @click="setMenu(false)">
+                  <component :is="it.icon" :size="18" class="shrink-0 text-muted" aria-hidden="true" />
                   <span class="min-w-0">
                     <span class="block">{{ it.label }}</span>
                     <span class="block truncate text-xs text-muted">{{ it.desc }}</span>
@@ -220,11 +193,12 @@ useMotion(root, ({ motion }) => {
                 </NuxtLink>
               </li>
             </ul>
+            <span class="block h-3" aria-hidden="true" />
           </div>
         </div>
       </div>
 
-      <div class="d-cta shrink-0 grid grid-cols-2 gap-2.5 border-t border-white/8 p-4">
+      <div class="d-cta wrap grid shrink-0 grid-cols-2 gap-3 border-t border-line py-4">
         <a :href="LOGIN" class="btn btn-ghost h-12 px-4 text-sm">Log in</a>
         <a :href="SIGNUP" class="btn btn-primary h-12 px-4 text-sm">Open account</a>
       </div>
@@ -238,15 +212,15 @@ useMotion(root, ({ motion }) => {
   transition: opacity 180ms var(--ease-out-strong), transform 220ms var(--ease-out-strong), visibility 0s 220ms;
 }
 .mega[data-open="true"] { opacity: 1; visibility: visible; transform: translate(-50%, 0) scale(1); transition-delay: 0s; }
-.mega-item { opacity: 0; transform: translateY(6px); transition: opacity 200ms ease, transform 260ms var(--ease-out-strong); }
-.mega[data-open="true"] .mega-item { opacity: 1; transform: none; transition-delay: calc(var(--i) * 35ms); }
+.mega-item { opacity: 0; transform: translateY(4px); transition: opacity 160ms ease, transform 200ms var(--ease-out-strong); }
+.mega[data-open="true"] .mega-item { opacity: 1; transform: none; transition-delay: calc(var(--i) * 25ms); }
 
-.drawer { visibility: hidden; }
-.drawer[data-open="true"] { visibility: visible; }
+.drawer { visibility: hidden; opacity: 0; transition: opacity 200ms ease, visibility 0s 200ms; }
+.drawer[data-open="true"] { visibility: visible; opacity: 1; transition-delay: 0s; }
 .d-group { opacity: 0; transform: translateY(14px); transition: opacity 260ms ease, transform 420ms var(--ease-out-expo); }
-.drawer[data-open="true"] .d-group { opacity: 1; transform: none; transition-delay: calc(80ms + var(--i) * 55ms); }
+.drawer[data-open="true"] .d-group { opacity: 1; transform: none; transition-delay: calc(60ms + var(--i) * 35ms); }
 .d-cta { opacity: 0; transform: translateY(10px); transition: opacity 240ms ease, transform 380ms var(--ease-out-expo); }
-.drawer[data-open="true"] .d-cta { opacity: 1; transform: none; transition-delay: 480ms; }
+.drawer[data-open="true"] .d-cta { opacity: 1; transform: none; transition-delay: 260ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .d-group, .d-cta { transform: none; transition: opacity 200ms ease; }

@@ -13,8 +13,8 @@ export default defineNuxtConfig({
   vite: { plugins: [tailwindcss()] },
   fonts: {
     families: [
-      { name: 'Space Grotesk', provider: 'google', weights: [400, 500, 700] },
-      { name: 'JetBrains Mono', provider: 'google', weights: [400, 500] }
+      { name: 'Geist', provider: 'google', weights: [400, 500, 600] },
+      { name: 'Geist Mono', provider: 'google', weights: [400, 500] }
     ]
   },
   app: {
@@ -23,7 +23,7 @@ export default defineNuxtConfig({
       titleTemplate: '%s',
       meta: [
         { name: 'description', content: DESC },
-        { name: 'theme-color', content: '#0a0b10' },
+        { name: 'theme-color', content: '#0b0c0e' },
         { name: 'robots', content: 'index, follow, max-image-preview:large' },
         { property: 'og:site_name', content: 'Artix Capital' },
         { property: 'og:type', content: 'website' },
