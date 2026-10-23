@@ -25,6 +25,15 @@ Static website for [artixcapital.com](https://artixcapital.com). Built with Nuxt
 | `make build` | Generate the static site into `docs/` and add `.nojekyll`. |
 | `make deploy` | Build, commit on `main` and push to `origin`. |
 
+## Deployment
+
+`.github/workflows/deploy.yml` builds the site and publishes it to GitHub Pages on every push to `main`. You can also start it by hand from the Actions tab.
+
+One-time setup:
+1. Pages on a private repository needs a paid GitHub plan (Pro, Team or Enterprise).
+2. In **Settings > Pages**, set **Source** to **GitHub Actions**.
+3. For a custom domain, set it in **Settings > Pages** and point the DNS records to GitHub Pages.
+
 ## Project structure
 
 ```
@@ -63,7 +72,6 @@ docs/                  Build output for GitHub Pages (do not edit)
 - Run every animation through `useMotion(root, fn)`. Show the final state with no movement when `prefers-reduced-motion` is set.
 - Do not hard-code the accent color. Use the `accent` utilities or `var(--color-accent)`.
 - Label simulated prices as indicative.
-- Do not add a GitHub Actions deploy workflow.
 
 ## License
 
