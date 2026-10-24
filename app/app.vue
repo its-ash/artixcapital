@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { SITE_URL } from '#shared/routes'
 
+const pageTransition = { name: 'page', mode: 'out-in' as const }
+
 useJsonLd('ld-org', {
   '@graph': [
     {
@@ -36,8 +38,22 @@ useJsonLd('ld-org', {
 <template>
   <div class="min-h-dvh">
     <SiteNav />
-    <NuxtPage />
+    <NuxtPage :transition="pageTransition" />
     <SiteFooter />
     <ThemePicker />
   </div>
 </template>
+
+<style>
+.page-enter-active,
+.page-leave-active { transition: opacity 280ms ease, translate 420ms var(--ease-out-expo); }
+.page-enter-from { opacity: 0; translate: 0 14px; }
+.page-leave-to { opacity: 0; translate: 0 -8px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter-active,
+  .page-leave-active { transition: opacity 200ms ease; }
+  .page-enter-from,
+  .page-leave-to { translate: none; }
+}
+</style>
