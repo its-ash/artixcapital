@@ -49,6 +49,7 @@ export const NAV: NavGroup[] = [
     label: 'Platforms',
     items: [
       { label: 'MetaTrader 5', href: page('meta-trader-5'), desc: 'The industry-standard terminal', icon: PhStack },
+      { label: 'MetaTrader 5 for Mobile', href: page('meta-trader-5-mobile'), desc: 'iPhone, iPad and Android', icon: PhDeviceMobile },
       { label: 'nTrader for Windows', href: page('ntrader-for-windows'), desc: 'Full desktop workstation', icon: PhDesktop },
       { label: 'nTrader for Mobile', href: page('ntrader-for-mobile'), desc: 'Trade from your phone', icon: PhDeviceMobile }
     ]

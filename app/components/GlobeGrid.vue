@@ -175,7 +175,7 @@ onMounted(() => {
   const WORD = 'ARTIX CAPITAL'
   const WORD_LAT = -10
   const WORD_LON = -34
-  const WORD_LIFT = 7
+  const WORD_LIFT = 13
   const buildWord = (lat: number, lon: number) => {
     const placed: [string, number][] = []
     let cursor = 0

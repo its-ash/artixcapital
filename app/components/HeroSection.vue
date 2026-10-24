@@ -55,7 +55,6 @@ useMotion(root, ({ motion }) => {
             Open account
             <span class="btn-icon" aria-hidden="true"><PhArrowRight :size="18" weight="bold" /><PhArrowRight :size="18" weight="bold" /></span>
           </a>
-          <NuxtLink to="/artix-demo-account/" class="h-cta btn btn-ghost h-14 px-8 text-base">Try demo</NuxtLink>
         </div>
       </div>
     </div>
