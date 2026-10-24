@@ -77,13 +77,14 @@ const LIVE = ['XTIUSD', 'XBRUSD', 'XNGUSD', 'XAUUSD', 'XAGUSD', 'US30', 'US500',
       </template>
     </PageHero>
 
-    <section class="wrap pb-16" aria-label="Futures conditions">
+    <section class="wrap pt-12 pb-16 md:pt-16" aria-label="Futures conditions">
       <PageStats :items="stats" />
     </section>
 
     <PageSection v-for="g in groups" :id="g.id" :key="g.id" :title="g.title" :lead="g.lead">
       <ul class="grid gap-3 sm:grid-cols-2" :class="g.rows.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'">
         <li v-for="m in g.rows" :key="m[0]" v-spot class="card flex flex-col p-6">
+          <component :is="g.icon" :size="160" weight="thin" class="card-bg pointer-events-none absolute -bottom-8 -right-8 -z-1 text-fg" aria-hidden="true" />
           <div class="flex items-start justify-between gap-3">
             <span class="card-icon" aria-hidden="true"><component :is="g.icon" :size="20" weight="duotone" /></span>
             <span class="chip inline-flex h-7 items-center rounded-full px-2.5 font-mono text-xs text-accent-soft">{{ m[0] }}</span>
@@ -107,3 +108,14 @@ const LIVE = ['XTIUSD', 'XBRUSD', 'XNGUSD', 'XAUUSD', 'XAGUSD', 'US30', 'US500',
     <PageCta title="Trade the contracts the world watches." />
   </main>
 </template>
+
+<style scoped>
+.card-bg { opacity: 0.05; transition: opacity 500ms ease, rotate 700ms var(--ease-out-expo); }
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .card-bg { opacity: 0.1; rotate: -8deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-bg { transition: opacity 500ms ease; }
+  .card:hover .card-bg { rotate: none; }
+}
+</style>

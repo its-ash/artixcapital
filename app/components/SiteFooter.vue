@@ -2,6 +2,8 @@
 import gsap from 'gsap'
 import { PhArrowUp, PhArrowUpRight, PhEnvelopeSimple, PhFilePdf, PhMapPin, PhPhone } from '@phosphor-icons/vue'
 
+const MARK = 'Artix Capital'.split('')
+
 const COLS = [NAV[0], NAV[2], NAV[1], NAV[3], NAV[4], NAV[5]].filter(g => !!g)
 const YEAR = new Date().getFullYear()
 const MAP = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(OFFICE)}`
@@ -145,8 +147,21 @@ useMotion(root, ({ motion }) => {
 
     <div class="pointer-events-none select-none overflow-hidden" aria-hidden="true">
       <p class="ft-mark wrap mb-[-0.1em] whitespace-nowrap text-center text-[clamp(3.5rem,15vw,13rem)] font-bold leading-none tracking-[-0.06em] text-muted/35 [-webkit-text-stroke:1px_var(--color-fg)]">
-        Artix Capital
+        <span v-for="(c, i) in MARK" :key="i" class="ft-ch" :style="{ '--i': i }">{{ c === ' ' ? ' ' : c }}</span>
       </p>
     </div>
   </footer>
 </template>
+
+<style scoped>
+.ft-ch { display: inline-block; animation: ft-wave 4.8s ease-in-out infinite; animation-delay: calc(var(--i) * 140ms); }
+
+@keyframes ft-wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.07em); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ft-ch { animation: none; }
+}
+</style>

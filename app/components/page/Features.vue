@@ -16,6 +16,7 @@ const wide = (i: number) => {
         class="card flex h-full flex-col p-6 md:p-7"
         :class="i === 0 ? 'bg-[radial-gradient(80%_90%_at_0%_0%,color-mix(in_oklab,var(--color-accent)_12%,transparent),transparent_70%)]' : ''"
       >
+        <component :is="themeIcon(`${f[0]} ${f[1]}`)" :size="160" weight="thin" class="card-bg pointer-events-none absolute -bottom-8 -right-8 -z-1 text-fg" aria-hidden="true" />
         <span class="card-icon font-mono text-xs" aria-hidden="true">{{ String(i + 1).padStart(2, '0') }}</span>
         <h3 class="mt-6 text-lg font-semibold tracking-tight md:text-xl">{{ f[0] }}</h3>
         <p class="mt-2 max-w-[48ch] text-pretty leading-relaxed text-muted">{{ f[1] }}</p>
@@ -23,3 +24,14 @@ const wide = (i: number) => {
     </li>
   </ul>
 </template>
+
+<style scoped>
+.card-bg { opacity: 0.05; transition: opacity 500ms ease, rotate 700ms var(--ease-out-expo); }
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .card-bg { opacity: 0.1; rotate: -8deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-bg { transition: opacity 500ms ease; }
+  .card:hover .card-bg { rotate: none; }
+}
+</style>

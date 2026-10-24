@@ -40,6 +40,19 @@ const HUBS: Hub[] = [
 ]
 const ROUTES: [string, string][] = [['LDN', 'NYC'], ['NYC', 'TYO'], ['FRA', 'SGP'], ['LDN', 'HKG'], ['SGP', 'SYD'], ['SLU', 'LDN'], ['TYO', 'SYD'], ['NYC', 'SLU'], ['HKG', 'FRA']]
 
+const GLYPHS: Record<string, string[]> = {
+  A: ['01110', '10001', '10001', '11111', '10001', '10001', '10001'],
+  R: ['11110', '10001', '10001', '11110', '10100', '10010', '10001'],
+  T: ['11111', '00100', '00100', '00100', '00100', '00100', '00100'],
+  I: ['11111', '00100', '00100', '00100', '00100', '00100', '11111'],
+  X: ['10001', '10001', '01010', '00100', '01010', '10001', '10001'],
+  C: ['01111', '10000', '10000', '10000', '10000', '10000', '01111'],
+  P: ['11110', '10001', '10001', '11110', '10000', '10000', '10000'],
+  L: ['10000', '10000', '10000', '10000', '10000', '10000', '11111']
+}
+
+const CORNERS: [number, number][] = [[-1, -1], [1, -1], [1, 1], [-1, 1]]
+
 const props = defineProps<{ locate?: boolean }>()
 
 type Geo = { lat: number; lon: number; city: string }
@@ -153,6 +166,36 @@ onMounted(() => {
   const grid: V3[][] = []
   for (let lon = -180; lon < 180; lon += GRID_STEP) grid.push(Array.from({ length: 61 }, (_, k) => vec(-90 + k * 3, lon)))
   for (let lat = -75; lat <= 75; lat += GRID_STEP) grid.push(Array.from({ length: 121 }, (_, k) => vec(lat, -180 + k * 3)))
+  const HQ = { lat: 14.08, lon: -60.95, foot: 1.6, h: 0.12 }
+  const hqCenter = vec(HQ.lat, HQ.lon)
+  const hqBaseV = CORNERS.map(([a, b]) => vec(HQ.lat + a * HQ.foot, HQ.lon + b * HQ.foot))
+  const hqTopV = hqBaseV.map(([x, y, z]) => [x * (1 + HQ.h), y * (1 + HQ.h), z * (1 + HQ.h)] as V3)
+  const CELL = 0.8
+  const CUBE_H = 0.05
+  const WORD = 'ARTIX CAPITAL'
+  const WORD_LAT = -10
+  const WORD_LON = -34
+  const WORD_LIFT = 7
+  const buildWord = (lat: number, lon: number) => {
+    const placed: [string, number][] = []
+    let cursor = 0
+    for (const ch of WORD) {
+      if (GLYPHS[ch]) placed.push([ch, cursor])
+      cursor += ch === ' ' ? 4 : 6
+    }
+    const span = cursor - 1
+    return placed.flatMap(([ch, x0]) => (GLYPHS[ch] ?? []).flatMap((row, r) => [...row].flatMap((bit, c) => {
+      if (bit !== '1') return []
+      const la = lat + (3 - r) * CELL
+      const lo = lon + (x0 + c - span / 2) * CELL
+      const cosA = Math.max(0.2, Math.cos((la * Math.PI) / 180))
+      const half = CELL * 0.46
+      const base = CORNERS.map(([a, b]) => vec(la + a * half, lo + (b * half) / cosA))
+      const top = base.map(([x, y, z]) => [x * (1 + CUBE_H), y * (1 + CUBE_H), z * (1 + CUBE_H)] as V3)
+      return [{ base, top, center: vec(la, lo) }]
+    })))
+  }
+  let blocks = buildWord(WORD_LAT, WORD_LON)
 
   let dots = new Float32Array()
   const state = { yaw: 0.6, tilt: TILT, vYaw: SPIN, reveal: reduce ? 1 : 0, dots: 0, hover: 0 }
@@ -261,6 +304,37 @@ onMounted(() => {
     if (pen && !pt[2]) ctx.lineTo(pt[0], pt[1])
   }
 
+  const drawBlock = (base: V3[], top: V3[], alpha: number) => {
+    const pb = base.map(v => proj(v, 0, [0, 0, 0] as V3))
+    const pt = top.map(v => proj(v, 0, [0, 0, 0] as V3))
+    ctx.globalAlpha = alpha
+    ctx.lineWidth = 1
+    ctx.strokeStyle = hue('accent')
+    ctx.fillStyle = 'rgba(18,19,22,0.92)'
+    for (let i = 0; i < 4; i++) {
+      const j = (i + 1) % 4
+      const a = pb[i]!
+      const b = pb[j]!
+      const c = pt[j]!
+      const d = pt[i]!
+      ctx.beginPath()
+      ctx.moveTo(a[0], a[1])
+      ctx.lineTo(b[0], b[1])
+      ctx.lineTo(c[0], c[1])
+      ctx.lineTo(d[0], d[1])
+      ctx.closePath()
+      ctx.fill()
+      ctx.stroke()
+    }
+    ctx.beginPath()
+    pt.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)))
+    ctx.closePath()
+    ctx.fillStyle = hue('accent')
+    ctx.globalAlpha = alpha * 0.9
+    ctx.fill()
+    return pt
+  }
+
   const draw = (time: number) => {
     if (!fills) return
     const s = time / 1000
@@ -361,6 +435,7 @@ onMounted(() => {
     ctx.font = `500 ${Math.min(12, Math.max(9, Math.round(w / 64)))}px "Geist Mono", ui-monospace, monospace`
     ctx.textBaseline = 'middle'
     for (const h of hubs) {
+      if (h.id === 'SLU') continue
       const p = proj(h.v, 0, tmp)
       if (p[2] <= 0.05) continue
       const vis = Math.min(1, p[2] / 0.35) * arcAlpha
@@ -392,6 +467,30 @@ onMounted(() => {
       ctx.stroke()
       ctx.fillStyle = q && q.dir < 0 ? DOWN : '#ecedee'
       ctx.fillText(label, lx + 8, ly + 0.5)
+    }
+
+    const front = blocks
+      .map(b => ({ b, z: proj(b.center, 0, [0, 0, 0] as V3)[2] }))
+      .filter(({ z }) => z > 0.02)
+      .sort((p, q) => p.z - q.z)
+    for (const { b, z } of front) drawBlock(b.base, b.top, Math.min(1, z / 0.3) * arcAlpha)
+
+    const hqC = proj(hqCenter, 0, [0, 0, 0] as V3)
+    if (hqC[2] > 0.02) {
+      const alpha = Math.min(1, hqC[2] / 0.3) * arcAlpha
+      const top = drawBlock(hqBaseV, hqTopV, alpha)
+      const tx = top.reduce((s, p) => s + p[0], 0) / top.length
+      const ty = top.reduce((s, p) => s + p[1], 0) / top.length
+      const tag = 'ARTIX HQ'
+      const tw = ctx.measureText(tag).width + 16
+      ctx.globalAlpha = alpha * 0.92
+      ctx.fillStyle = 'rgba(18,19,22,0.85)'
+      ctx.beginPath()
+      ctx.roundRect(tx + 10, ty - 26, tw, 20, 10)
+      ctx.fill()
+      ctx.stroke()
+      ctx.fillStyle = '#ecedee'
+      ctx.fillText(tag, tx + 18, ty - 15.5)
     }
 
     ctx.globalAlpha = rv
@@ -478,6 +577,7 @@ onMounted(() => {
     if (!g) return
     const me = { id: 'YOU', lat: g.lat, lon: g.lon, sym: g.city, hue: USER_HUE, v: vec(g.lat, g.lon), phase: 0, user: true }
     const near = hubs.reduce((a, h) => (h.v[0] * me.v[0] + h.v[1] * me.v[1] + h.v[2] * me.v[2] > a.v[0] * me.v[0] + a.v[1] * me.v[1] + a.v[2] * me.v[2] ? h : a))
+    blocks = buildWord(gsap.utils.clamp(-70, 70, g.lat + WORD_LIFT), g.lon)
     hubs.push(me)
     arcs.push(makeArc(me, near, arcs.length))
     anchor = aim(g.lat, g.lon)

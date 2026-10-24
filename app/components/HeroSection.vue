@@ -30,7 +30,7 @@ useMotion(root, ({ motion }) => {
   <section id="top" ref="root" class="relative overflow-hidden" aria-labelledby="hero-title">
     <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(45%_55%_at_85%_10%,color-mix(in_oklab,var(--color-accent)_16%,transparent),transparent_70%),radial-gradient(35%_40%_at_0%_100%,rgb(255_255_255/0.03),transparent_70%)]" aria-hidden="true" />
     <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-      <div class="h-globe absolute -bottom-[64vw] -right-[42vw] size-[130vw] opacity-60 md:-right-[39.5vw] md:bottom-auto md:top-[62%] md:size-[119vw] md:-translate-y-1/2 md:opacity-100">
+      <div class="h-globe absolute -bottom-[36vw] -right-[42vw] size-[130vw] opacity-60 md:-right-[39.5vw] md:bottom-auto md:top-[62%] md:size-[119vw] md:-translate-y-1/2 md:opacity-100">
         <div class="h-globe-inner size-full">
           <GlobeGrid locate class="pointer-events-auto" />
         </div>

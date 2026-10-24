@@ -43,7 +43,7 @@ const faqs = [
       </template>
     </PageHero>
 
-    <section class="wrap pb-16" aria-label="Commodity conditions">
+    <section class="wrap pt-12 pb-16 md:pt-16" aria-label="Commodity conditions">
       <PageStats :items="stats" />
     </section>
 
