@@ -36,11 +36,12 @@ useJsonLd('ld-org', {
 </script>
 
 <template>
-  <div class="min-h-dvh">
+  <div class="min-h-dvh pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
     <SiteNav />
     <NuxtPage :transition="pageTransition" />
     <SiteFooter />
     <ThemePicker />
+    <MobileTabBar />
   </div>
 </template>
 

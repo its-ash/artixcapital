@@ -1,0 +1,248 @@
+ARTIX CAPITAL
+
+2% USDT DEPOSIT CASHBACK PROMOTION
+
+Promotion: Deposit USDT and receive 2% Cashback credited directly to your MT5 trading account.
+
+1. Promotion Overview
+
+Artix Capital (“Artix”, “we”, “us” or “the Company”) may offer eligible clients a promotional cashback of 2% of an eligible USDT deposit, subject to these Terms and Conditions.
+
+The promotion is intended to reward genuine clients who deposit funds for legitimate trading purposes. It is not intended to provide a guaranteed return, risk-free trading capital, or an opportunity to generate profit solely through the promotion.
+
+By participating, the client agrees to these Terms and Conditions and accepts that Artix Capital has the right to determine eligibility and enforce these terms at its reasonable discretion.
+
+2. Eligibility
+
+To qualify:
+
+1. The client must have a valid and approved Artix Capital trading account.
+2. The client must complete any required identity/KYC verification.
+3. The deposit must be made in USDT through a payment method and wallet address approved by Artix Capital.
+4. The deposit must be received and confirmed by Artix Capital.
+5. The client must comply with all applicable account, trading, AML/KYC and promotional requirements.
+6. Artix Capital may restrict the promotion to selected clients, jurisdictions, account types, trading platforms or campaigns.
+
+Artix Capital may refuse promotional eligibility where it reasonably believes that participation is inconsistent with the purpose of the promotion or presents a risk of abuse, fraud, manipulation or circumvention.
+
+3. Cashback Calculation
+
+Eligible clients will receive cashback equal to:
+
+2% × Eligible Net USDT Deposit
+
+Example:
+
+- Eligible deposit: 10,000 USDT
+- Cashback: 200 USDT
+- Cashback credited: 200 USDT
+
+The maximum cashback available per client, account, household or related group may be limited by Artix Capital and/or the specific promotional campaign.
+
+Artix Capital reserves the right to impose, change or remove minimum and maximum deposit/cashback limits at any time for future deposits or promotional campaigns.
+
+4. Cashback Credit
+
+The cashback will normally be credited directly to the client's MT5 trading account after the relevant deposit has been verified.
+
+Cashback may be credited as promotional trading credit/bonus rather than unrestricted withdrawable balance.
+
+Unless expressly stated otherwise by Artix Capital:
+
+- Cashback itself is not withdrawable.
+- Profits generated from trading using cashback may be subject to the applicable account and promotional conditions.
+- Artix Capital may remove unused or promotional cashback if the client breaches these Terms.
+- Cashback does not constitute a deposit of the client's own funds.
+
+Artix Capital may delay cashback crediting where additional verification, payment confirmation, compliance checks or transaction review is required.
+
+5. Deposit and Withdrawal Restrictions
+
+A deposit must represent a genuine new deposit intended for trading.
+
+The following activities may be excluded from the promotion:
+
+- Depositing USDT and immediately withdrawing the deposited amount.
+- Depositing funds solely to obtain cashback and subsequently withdrawing the original deposit.
+- Repeated deposit/withdrawal cycles designed to generate promotional cashback.
+- Transferring funds between Artix accounts for promotional purposes.
+- Depositing and withdrawing through different payment methods or wallets in a manner intended to circumvent promotional rules.
+- Any transaction that Artix Capital reasonably considers to be promotional farming.
+
+If a client withdraws funds after receiving cashback, Artix Capital may review the client's promotional eligibility and may cancel, reverse or remove the associated cashback.
+
+Where necessary, Artix Capital may deduct promotional cashback from the client's account balance to recover an incorrectly or fraudulently awarded promotional benefit, subject to applicable law and the client's contractual terms.
+
+6. No Multiple-Account Abuse
+
+The promotion is limited to one promotional benefit per eligible client, unless Artix Capital expressly states otherwise.
+
+Artix Capital may treat multiple accounts as belonging to the same client where accounts are connected through factors including, but not limited to:
+
+- Same identity or KYC information;
+- Same residential address;
+- Same telephone number;
+- Same email address;
+- Same payment method;
+- Same cryptocurrency wallet/address;
+- Same device or device fingerprint;
+- Same IP address or network;
+- Same introducing broker or referral relationship;
+- Common trading patterns;
+- Common funding or withdrawal patterns;
+- Common beneficial ownership or control;
+- Other information indicating that accounts are operated by the same person or coordinated group.
+
+Opening additional accounts, using another person's account, or using another person to participate in the promotion does not create additional promotional entitlement.
+
+7. Prohibited Promotional Activity
+
+Artix Capital strictly prohibits any activity intended to exploit the promotion without genuine trading intent.
+
+This includes, but is not limited to:
+
+- Bonus farming;
+- Deposit-and-withdrawal schemes;
+- Circular fund transfers;
+- Coordinated transactions between related accounts;
+- Self-referrals;
+- Artificial trading activity;
+- Risk-free or substantially risk-free trading strategies designed primarily to obtain promotional benefits;
+- Coordinated hedging between accounts;
+- Exploiting price discrepancies;
+- Latency arbitrage;
+- Price-feed exploitation;
+- Platform or technical errors;
+- Manipulation of execution conditions;
+- Abusive use of leverage;
+- Any attempt to circumvent promotional limits.
+
+Artix Capital may determine whether trading activity constitutes promotional abuse based on the overall circumstances and trading/account behaviour.
+
+8. Related Accounts and Coordinated Trading
+
+Where Artix Capital reasonably determines that multiple accounts are directly or indirectly controlled, funded or coordinated by the same person or group, the Company may treat those accounts as a single promotional participant.
+
+Artix Capital may consequently:
+
+- Limit cashback eligibility;
+- Cancel promotional cashback;
+- Remove incorrectly awarded cashback;
+- Reject pending promotional claims;
+- Restrict future participation;
+- Suspend or terminate promotional participation.
+
+Nothing in this section authorizes Artix Capital to confiscate a client's legitimate deposited funds or legitimate trading profits except where permitted under the applicable client agreement, applicable law or where the relevant funds/profits themselves are determined to arise from prohibited or fraudulent activity.
+
+9. Chargebacks, Reversals and Payment Disputes
+
+If a deposit is subsequently:
+
+- Charged back;
+- Reversed;
+- Cancelled;
+- Disputed;
+- Returned;
+- Determined to be unauthorized; or
+- Otherwise not successfully settled,
+
+any cashback associated with that deposit may be immediately cancelled.
+
+Artix Capital may also suspend promotional eligibility while the payment issue is investigated.
+
+10. Trading Requirements
+
+Artix Capital may impose minimum trading requirements before promotional cashback or profits associated with promotional credit become withdrawable, where such requirements are expressly stated in the applicable promotional campaign.
+
+Unless otherwise specified, the Company does not guarantee that cashback will remain available regardless of subsequent account activity.
+
+Clients remain responsible for understanding the risks associated with leveraged trading, including the possibility of losing their deposited funds.
+
+11. No Guaranteed Profit
+
+The 2% cashback is a promotional incentive and does not guarantee any trading profit or return.
+
+Trading financial instruments involving leverage carries substantial risk. The cashback should not be interpreted as compensation for trading losses or as protection against losses.
+
+12. Promotional Abuse Investigation
+
+Artix Capital reserves the right to conduct reasonable reviews of any account or transaction associated with the promotion.
+
+Where there are reasonable grounds to suspect fraud, abuse, manipulation, circumvention, money laundering, unauthorized activity or other prohibited conduct, Artix Capital may temporarily withhold promotional benefits while conducting a review.
+
+The client may be requested to provide additional information or documentation.
+
+13. Cancellation of Cashback
+
+Artix Capital may cancel promotional cashback where it reasonably determines that:
+
+1. The client has breached these Terms;
+2. The deposit was reversed, disputed or otherwise invalid;
+3. Multiple accounts were used to obtain additional promotional benefits;
+4. The promotion was exploited or abused;
+5. The client provided inaccurate or misleading information;
+6. The cashback was awarded due to a technical or administrative error;
+7. The activity is inconsistent with the intended purpose of the promotion; or
+8. Cancellation is required for compliance, risk-management or legal reasons.
+
+Any cancellation will be handled in accordance with applicable law and the client's contractual terms.
+
+14. Errors and Technical Issues
+
+Artix Capital is not responsible for promotional benefits incorrectly displayed or credited due to technical, system, pricing, calculation, payment-provider or administrative errors.
+
+Where an error occurs, Artix Capital reserves the right to correct the error and adjust the relevant promotional balance accordingly.
+
+15. Changes to the Promotion
+
+Artix Capital reserves the right to:
+
+- Modify the promotion;
+- Change the cashback percentage;
+- Introduce or modify minimum/maximum deposit requirements;
+- Introduce account or client limits;
+- Suspend the promotion;
+- End the promotion;
+- Change eligibility requirements.
+
+Any changes will apply prospectively unless otherwise required by applicable law.
+
+16. Promotional Period
+
+The promotion is available only during the promotional period specified by Artix Capital.
+
+Deposits made outside the promotional period will not qualify unless expressly approved by Artix Capital.
+
+17. Compliance and AML/KYC
+
+Participation in this promotion remains subject to Artix Capital's applicable KYC, AML, sanctions, fraud-prevention and risk-management procedures.
+
+The promotion cannot be used to circumvent any legal, regulatory, payment-provider or internal compliance requirement.
+
+Artix Capital may request additional verification before processing a promotional benefit or withdrawal.
+
+18. Discretion and Final Determination
+
+Artix Capital reserves the right to determine, in accordance with applicable law and the client's contractual terms, whether a transaction or trading pattern qualifies for the promotion.
+
+The Company may refuse promotional participation where it reasonably believes that the promotion is being abused, manipulated or used contrary to its intended purpose.
+
+The Company's decision regarding promotional eligibility and abuse prevention shall be final, subject to the client's rights under applicable law.
+
+19. Acceptance
+
+By participating in the 2% USDT Deposit Cashback Promotion, the client confirms that they:
+
+- Have read and understood these Terms and Conditions;
+- Agree to comply with them;
+- Understand the risks of leveraged trading;
+- Confirm that the deposit is made for legitimate trading purposes; and
+- Accept that promotional benefits may be cancelled where the promotion is abused or these Terms are breached.
+
+Artix Capital reserves all rights not expressly granted under these promotional Terms.
+
+IMPORTANT
+
+These promotional Terms are supplementary to the Artix Capital Client Agreement, Risk Disclosure, AML/KYC Policy, Privacy Policy and other applicable account terms.
+
+Where there is a conflict, the applicable client agreement and mandatory applicable law shall prevail.

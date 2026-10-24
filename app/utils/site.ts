@@ -2,7 +2,7 @@ import type { Component } from 'vue'
 import {
   PhAndroidLogo, PhAppleLogo, PhWindowsLogo,
   PhArrowsLeftRight, PhBarbell, PhBrowser, PhBuildings, PhCalendarBlank, PhChartBar, PhChartLineUp, PhClockCountdown,
-  PhCoins, PhCrown, PhCube, PhCurrencyBtc, PhDesktop, PhDeviceMobile, PhFlask, PhHandshake,
+  PhCoins, PhCrown, PhCube, PhGift, PhCurrencyBtc, PhDesktop, PhDeviceMobile, PhFlask, PhHandshake,
   PhHourglassMedium, PhIdentificationCard, PhInfo, PhLightning, PhPaperPlaneTilt, PhRocketLaunch,
   PhShieldCheck, PhStack, PhTable, PhUserPlus
 } from '@phosphor-icons/vue'
@@ -61,7 +61,8 @@ export const NAV: NavGroup[] = [
       { label: 'Artix Edge', href: page('artix-edge'), desc: 'Zero spreads for active traders', icon: PhLightning },
       { label: 'Artix Elite', href: page('artix-elite'), desc: 'Lowest commission tier', icon: PhCrown },
       { label: 'Artix Coverage', href: page('artix-coverage-account'), desc: 'Built for capital preservation', icon: PhShieldCheck },
-      { label: 'Artix Demo', href: page('artix-demo-account'), desc: 'Practise with virtual funds', icon: PhFlask }
+      { label: 'Artix Demo', href: page('artix-demo-account'), desc: 'Practise with virtual funds', icon: PhFlask },
+      { label: 'Promotion', href: page('promotion'), desc: '2% USDT deposit cashback', icon: PhGift }
     ]
   },
   {
@@ -119,7 +120,8 @@ export const MT5_DOWNLOADS: { id: string; label: string; title: string; href: st
   { id: 'windows', label: 'Windows', title: 'Desktop terminal', href: 'https://download.terminal.free/cdn/web/artix.capital.ltd/mt5/artixcapital5setup.exe', icon: PhWindowsLogo },
   { id: 'web', label: 'Web', title: 'Trade in your browser', href: 'https://web.artixcapital.com/terminal', icon: PhBrowser },
   { id: 'ios', label: 'iOS', title: 'iPhone and iPad', href: 'https://download.terminal.free/cdn/mobile/mt5/ios?server=ArtixCapital-Server', icon: PhAppleLogo },
-  { id: 'android', label: 'Android', title: 'Phone and tablet', href: 'https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.metatrader5.com&utm_campaign=install.metaquotes', icon: PhAndroidLogo }
+  { id: 'android', label: 'Android', title: 'Phone and tablet', href: 'https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.metatrader5.com&utm_campaign=install.metaquotes', icon: PhAndroidLogo },
+  { id: 'playstore', label: 'Google Play', title: 'Android app', href: 'https://download.terminal.free/cdn/mobile/mt5/android?server=ArtixCapital-Server', icon: PhAndroidLogo }
 ]
 
 export type Spec = { k: string; v: string }

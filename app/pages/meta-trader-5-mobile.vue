@@ -6,7 +6,7 @@ usePageSeo({
   description: 'Download MetaTrader 5 for iPhone, iPad and Android. Trade Artix markets, run charts and manage your account from your phone.'
 })
 
-const DOWNLOADS = MT5_DOWNLOADS.filter(d => d.id === 'ios' || d.id === 'android')
+const DOWNLOADS = MT5_DOWNLOADS.filter(d => ['ios', 'android', 'playstore'].includes(d.id))
 
 const caps = [
   ['Full charting', 'Candlestick, bar and line charts with 21 timeframes and chart objects.'],

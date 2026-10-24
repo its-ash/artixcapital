@@ -37,7 +37,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="root" class="fixed bottom-4 left-4 z-40 sm:bottom-6 sm:left-6">
+  <div ref="root" class="fixed bottom-20 left-4 z-40 md:bottom-6 md:left-6">
     <div
       id="theme-panel"
       class="picker absolute bottom-full left-0 mb-3 w-64 rounded-2xl border border-line bg-surface p-4 shadow-[0_24px_60px_-24px_rgb(0_0_0/0.8)]"
