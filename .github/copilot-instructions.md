@@ -19,7 +19,7 @@ Static clone of artixcapital.com, built with Nuxt 4 and served from `docs/` on G
 - Respect `prefers-reduced-motion`: the `reduce` branch must show final content with no movement.
 - Directives: `v-magnetic`, `v-tilt`, `v-spot`.
 - No scroll-in entrance animations: content is visible on load. Never hide an element (opacity, scale, clip) until it enters the viewport.
-- Brand: background `#0b0c0e`, accent `#d6141c` (text `#ff5a5f`, from the logo red), up `#3fd17a`, down `#ff5d64`. Containers 16px radius (`rounded-2xl`), buttons pill. No gradient text, no glass cards.
+- Brand: background `#0b0c0e`, accent `#e1ff00` (signal lime; text on accent is `#0b0c0e`), up `#3fd17a`, down `#ff5d64`. Containers 16px radius (`rounded-2xl`), buttons pill. No gradient text, no glass cards.
 - Accent is user-selectable through `ThemePicker` (`app/utils/accent.ts`). It sets `--color-accent`, `--color-accent-soft` and `--color-on-accent` on `<html>`, saves to `localStorage` (`artix-accent`), and a head script in `nuxt.config.ts` applies it before paint. Never hard-code the accent: use `accent` utilities or `color-mix(in_oklab,var(--color-accent)_N%,transparent)`. Text on accent fills uses `text-on-accent`. Canvas code listens for the `accentchange` event.
 - Never add a GitHub Actions deploy workflow.
 

@@ -81,7 +81,7 @@ const locateUser = async (): Promise<Geo | null> => {
   }
 }
 
-const tone = { accent: ACCENT_DEFAULT, soft: '#ff5a5f' }
+const tone = { accent: ACCENT_DEFAULT, soft: ACCENT_DEFAULT }
 const hue = (h: string) => (h === 'accent' ? tone.accent : h === 'soft' ? tone.soft : h)
 
 const box = ref<HTMLElement | null>(null)

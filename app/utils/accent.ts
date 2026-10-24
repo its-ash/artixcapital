@@ -1,7 +1,8 @@
 export const ACCENT_KEY = 'artix-accent'
-export const ACCENT_DEFAULT = '#d6141c'
+export const ACCENT_DEFAULT = '#e1ff00'
 export const ACCENT_PRESETS: { name: string; hex: string }[] = [
-  { name: 'Artix red', hex: ACCENT_DEFAULT },
+  { name: 'Signal lime', hex: ACCENT_DEFAULT },
+  { name: 'Artix red', hex: '#d6141c' },
   { name: 'Electric blue', hex: '#2f6bff' },
   { name: 'Emerald', hex: '#12a150' },
   { name: 'Amber', hex: '#f59e0b' },
