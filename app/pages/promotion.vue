@@ -1,12 +1,33 @@
 <script setup lang="ts">
+import gsap from 'gsap'
+
 usePageSeo({
   title: '2% USDT deposit cashback promotion | Artix Capital',
   description: 'Earn 2% cashback on eligible USDT deposits, up to USD 500 per client. Read the promotion terms and download the PDF.'
 })
 
-const stats = [['Cashback rate', '2%'], ['Maximum per client', 'USD 500'], ['Campaign budget', 'USD 10,000'], ['Volume requirement', '1 lot / USD 1,000']] as const
+const steps = [
+  ['Deposit USDT', 'Fund your account with USDT through an approved wallet or payment method.'],
+  ['Trade genuinely', 'Complete at least 20 genuine closed trades and the volume rule over at least 7 calendar days.'],
+  ['Receive cashback', 'Approved cashback is credited under the campaign rules, while the USD 10,000 budget lasts.']
+] as const
 
-type Block = string | string[]
+const fmt = (n: number) => n.toLocaleString('en-US')
+const deposit = ref(10000)
+const pct = computed(() => `${((deposit.value - 1000) / 49000) * 100}%`)
+const cashback = computed(() => Math.min(deposit.value * 0.02, 500))
+const lots = computed(() => Math.min(25, Math.floor(deposit.value / 1000)))
+
+const root = ref<HTMLElement | null>(null)
+useMotion(root, ({ motion }) => {
+  if (!motion) return
+  const q = gsap.utils.selector(root.value)
+  gsap.from(q('.promo-card'), { y: 40, opacity: 0, scale: 0.97, duration: 1.1, ease: 'expo.out', delay: 0.2 })
+})
+
+type TableBlock = { head: string[]; rows: string[][] }
+type Block = string | string[] | TableBlock
+const isTable = (b: Block): b is TableBlock => typeof b === 'object' && !Array.isArray(b)
 const TERMS: { title: string; body: Block[] }[] = [
   {
     title: 'Cashback Rate',
@@ -55,14 +76,17 @@ const TERMS: { title: string; body: Block[] }[] = [
       'The standard promotional trading volume requirement shall be one (1) eligible standard lot for every USD 1,000 of eligible deposit value, subject to a maximum required volume of twenty-five (25) standard lots per client.',
       'The applicable requirement shall be calculated using the eligible deposit value and the campaign\'s published calculation rules.',
       'Illustrative examples (these assume the standard-lot calculation applies without instrument-specific conversion factors):',
-      [
-        'Eligible deposit USD 1,000: cashback USD 20, required trading volume 1 lot.',
-        'Eligible deposit USD 5,000: cashback USD 100, required trading volume 5 lots.',
-        'Eligible deposit USD 10,000: cashback USD 200, required trading volume 10 lots.',
-        'Eligible deposit USD 20,000: cashback USD 400, required trading volume 20 lots.',
-        'Eligible deposit USD 25,000: cashback USD 500, required trading volume 25 lots.',
-        'Eligible deposit USD 50,000: cashback at 2% before the cap is USD 1,000; cashback payable after the cap is USD 500; required trading volume is 25 lots maximum.'
-      ]
+      {
+        head: ['Eligible deposit', 'Cashback before cap', 'Cashback payable', 'Required volume'],
+        rows: [
+          ['USD 1,000', 'USD 20', 'USD 20', '1 lot'],
+          ['USD 5,000', 'USD 100', 'USD 100', '5 lots'],
+          ['USD 10,000', 'USD 200', 'USD 200', '10 lots'],
+          ['USD 20,000', 'USD 400', 'USD 400', '20 lots'],
+          ['USD 25,000', 'USD 500', 'USD 500', '25 lots'],
+          ['USD 50,000', 'USD 1,000', 'USD 500', '25 lots maximum']
+        ]
+      }
     ]
   },
   {
@@ -140,7 +164,7 @@ const TERMS: { title: string; body: Block[] }[] = [
 ]
 
 const PDF_TITLE = '2% USDT Deposit Cashback Promotion'
-const termsText = TERMS.map((t, i) => [`${i + 1}. ${t.title}`, ...t.body.flatMap(b => (Array.isArray(b) ? b.map(x => `- ${x}`) : [b]))].join('\n')).join('\n\n')
+const termsText = TERMS.map((t, i) => [`${i + 1}. ${t.title}`, ...t.body.flatMap(b => (isTable(b) ? [b.head.join(' | '), ...b.rows.map(r => r.join(' | '))] : Array.isArray(b) ? b.map(x => `- ${x}`) : [b]))].join('\n')).join('\n\n')
 
 const busy = ref(false)
 const error = ref('')
@@ -159,20 +183,88 @@ const downloadTerms = async () => {
 </script>
 
 <template>
-  <main id="main">
+  <main id="main" ref="root">
     <PageHero
       group="Promotions"
-      title="2% USDT deposit cashback"
-      lead="Deposit USDT and receive 2% cashback on your eligible deposit, up to USD 500 per client. Eligibility, trading requirements and limits are set out in the terms below."
+      title="Get 2% back on eligible USDT deposits."
+      lead="Deposit USDT, trade with Artix and earn cashback up to USD 500 per client."
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
       <button type="button" class="btn btn-ghost h-13 px-7" :disabled="busy" @click="downloadTerms">{{ busy ? 'Creating PDF…' : 'Download terms (PDF)' }}</button>
+      <template #aside>
+        <div class="promo-card relative overflow-hidden rounded-2xl border border-line bg-surface p-6 md:p-8">
+          <span class="absolute inset-x-0 top-0 h-px bg-accent-soft" aria-hidden="true" />
+          <p class="text-sm text-muted">Cashback rate</p>
+          <p class="mt-2 font-mono text-[clamp(5rem,14vw,8.5rem)] font-semibold leading-none tracking-tighter text-accent-soft">2%</p>
+          <p class="mt-3 text-sm text-muted">on eligible USDT deposits</p>
+          <dl class="mt-8 grid gap-4 border-t border-line pt-6">
+            <div class="flex items-center justify-between gap-4">
+              <dt class="text-sm text-muted">Example deposit</dt>
+              <dd class="font-mono tabular-nums">10,000 USDT</dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt class="text-sm text-muted">Cashback</dt>
+              <dd class="font-mono tabular-nums">USD 200</dd>
+            </div>
+            <div class="flex items-center justify-between gap-4">
+              <dt class="text-sm text-muted">Per-client cap</dt>
+              <dd class="font-mono tabular-nums">USD 500</dd>
+            </div>
+          </dl>
+        </div>
+      </template>
     </PageHero>
     <p v-if="error" role="alert" class="wrap pt-4 text-sm text-down">{{ error }}</p>
 
-    <section class="wrap pt-12 pb-16 md:pt-16" aria-label="Promotion summary">
-      <PageStats :items="stats" />
-    </section>
+    <PageSection id="pr-calc" title="See what you could earn" lead="Move the slider to see your cashback and the trading volume it requires.">
+      <div class="calc grid gap-8 rounded-2xl border border-line bg-surface p-6 md:grid-cols-12 md:p-10">
+        <div class="md:col-span-7">
+          <label for="pr-deposit" class="flex items-baseline justify-between gap-4 text-sm text-muted">
+            Eligible deposit
+            <span class="font-mono text-2xl tabular-nums text-fg">{{ fmt(deposit) }} USDT</span>
+          </label>
+          <input
+            id="pr-deposit"
+            v-model.number="deposit"
+            type="range"
+            min="1000"
+            max="50000"
+            step="1000"
+            :aria-valuetext="`${fmt(deposit)} USDT`"
+            class="calc-range mt-6 w-full"
+            :style="{ '--p': pct }"
+          />
+          <div class="mt-3 flex justify-between font-mono text-xs text-muted" aria-hidden="true">
+            <span>1,000</span>
+            <span>25,000</span>
+            <span>50,000</span>
+          </div>
+        </div>
+        <dl class="grid gap-4 md:col-span-5 md:content-start">
+          <div class="rounded-xl border border-line bg-canvas p-5">
+            <dt class="text-sm text-muted">Your cashback</dt>
+            <dd class="mt-1 font-mono text-3xl tabular-nums">USD {{ fmt(cashback) }}</dd>
+            <p class="mt-2 text-xs text-muted">2% of your deposit, up to USD 500</p>
+          </div>
+          <div class="rounded-xl border border-line bg-canvas p-5">
+            <dt class="text-sm text-muted">Trading volume required</dt>
+            <dd class="mt-1 font-mono text-3xl tabular-nums">{{ lots }} lots</dd>
+            <p class="mt-2 text-xs text-muted">1 lot per USD 1,000, up to 25 lots</p>
+          </div>
+        </dl>
+      </div>
+      <p class="mt-4 text-xs text-muted">Illustrative only. Assumes the standard-lot calculation. Instrument conversion factors may apply.</p>
+    </PageSection>
+
+    <PageSection id="pr-steps" title="Three steps to your cashback" lead="The campaign budget is USD 10,000 in total, allocated first come, first served.">
+      <ol class="promo-steps grid gap-3 md:grid-cols-3">
+        <li v-for="(s, i) in steps" :key="s[0]" class="promo-step card flex flex-col p-6">
+          <span class="card-icon font-mono text-xs" aria-hidden="true">{{ String(i + 1).padStart(2, '0') }}</span>
+          <h3 class="mt-6 text-lg font-semibold tracking-tight">{{ s[0] }}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-muted">{{ s[1] }}</p>
+        </li>
+      </ol>
+    </PageSection>
 
     <PageSection id="pr-terms" title="Terms and conditions" lead="These promotional terms are supplementary to the Artix Capital Client Agreement, Risk Disclosure, AML/KYC Policy, Privacy Policy and other applicable account terms.">
       <div class="grid gap-x-10 gap-y-12 md:grid-cols-2">
@@ -183,6 +275,20 @@ const downloadTerms = async () => {
               <ul v-if="Array.isArray(b)" class="list-disc space-y-1.5 pl-5 marker:text-accent-soft">
                 <li v-for="item in b" :key="item">{{ item }}</li>
               </ul>
+              <div v-else-if="isTable(b)" class="overflow-x-auto rounded-xl border border-line">
+                <table class="w-full min-w-[28rem] text-left text-sm">
+                  <thead class="bg-canvas text-xs text-muted">
+                    <tr>
+                      <th v-for="h in b.head" :key="h" scope="col" class="px-4 py-3 font-medium">{{ h }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="r in b.rows" :key="r[0]" class="border-t border-line">
+                      <td v-for="(c, k) in r" :key="k" class="px-4 py-3 font-mono tabular-nums" :class="k === 0 ? 'text-fg' : 'text-muted'">{{ c }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <p v-else>{{ b }}</p>
             </template>
           </div>
@@ -192,5 +298,22 @@ const downloadTerms = async () => {
         Artix Capital reserves the right to interpret and administer the campaign consistently with the published terms. Where there is a conflict, the applicable client agreement and mandatory applicable law shall prevail.
       </p>
     </PageSection>
+
+    <PageCta />
   </main>
 </template>
+
+<style scoped>
+.calc-range { appearance: none; height: 2.75rem; background: transparent; cursor: pointer; }
+.calc-range::-webkit-slider-runnable-track { height: 6px; border-radius: 999px; background: linear-gradient(to right, var(--color-accent) var(--p), var(--color-line-strong) var(--p)); }
+.calc-range::-moz-range-track { height: 6px; border-radius: 999px; background: linear-gradient(to right, var(--color-accent) var(--p), var(--color-line-strong) var(--p)); }
+.calc-range::-webkit-slider-thumb { appearance: none; margin-top: -9px; width: 24px; height: 24px; border-radius: 50%; background: var(--color-fg); border: 4px solid var(--color-accent); transition: scale 160ms ease-out; }
+.calc-range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--color-fg); border: 4px solid var(--color-accent); transition: scale 160ms ease-out; }
+.calc-range:active::-webkit-slider-thumb { scale: 1.15; }
+.calc-range:active::-moz-range-thumb { scale: 1.15; }
+.calc-range:focus-visible { outline-offset: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .calc-range::-webkit-slider-thumb, .calc-range::-moz-range-thumb { transition: none; }
+}
+</style>
