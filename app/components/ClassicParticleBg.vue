@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
   fogDensity?: number
   /** Camera Z position (default: farPlane / 3 = 1000) */
   cameraZ?: number
-}>({
+}>(), {
   count: 20000,
   size: 1,
   interactive: true,
