@@ -52,7 +52,7 @@ useMotion(root, ({ motion }) => {
           <span v-if="s.unit" class="ml-1 text-lg text-muted">{{ s.unit }}</span>
         </dd>
         <dd class="mt-auto pt-5" aria-hidden="true">
-          <svg v-if="s.kind === 'spread'" viewBox="0 0 120 40" class="h-10 w-full overflow-visible">
+          <svg v-if="s.kind === 'spread'" viewBox="0 0 120 40" preserveAspectRatio="xMinYMid meet" class="h-10 w-full overflow-visible">
             <path :d="ASK" class="sv-flow" stroke="var(--color-down)" />
             <path :d="BID" class="sv-flow" stroke="var(--color-up)" />
             <circle cx="120" cy="20" r="6" class="sv-ping" fill="var(--color-accent)" />
@@ -68,7 +68,7 @@ useMotion(root, ({ motion }) => {
             />
           </div>
 
-          <svg v-else-if="s.kind === 'commission'" viewBox="0 0 120 40" class="h-10 w-full overflow-visible">
+          <svg v-else-if="s.kind === 'commission'" viewBox="0 0 120 40" preserveAspectRatio="xMinYMid meet" class="h-10 w-full overflow-visible">
             <circle cx="20" cy="20" r="16" fill="none" stroke="var(--color-line-strong)" stroke-width="2" />
             <circle cx="20" cy="20" r="16" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-dasharray="6 94.5" pathLength="100" class="sv-orbit" />
             <text x="20" y="21" text-anchor="middle" dominant-baseline="middle" class="fill-fg font-mono text-[11px]">0</text>
