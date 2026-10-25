@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 23.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 1092 346" style="enable-background:new 0 0 1092 346;" xml:space="preserve">
+	 viewBox="0 -24 1120 394" style="enable-background:new 0 -24 1120 394;" xml:space="preserve">
 <style type="text/css">
 	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;}
 	.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#851C23;}
@@ -11,17 +11,19 @@
 	.st5{fill-rule:evenodd;clip-rule:evenodd;fill:#8DC582;}
 	.st6{fill-rule:evenodd;clip-rule:evenodd;fill:#30A150;}
 	.st7{fill-rule:evenodd;clip-rule:evenodd;fill:#1B713B;}
-	.glow{animation:pulse 2.4s ease-in-out infinite alternate;}
-	.glow.dn{animation-delay:-1.2s;}
-	@keyframes pulse{from{opacity:.15;}to{opacity:.95;}}
-	@media (prefers-reduced-motion:reduce){.glow{animation:none;opacity:.6;}}
+	.glow{animation:halo 1.6s ease-in-out infinite;}
+	.flag{animation:blink 1.6s ease-in-out infinite;}
+	.dn{animation-delay:-.8s;}
+	@keyframes halo{0%,40%{opacity:1;}50%,90%{opacity:0;}100%{opacity:1;}}
+	@keyframes blink{0%,40%{opacity:1;}50%,90%{opacity:.45;}100%{opacity:1;}}
+	@media (prefers-reduced-motion:reduce){.glow,.flag{animation:none;}.glow{opacity:.7;}}
 </style>
 <defs>
-	<filter id="blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+	<filter id="blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="16"/></filter>
 </defs>
 <g>
-	<g class="glow" filter="url(#blur)"><use href="#up"/></g>
-	<g class="glow dn" filter="url(#blur)"><use href="#down"/></g>
+	<g class="glow" filter="url(#blur)"><use href="#up"/><use href="#up"/></g>
+	<g class="glow dn" filter="url(#blur)"><use href="#down"/><use href="#down"/></g>
 	<path id="XMLID_61_" class="st0" d="M303.9,329.8V136.5c-0.1-2.7-0.5-16.1,9.6-27.6C324.8,96.2,340.4,96,342.7,96h163.5V63.8H336.1
 		c-5.5,0.5-27.4,3.1-44.9,21.6c-15.1,16-18,34.3-18.7,40.4v204H303.9z"/>
 	<path id="XMLID_60_" class="st0" d="M526.9,15.7h33.2V256c-0.2,2.4-0.4,15.7,7.8,27c8.2,11.4,18.7,13.1,23.1,13h172.6v33.4H590.1
@@ -29,12 +31,12 @@
 	<rect id="XMLID_59_" x="580.7" y="65.1" class="st0" width="182.8" height="31.8"/>
 	<rect id="XMLID_58_" x="784" y="65.8" class="st0" width="32.8" height="263.9"/>
 	<polyline id="XMLID_57_" class="st0" points="1074.6,329.8 1037.7,329.8 837.3,15.7 874.3,15.7 1074.6,329.8 	"/>
-	<g id="down">
+	<g id="down" class="flag dn">
 	<polyline id="XMLID_56_" class="st1" points="1074.6,15.7 985.7,144.5 907.8,15.7 1074.6,15.7 	"/>
 	<polygon id="XMLID_55_" class="st2" points="907.8,15.7 966.5,113.4 1011,83.7 	"/>
 	<polyline id="XMLID_54_" class="st3" points="1074.6,15.7 1041.4,15.7 994.5,15.7 1011,83.7 1074.6,15.7 	"/>
 	</g>
-	<g id="up">
+	<g id="up" class="flag">
 	<polygon id="XMLID_53_" class="st4" points="926.2,200.9 1004.1,329.8 837.3,329.8 	"/>
 	<polygon id="XMLID_52_" class="st5" points="1003.8,329.3 944.1,230.5 901.3,259.7 	"/>
 	<polygon id="XMLID_51_" class="st6" points="918.6,329.8 901.3,259.7 837.3,329.8 	"/>

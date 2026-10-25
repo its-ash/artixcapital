@@ -5,7 +5,7 @@ withDefaults(defineProps<{ label?: string }>(), { label: 'Artix Capital' })
 <template>
   <img
     src="/assets/logo.svg"
-    width="316"
+    width="284"
     height="100"
     :alt="label"
     class="h-10 w-auto"
