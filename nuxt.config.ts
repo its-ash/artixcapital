@@ -14,7 +14,8 @@ export default defineNuxtConfig({
   vite: { plugins: [tailwindcss()] },
   fonts: {
     families: [
-      { name: 'Geist', provider: 'google', weights: [400, 500, 600] },
+      { name: 'Geist', provider: 'google', weights: [400, 500, 600, 800] },
+      { name: 'Instrument Serif', provider: 'google', weights: [400], styles: ['italic'] },
       { name: 'Geist Mono', provider: 'google', weights: [400, 500] }
     ]
   },

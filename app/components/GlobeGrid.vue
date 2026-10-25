@@ -6,6 +6,8 @@ import type { MultiPolygon, Polygon } from 'geojson'
 type V3 = [number, number, number]
 type Hub = { id: string; lat: number; lon: number; sym: string; hue: string }
 type Arc = { world: Float32Array; sp: Float32Array; hid: Uint8Array; hue: string; offset: number; speed: number }
+type Orbit = { inc: number; node: number; r: number; speed: number; phase: number; tag: string }
+type Tick = { v: V3; t: number; text: string; up: boolean }
 
 const DOTS = 24000
 const SPIN = 0.0015
@@ -27,6 +29,33 @@ const COS_AX = Math.cos(AXIAL)
 const SIN_AX = Math.sin(AXIAL)
 const NEUTRALS = ['#9a9ca3', '#c4c6cc']
 const DOWN = '#ff5d64'
+const UP = '#3fd17a'
+const INK = '#ecedee'
+const TAU = Math.PI * 2
+const ORBIT_PTS = 120
+const TICK_LIFE = 2.6
+const TICK_GAP = 0.7
+const SCAN_PERIOD = 5
+
+const ORBITS: Orbit[] = [
+  { inc: 0.95, node: 0.4, r: 1.12, speed: 0.22, phase: 0, tag: 'LP-01' },
+  { inc: -0.55, node: 2.1, r: 1.07, speed: -0.3, phase: 2.4, tag: 'LP-02' }
+]
+const SESSIONS = [
+  { id: 'SYD', from: 21, to: 6 },
+  { id: 'TYO', from: 0, to: 9 },
+  { id: 'LDN', from: 7, to: 16 },
+  { id: 'NY', from: 12, to: 21 }
+]
+
+const live = (f: number, t: number, h: number) => (f < t ? h >= f && h < t : h >= f || h < t)
+
+const orbitAt = (o: Orbit, t: number): V3 => {
+  const x = o.r * Math.cos(t)
+  const z = o.r * Math.sin(t)
+  const z1 = z * Math.cos(o.inc)
+  return [x * Math.cos(o.node) + z1 * Math.sin(o.node), -z * Math.sin(o.inc), -x * Math.sin(o.node) + z1 * Math.cos(o.node)]
+}
 
 const HUBS: Hub[] = [
   { id: 'LDN', lat: 51.51, lon: -0.13, sym: 'GBP/USD', hue: '#c4c6cc' },
@@ -159,6 +188,14 @@ onMounted(() => {
   const hqCenter = vec(HQ.lat, HQ.lon)
   const hqBaseV = CORNERS.map(([a, b]) => vec(HQ.lat + a * HQ.foot, HQ.lon + b * HQ.foot))
   const hqTopV = hqBaseV.map(([x, y, z]) => [x * (1 + HQ.h), y * (1 + HQ.h), z * (1 + HQ.h)] as V3)
+  const orbitPts = ORBITS.map(o => {
+    const out = new Float32Array((ORBIT_PTS + 1) * 3)
+    for (let k = 0; k <= ORBIT_PTS; k++) out.set(orbitAt(o, (k / ORBIT_PTS) * TAU), k * 3)
+    return out
+  })
+  const ticks: Tick[] = []
+  let nextTick = 0
+  const bm: V3 = [0, 0, 0]
 
   let dots = new Float32Array()
   const state = { yaw: 0.6, tilt: TILT, vYaw: SPIN, reveal: reduce ? 1 : 0, dots: 0, hover: 0 }
@@ -298,11 +335,170 @@ onMounted(() => {
     return pt
   }
 
+  const hud = (s: number, rv: number) => {
+    const acc = hue('accent')
+    ctx.save()
+    ctx.globalAlpha = (0.45 + Math.sin(s * 1.4) * 0.12) * rv
+    ctx.shadowColor = acc
+    ctx.shadowBlur = R * 0.16
+    ctx.strokeStyle = acc
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.arc(cx, cy, R, 0, TAU)
+    ctx.stroke()
+    ctx.restore()
+
+    const r1 = R * 1.04
+    const rot = s * 0.04
+    ctx.beginPath()
+    for (let i = 0; i < 120; i++) {
+      const a = rot + (i / 120) * TAU
+      const l = i % 10 ? R * 0.012 : R * 0.03
+      ctx.moveTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1)
+      ctx.lineTo(cx + Math.cos(a) * (r1 + l), cy + Math.sin(a) * (r1 + l))
+    }
+    ctx.strokeStyle = INK
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.16 * rv
+    ctx.stroke()
+
+    ctx.setLineDash([R * 0.18, R * 0.06, R * 0.02, R * 0.06])
+    ctx.lineDashOffset = -s * R * 0.05
+    ctx.strokeStyle = acc
+    ctx.lineWidth = 1.5
+    ctx.globalAlpha = 0.3 * rv
+    ctx.beginPath()
+    ctx.arc(cx, cy, R * 1.09, 0, TAU)
+    ctx.stroke()
+    ctx.setLineDash([])
+
+    const now = new Date()
+    const hr = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600
+    const ang = (h: number) => (h / 24) * TAU - Math.PI / 2
+    SESSIONS.forEach((ses, i) => {
+      const on = live(ses.from, ses.to, hr)
+      ctx.strokeStyle = on ? acc : INK
+      ctx.globalAlpha = (on ? 0.85 : 0.12) * rv
+      ctx.lineWidth = on ? 2.5 : 1.5
+      ctx.beginPath()
+      ctx.arc(cx, cy, R * (1.13 + i * 0.014), ang(ses.from) + 0.02, ang(ses.to < ses.from ? ses.to + 24 : ses.to) - 0.02)
+      ctx.stroke()
+    })
+    const na = ang(hr)
+    ctx.strokeStyle = acc
+    ctx.fillStyle = acc
+    ctx.lineWidth = 1.5
+    ctx.globalAlpha = 0.9 * rv
+    ctx.beginPath()
+    ctx.moveTo(cx + Math.cos(na) * R * 1.02, cy + Math.sin(na) * R * 1.02)
+    ctx.lineTo(cx + Math.cos(na) * R * 1.19, cy + Math.sin(na) * R * 1.19)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.arc(cx + Math.cos(na) * R * 1.19, cy + Math.sin(na) * R * 1.19, 2.5, 0, TAU)
+    ctx.fill()
+
+    const fs = Math.min(11, Math.max(9, Math.round(w / 70)))
+    ctx.font = `500 ${fs}px "Geist Mono", ui-monospace, monospace`
+    ctx.textBaseline = 'middle'
+    const tx = cx - R * 1.17
+    const ty = cy - R * 1.12
+    ctx.globalAlpha = 0.85 * rv
+    ctx.fillStyle = INK
+    ctx.fillText(`UTC ${now.toISOString().slice(11, 19)}`, tx, ty)
+    ctx.globalAlpha = 0.5 * rv
+    ctx.fillText('SESSIONS', tx, ty + fs * 1.6)
+    let sx = tx
+    for (const ses of SESSIONS) {
+      const on = live(ses.from, ses.to, hr)
+      ctx.fillStyle = on ? acc : INK
+      ctx.globalAlpha = (on ? 1 : 0.3) * rv
+      ctx.fillText(ses.id, sx, ty + fs * 3.2)
+      sx += ctx.measureText(`${ses.id}  `).width
+    }
+    ctx.textAlign = 'right'
+    ctx.fillStyle = INK
+    ctx.globalAlpha = 0.5 * rv
+    ctx.fillText(`FX 24/5 · ${HUBS.length} HUBS`, cx + R * 1.17, cy + R * 1.08)
+    ctx.fillText('FEED · INDICATIVE', cx + R * 1.17, cy + R * 1.08 + fs * 1.6)
+    ctx.textAlign = 'left'
+  }
+
+  const scan = (s: number, rv: number) => {
+    const y = cy - R + ((s / SCAN_PERIOD) % 1) * 2 * R
+    ctx.save()
+    ctx.beginPath()
+    ctx.arc(cx, cy, R, 0, TAU)
+    ctx.clip()
+    ctx.fillStyle = hue('accent')
+    for (let k = 0; k < 14; k++) {
+      ctx.globalAlpha = (1 - k / 14) * 0.06 * rv
+      ctx.fillRect(cx - R, y - (k + 1) * 4, 2 * R, 4)
+    }
+    ctx.globalAlpha = 0.45 * rv
+    ctx.fillRect(cx - R, y, 2 * R, 1)
+    ctx.restore()
+  }
+
+  const sats = (s: number, a: number) => {
+    if (!a) return
+    ctx.setLineDash([2, 6])
+    ctx.lineWidth = 1
+    ctx.strokeStyle = INK
+    for (const pts of orbitPts) {
+      ctx.beginPath()
+      let pen = false
+      for (let k = 0; k <= ORBIT_PTS; k++) {
+        const p = proj(pts, k * 3, tmp)
+        if (occluded(p[0], p[1], p[2])) { pen = false; continue }
+        pen ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])
+        pen = true
+      }
+      ctx.globalAlpha = 0.18 * a
+      ctx.stroke()
+    }
+    ctx.setLineDash([])
+    for (const o of ORBITS) {
+      const p = proj(orbitAt(o, s * o.speed + o.phase), 0, tmp)
+      if (occluded(p[0], p[1], p[2])) continue
+      ctx.globalAlpha = a
+      ctx.drawImage(glow, p[0] - 9, p[1] - 9, 18, 18)
+      ctx.fillStyle = hue('accent')
+      ctx.fillRect(p[0] - 2, p[1] - 2, 4, 4)
+      ctx.globalAlpha = 0.7 * a
+      ctx.fillStyle = INK
+      ctx.fillText(o.tag, p[0] + 8, p[1] - 8)
+    }
+  }
+
+  const spawnTick = (s: number) => {
+    while (ticks[0] && s - ticks[0].t > TICK_LIFE) ticks.shift()
+    if (s < nextTick) return
+    nextTick = s + TICK_GAP
+    const pool = hubs.filter(h => !h.user && h.id !== 'SLU' && proj(h.v, 0, bm)[2] > 0.45)
+    const h = pool[Math.floor(Math.random() * pool.length)]
+    const q = h && quotes.value.find(x => x.sym === h.sym)
+    if (h && q) ticks.push({ v: h.v, t: s, text: `${q.chg >= 0 ? '▲ +' : '▼ '}${q.chg.toFixed(2)}%`, up: q.chg >= 0 })
+  }
+
+  const drawTicks = (s: number, a: number) => {
+    ctx.textAlign = 'right'
+    for (const tk of ticks) {
+      const p = proj(tk.v, 0, tmp)
+      if (p[2] < 0.2) continue
+      const k = (s - tk.t) / TICK_LIFE
+      ctx.globalAlpha = (1 - k) * Math.min(1, k * 6) * a
+      ctx.fillStyle = tk.up ? UP : DOWN
+      ctx.fillText(tk.text, p[0] - 10, p[1] - 14 - k * 36)
+    }
+    ctx.textAlign = 'left'
+  }
+
   const draw = (time: number) => {
     if (!fills) return
     const s = time / 1000
     const rv = state.reveal
     ctx.clearRect(0, 0, w, w)
+    hud(s, rv)
 
     ctx.globalAlpha = rv
     ctx.fillStyle = fills.body
@@ -345,6 +541,7 @@ onMounted(() => {
         ctx.fill()
       }
     }
+    if (!reduce) scan(s, rv)
 
     const arcAlpha = Math.max(0, rv * 2 - 1)
     const lw = 1.4 * Math.min(1.6, w / 560 + 0.4)
@@ -397,11 +594,21 @@ onMounted(() => {
 
     ctx.font = `500 ${Math.min(12, Math.max(9, Math.round(w / 64)))}px "Geist Mono", ui-monospace, monospace`
     ctx.textBaseline = 'middle'
+    sats(s, arcAlpha)
     for (const h of hubs) {
       if (h.id === 'SLU') continue
       const p = proj(h.v, 0, tmp)
       if (p[2] <= 0.05) continue
       const vis = Math.min(1, p[2] / 0.35) * arcAlpha
+      const lift = 1.04 + (reduce ? 0.03 : (Math.sin(s * 2 + h.phase * 3) + 1) * 0.025)
+      const b = proj([h.v[0] * lift, h.v[1] * lift, h.v[2] * lift], 0, bm)
+      ctx.globalAlpha = vis * 0.7
+      ctx.strokeStyle = hue(h.hue)
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(p[0], p[1])
+      ctx.lineTo(b[0], b[1])
+      ctx.stroke()
       const pulse = reduce ? 0.5 : ((s + h.phase) % 2) / 2
       ctx.globalAlpha = vis * (1 - pulse)
       ctx.strokeStyle = hue(h.hue)
@@ -430,6 +637,10 @@ onMounted(() => {
       ctx.stroke()
       ctx.fillStyle = q && q.dir < 0 ? DOWN : '#ecedee'
       ctx.fillText(label, lx + 8, ly + 0.5)
+    }
+    if (!reduce && arcAlpha) {
+      spawnTick(s)
+      drawTicks(s, arcAlpha)
     }
 
     const hqC = proj(hqCenter, 0, [0, 0, 0] as V3)
