@@ -11,11 +11,11 @@
 	.st5{fill-rule:evenodd;clip-rule:evenodd;fill:#8DC582;}
 	.st6{fill-rule:evenodd;clip-rule:evenodd;fill:#30A150;}
 	.st7{fill-rule:evenodd;clip-rule:evenodd;fill:#1B713B;}
-	.glow{animation:halo 1.6s ease-in-out infinite;}
-	.flag{animation:blink 1.6s ease-in-out infinite;}
-	.dn{animation-delay:-.8s;}
-	@keyframes halo{0%,40%{opacity:1;}50%,90%{opacity:0;}100%{opacity:1;}}
-	@keyframes blink{0%,40%{opacity:1;}50%,90%{opacity:.45;}100%{opacity:1;}}
+	.glow{animation:halo 1.4s cubic-bezier(.3,0,.2,1) infinite;}
+	.flag{animation:beat 1.4s cubic-bezier(.3,0,.2,1) infinite;}
+	.dn{animation-delay:-.7s;}
+	@keyframes halo{0%{opacity:0;}8%{opacity:1;}16%{opacity:.2;}24%{opacity:.85;}45%,100%{opacity:0;}}
+	@keyframes beat{0%{opacity:.5;}8%{opacity:1;}16%{opacity:.65;}24%{opacity:1;}45%,100%{opacity:.5;}}
 	@media (prefers-reduced-motion:reduce){.glow,.flag{animation:none;}.glow{opacity:.7;}}
 </style>
 <defs>
