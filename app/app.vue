@@ -37,7 +37,6 @@ useJsonLd('ld-org', {
 
 <template>
   <div class="min-h-dvh pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0 relative">
-    <ClassicParticleBg class="absolute inset-0 -z-10" />
     <SiteNav />
     <NuxtPage :transition="pageTransition" />
     <SiteFooter />
