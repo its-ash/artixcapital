@@ -12,12 +12,13 @@ type El = HTMLElement & Cleanup
 
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches
 const fine = () => matchMedia('(hover: hover) and (pointer: fine)').matches
+const coarse = () => matchMedia('(pointer: coarse)').matches
 const ssr = { getSSRProps: () => ({}) }
 
 const magnetic: Directive<El, number | undefined> = {
   ...ssr,
   mounted(el, { value = 0.35 }) {
-    if (reduced() || !fine()) return
+    if (reduced() || !coarse()) return
     const x = gsap.quickTo(el, 'x', { duration: 0.6, ease: 'elastic.out(1, 0.4)' })
     const y = gsap.quickTo(el, 'y', { duration: 0.6, ease: 'elastic.out(1, 0.4)' })
     const move = (e: PointerEvent) => {
@@ -45,7 +46,7 @@ const tilt: Directive<El, number | undefined> = {
       el.style.setProperty('--my', `${e.clientY - r.top}px`)
       return r
     }
-    if (reduced() || !fine()) {
+    if (reduced() || !coarse()) {
       el.addEventListener('pointermove', spot)
       el.__fx = () => el.removeEventListener('pointermove', spot)
       return

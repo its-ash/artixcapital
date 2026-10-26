@@ -16,5 +16,6 @@ usePageSeo({
     <AccountsGrid />
     <StepsPath />
     <FaqSection />
+    <PaymentStrip />
   </main>
 </template>
