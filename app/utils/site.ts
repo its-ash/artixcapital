@@ -124,7 +124,7 @@ export const MT5_DOWNLOADS: { id: string; label: string; title: string; href: st
   { id: 'windows', label: 'Windows', title: 'Desktop terminal', href: 'https://download.terminal.free/cdn/web/artix.capital.ltd/mt5/artixcapital5setup.exe', icon: BrandWindows },
   { id: 'web', label: 'Web', title: 'Trade in your browser', href: 'https://web.artixcapital.com/terminal', icon: BrandChrome },
   { id: 'ios', label: 'iOS', title: 'iPhone and iPad', href: 'https://download.terminal.free/cdn/mobile/mt5/ios?server=ArtixCapital-Server', icon: BrandIos },
-  { id: 'android', label: 'Android', title: 'Phone and tablet', href: 'https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.metatrader5.com&utm_campaign=install.metaquotes', icon: BrandAndroid },
+  { id: 'android', label: 'Android .APK', title: 'Phone and tablet, direct download', href: 'https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.metatrader5.com&utm_campaign=install.metaquotes', icon: BrandAndroid },
   { id: 'playstore', label: 'Google Play', title: 'Android app', href: 'https://download.terminal.free/cdn/mobile/mt5/android?server=ArtixCapital-Server', icon: BrandPlay }
 ]
 
