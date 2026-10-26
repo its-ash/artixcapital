@@ -154,7 +154,7 @@ useMotion(root, ({ motion, fine }) => {
 .dl { transition: border-color 260ms ease, translate 360ms var(--ease-out-expo), scale 160ms var(--ease-out-strong); }
 .dl:active { scale: 0.98; }
 .dl-glow { opacity: 0; background: radial-gradient(120% 90% at 100% 100%, color-mix(in oklab, var(--color-accent) 18%, transparent), transparent 60%); transition: opacity 360ms ease; }
-.dl-ghost { opacity: 0.14; transition: opacity 500ms ease, rotate 700ms var(--ease-out-expo), scale 700ms var(--ease-out-expo), translate 700ms var(--ease-out-expo); }
+.dl-ghost { opacity: 0.84; transition: opacity 500ms ease, rotate 700ms var(--ease-out-expo), scale 700ms var(--ease-out-expo), translate 700ms var(--ease-out-expo); }
 .dl-ico, .dl-arrow { transition: background-color 240ms ease, border-color 240ms ease, color 240ms ease, rotate 420ms var(--ease-out-expo), translate 360ms var(--ease-out-expo), scale 420ms var(--ease-out-expo); }
 .dl-i1, .dl-i2 { transition: translate 420ms var(--ease-out-expo), opacity 240ms ease; }
 .dl-i2 { translate: 0 140%; opacity: 0; }
