@@ -85,9 +85,9 @@ useMotion(root, ({ motion }) => {
 <template>
   <header ref="root" class="sticky top-0 z-50">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-60 focus:rounded-full focus:bg-fg focus:px-4 focus:py-2 focus:text-ink">Skip to main content</a>
-    <div ref="shell" class="glass relative border-b transition-colors duration-300" :class="scrolled ? 'border-line' : 'border-transparent'">
+    <div ref="shell" class="sf-nav glass relative border-b transition-colors duration-300" :class="scrolled ? 'border-line' : 'border-transparent'">
       <nav class="wrap relative flex h-16 items-center justify-between gap-4" aria-label="Primary">
-        <NuxtLink to="/" class="nav-item shrink-0" aria-label="Artix Capital home">
+        <NuxtLink to="/" class="nav-item sf-logo shrink-0" aria-label="Artix Capital home">
           <BrandLogo class="h-7 w-auto sm:h-8" />
         </NuxtLink>
 
@@ -102,7 +102,7 @@ useMotion(root, ({ motion }) => {
           >
             <button
               type="button"
-              class="relative flex h-9 items-center gap-1 rounded-full px-3.5 text-sm text-fg/75 transition-colors hover:text-fg"
+              class="sf-link relative flex h-9 items-center gap-1 rounded-full px-3.5 font-roboto text-[0.95rem] font-medium tracking-wide text-fg/80 transition-colors hover:text-fg"
               :class="active === i ? 'text-fg' : ''"
               :aria-expanded="active === i"
               :aria-controls="`mega-${i}`"
@@ -132,7 +132,7 @@ useMotion(root, ({ motion }) => {
         </ul>
 
         <div class="flex shrink-0 items-center gap-2">
-          <a :href="LOGIN" class="nav-item hidden h-10 items-center px-3 text-sm text-fg/75 transition-colors hover:text-fg xl:inline-flex">Log in</a>
+          <a :href="LOGIN" class="sf-link nav-item hidden h-10 items-center px-3 font-roboto text-[0.95rem] font-medium tracking-wide text-fg/80 transition-colors hover:text-fg xl:inline-flex">Log in</a>
           <a :href="SIGNUP" class="nav-item btn btn-primary h-10 px-5 text-sm">Open account</a>
           <button
             ref="burger"
@@ -221,6 +221,16 @@ useMotion(root, ({ motion }) => {
 .drawer[data-open="true"] .d-group { opacity: 1; transform: none; transition-delay: calc(60ms + var(--i) * 35ms); }
 .d-cta { opacity: 0; transform: translateY(10px); transition: opacity 240ms ease, transform 380ms var(--ease-out-expo); }
 .drawer[data-open="true"] .d-cta { opacity: 1; transform: none; transition-delay: 260ms; }
+
+.sf-nav::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.55;
+  background-image: linear-gradient(color-mix(in oklab, var(--color-accent) 7%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--color-accent) 7%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px; mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+}
+.sf-link { position: relative; text-shadow: 0 0 0 transparent; transition: color 220ms ease, text-shadow 320ms ease; }
+.sf-link:hover { text-shadow: 0 0 14px color-mix(in oklab, var(--color-accent) 55%, transparent); }
+.sf-logo { transition: filter 360ms ease; }
+.sf-logo:hover { filter: drop-shadow(0 0 10px color-mix(in oklab, var(--color-accent) 45%, transparent)); }
 
 @media (prefers-reduced-motion: reduce) {
   .d-group, .d-cta { transform: none; transition: opacity 200ms ease; }

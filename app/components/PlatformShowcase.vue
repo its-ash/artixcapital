@@ -4,18 +4,23 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PhArrowRight, PhArrowUpRight, PhDownloadSimple } from '@phosphor-icons/vue'
 
+import BrandMetaTrader from '~/components/icons/BrandMetaTrader.vue'
+import BrandNtrader from '~/components/icons/BrandNtrader.vue'
+
 type Opt = { id: string; label: string; title: string; href: string; icon: Component; external: boolean }
 
-const TABS: { id: string; label: string; desc: string; more?: { label: string; href: string }; opts: Opt[] }[] = [
+const TABS: { id: string; label: string; desc: string; logo?: Component; more?: { label: string; href: string }; opts: Opt[] }[] = [
   {
     id: 'ntrader',
     label: 'nTrader',
+    logo: BrandNtrader,
     desc: 'Our own terminal on desktop, browser and mobile, with one login across every screen.',
     opts: PLATFORMS.map(p => ({ id: p.id, label: p.label, title: p.title, href: p.href, icon: p.icon, external: p.href.startsWith('http') }))
   },
   {
     id: 'mt5',
     label: 'MetaTrader 5',
+    logo: BrandMetaTrader,
     desc: 'The industry-standard terminal, connected to the ArtixCapital-Server.',
     more: { label: 'Read about MT5', href: '/meta-trader-5/' },
     opts: MT5_DOWNLOADS.map(d => ({ ...d, external: true }))
@@ -94,10 +99,14 @@ useMotion(root, ({ motion, fine }) => {
             :aria-controls="`ppanel-${t.id}`"
             :tabindex="idx === i ? 0 : -1"
             @click="idx = i"
-          >{{ t.label }}</button>
+          >
+            <component :is="t.logo" v-if="t.logo" :size="24" class="mr-2 inline-block align-[-6px]" aria-hidden="true" />
+            {{ t.label }}
+          </button>
         </div>
 
         <div :id="`ppanel-${tab.id}`" class="mt-6" role="tabpanel" :aria-labelledby="`ptab-${tab.id}`">
+          <component :is="tab.logo" v-if="tab.logo" :size="88" class="p-logo mb-6 block" aria-hidden="true" />
           <p class="p-desc max-w-xl text-sm leading-relaxed text-muted md:text-base">
             {{ tab.desc }}
             <NuxtLink v-if="tab.more" :to="tab.more.href" class="font-medium text-fg underline decoration-accent-soft underline-offset-4">{{ tab.more.label }}</NuxtLink>
@@ -113,7 +122,7 @@ useMotion(root, ({ motion, fine }) => {
                 :aria-label="`${tab.id === 'mt5' ? (o.id === 'web' ? 'Open MetaTrader 5 for' : 'Download MetaTrader 5 for') : 'nTrader for'} ${o.label}${o.external ? ' (opens in a new tab)' : ''}`"
               >
                 <span class="dl-glow pointer-events-none absolute inset-0 -z-1" aria-hidden="true" />
-                <component :is="o.icon" :size="160" weight="thin" class="dl-ghost pointer-events-none absolute -right-8 -bottom-10 -z-1 text-fg max-sm:size-28 max-sm:-bottom-8" aria-hidden="true" />
+                <component :is="o.icon" :size="160" weight="thin" class="dl-ghost pointer-events-none absolute -right-8 -bottom-10 -z-1 max-sm:size-28 max-sm:-bottom-8" aria-hidden="true" />
                 <span class="dl-ico relative grid size-11 shrink-0 place-items-center overflow-hidden rounded-lg border border-line-strong bg-surface text-accent-soft sm:size-12">
                   <component :is="o.icon" :size="22" :weight="tab.id === 'mt5' ? 'regular' : 'duotone'" class="dl-i1" aria-hidden="true" />
                   <component :is="o.icon" :size="22" weight="fill" class="dl-i2 absolute" aria-hidden="true" />
@@ -145,14 +154,14 @@ useMotion(root, ({ motion, fine }) => {
 .dl { transition: border-color 260ms ease, translate 360ms var(--ease-out-expo), scale 160ms var(--ease-out-strong); }
 .dl:active { scale: 0.98; }
 .dl-glow { opacity: 0; background: radial-gradient(120% 90% at 100% 100%, color-mix(in oklab, var(--color-accent) 18%, transparent), transparent 60%); transition: opacity 360ms ease; }
-.dl-ghost { opacity: 0.04; transition: opacity 500ms ease, rotate 700ms var(--ease-out-expo), scale 700ms var(--ease-out-expo), translate 700ms var(--ease-out-expo); }
+.dl-ghost { opacity: 0.14; transition: opacity 500ms ease, rotate 700ms var(--ease-out-expo), scale 700ms var(--ease-out-expo), translate 700ms var(--ease-out-expo); }
 .dl-ico, .dl-arrow { transition: background-color 240ms ease, border-color 240ms ease, color 240ms ease, rotate 420ms var(--ease-out-expo), translate 360ms var(--ease-out-expo), scale 420ms var(--ease-out-expo); }
 .dl-i1, .dl-i2 { transition: translate 420ms var(--ease-out-expo), opacity 240ms ease; }
 .dl-i2 { translate: 0 140%; opacity: 0; }
 
 .dl[data-live] { border-color: color-mix(in oklab, var(--color-accent) 60%, transparent); translate: 0 -3px; }
 .dl[data-live] .dl-glow { opacity: 1; }
-.dl[data-live] .dl-ghost { opacity: 0.1; rotate: -10deg; scale: 1.08; translate: -6px -6px; }
+.dl[data-live] .dl-ghost { opacity: 0.22; rotate: -10deg; scale: 1.08; translate: -6px -6px; }
 .dl[data-live] .dl-ico { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); rotate: -6deg; scale: 1.06; }
 .dl[data-live] .dl-i1 { translate: 0 -140%; opacity: 0; }
 .dl[data-live] .dl-i2 { translate: 0 0; opacity: 1; }
@@ -162,7 +171,7 @@ useMotion(root, ({ motion, fine }) => {
   .p-tab[aria-selected="false"]:hover { color: var(--color-fg); }
   .dl:hover { border-color: color-mix(in oklab, var(--color-accent) 60%, transparent); translate: 0 -3px; }
   .dl:hover .dl-glow { opacity: 1; }
-  .dl:hover .dl-ghost { opacity: 0.1; rotate: -10deg; scale: 1.08; translate: -6px -6px; }
+  .dl:hover .dl-ghost { opacity: 0.22; rotate: -10deg; scale: 1.08; translate: -6px -6px; }
   .dl:hover .dl-ico { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-on-accent); rotate: -6deg; scale: 1.06; }
   .dl:hover .dl-i1 { translate: 0 -140%; opacity: 0; }
   .dl:hover .dl-i2 { translate: 0 0; opacity: 1; }

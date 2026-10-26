@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     families: [
       { name: 'Geist', provider: 'google', weights: [400, 500, 600, 800] },
       { name: 'Instrument Serif', provider: 'google', weights: [400], styles: ['italic'] },
+      { name: 'Roboto', provider: 'google', weights: [500, 600] },
       { name: 'Geist Mono', provider: 'google', weights: [400, 500] }
     ]
   },

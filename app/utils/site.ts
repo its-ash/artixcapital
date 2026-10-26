@@ -1,7 +1,11 @@
 import type { Component } from 'vue'
+import BrandAndroid from '~/components/icons/BrandAndroid.vue'
+import BrandChrome from '~/components/icons/BrandChrome.vue'
+import BrandIos from '~/components/icons/BrandIos.vue'
+import BrandPlay from '~/components/icons/BrandPlay.vue'
+import BrandWindows from '~/components/icons/BrandWindows.vue'
 import {
-  PhAndroidLogo, PhAppleLogo, PhWindowsLogo,
-  PhArrowsLeftRight, PhBarbell, PhBrowser, PhBuildings, PhCalendarBlank, PhChartBar, PhChartLineUp, PhClockCountdown,
+  PhArrowsLeftRight, PhBarbell, PhBuildings, PhCalendarBlank, PhChartBar, PhChartLineUp, PhClockCountdown,
   PhCoins, PhCrown, PhCube, PhGift, PhCurrencyBtc, PhDesktop, PhDeviceMobile, PhFlask, PhHandshake,
   PhHourglassMedium, PhIdentificationCard, PhInfo, PhLightning, PhPaperPlaneTilt, PhRocketLaunch,
   PhShieldCheck, PhStack, PhTable, PhUserPlus
@@ -57,10 +61,10 @@ export const NAV: NavGroup[] = [
   {
     label: 'Accounts',
     items: [
-      { label: 'Artix Core', href: page('artix-core'), desc: 'From $500, no FX commission', icon: PhCube },
-      { label: 'Artix Edge', href: page('artix-edge'), desc: 'Zero spreads for active traders', icon: PhLightning },
-      { label: 'Artix Elite', href: page('artix-elite'), desc: 'Lowest commission tier', icon: PhCrown },
-      { label: 'Artix Coverage', href: page('artix-coverage-account'), desc: 'Built for capital preservation', icon: PhShieldCheck },
+      { label: 'Retail Trader', href: page('artix-core'), desc: 'From $500, no FX commission', icon: PhCube },
+      { label: 'Professional Trader', href: page('artix-edge'), desc: 'Zero spreads for active traders', icon: PhLightning },
+      { label: 'Arbitrage Trader', href: page('artix-elite'), desc: 'Lowest commission tier', icon: PhCrown },
+      { label: 'Bullion Trader', href: page('artix-coverage-account'), desc: 'Built for capital preservation', icon: PhShieldCheck },
       { label: 'Artix Demo', href: page('artix-demo-account'), desc: 'Practise with virtual funds', icon: PhFlask },
       { label: 'Promotion', href: page('promotion'), desc: '2% USDT deposit cashback', icon: PhGift }
     ]
@@ -112,16 +116,16 @@ export type Platform = { id: string; label: string; title: string; desc: string;
 
 export const PLATFORMS: Platform[] = [
   { id: 'desktop', label: 'Desktop', title: 'A full workstation on Windows', desc: 'Every tool nTrader offers, with layouts you can shape around the way you trade.', href: page('ntrader-for-windows'), cta: 'nTrader for Windows', icon: PhDesktop, hue: '#c41e2a' },
-  { id: 'web', label: 'Web', title: 'Open a browser and trade', desc: 'Sign in from any computer and pick up where you left off. Nothing to install.', href: LOGIN, cta: 'Open web platform', icon: PhBrowser, hue: '#c41e2a' },
+  { id: 'web', label: 'Web', title: 'Open a browser and trade', desc: 'Sign in from any computer and pick up where you left off. Nothing to install.', href: LOGIN, cta: 'Open web platform', icon: BrandChrome, hue: '#c41e2a' },
   { id: 'mobile', label: 'Mobile', title: 'Markets in your pocket', desc: 'Real-time prices, charts and order entry, wherever the day takes you.', href: page('ntrader-for-mobile'), cta: 'nTrader for Mobile', icon: PhDeviceMobile, hue: '#7d8da8' }
 ]
 
 export const MT5_DOWNLOADS: { id: string; label: string; title: string; href: string; icon: Component }[] = [
-  { id: 'windows', label: 'Windows', title: 'Desktop terminal', href: 'https://download.terminal.free/cdn/web/artix.capital.ltd/mt5/artixcapital5setup.exe', icon: PhWindowsLogo },
-  { id: 'web', label: 'Web', title: 'Trade in your browser', href: 'https://web.artixcapital.com/terminal', icon: PhBrowser },
-  { id: 'ios', label: 'iOS', title: 'iPhone and iPad', href: 'https://download.terminal.free/cdn/mobile/mt5/ios?server=ArtixCapital-Server', icon: PhAppleLogo },
-  { id: 'android', label: 'Android', title: 'Phone and tablet', href: 'https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.metatrader5.com&utm_campaign=install.metaquotes', icon: PhAndroidLogo },
-  { id: 'playstore', label: 'Google Play', title: 'Android app', href: 'https://download.terminal.free/cdn/mobile/mt5/android?server=ArtixCapital-Server', icon: PhAndroidLogo }
+  { id: 'windows', label: 'Windows', title: 'Desktop terminal', href: 'https://download.terminal.free/cdn/web/artix.capital.ltd/mt5/artixcapital5setup.exe', icon: BrandWindows },
+  { id: 'web', label: 'Web', title: 'Trade in your browser', href: 'https://web.artixcapital.com/terminal', icon: BrandChrome },
+  { id: 'ios', label: 'iOS', title: 'iPhone and iPad', href: 'https://download.terminal.free/cdn/mobile/mt5/ios?server=ArtixCapital-Server', icon: BrandIos },
+  { id: 'android', label: 'Android', title: 'Phone and tablet', href: 'https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.metatrader5.com&utm_campaign=install.metaquotes', icon: BrandAndroid },
+  { id: 'playstore', label: 'Google Play', title: 'Android app', href: 'https://download.terminal.free/cdn/mobile/mt5/android?server=ArtixCapital-Server', icon: BrandPlay }
 ]
 
 export type Spec = { k: string; v: string }
@@ -129,19 +133,19 @@ export type Account = { id: string; name: string; tag: string; href: string; ico
 
 export const ACCOUNTS: Account[] = [
   {
-    id: 'core', name: 'Core', tag: 'A low-cost start for new and growing traders.', href: page('artix-core'), icon: PhCube, span: 'lg:col-span-2', hue: '#7d8da8',
+    id: 'core', name: 'Retail Trader', tag: 'A low-cost start for new and growing traders.', href: page('artix-core'), icon: PhCube, span: 'lg:col-span-2', hue: '#7d8da8',
     specs: [{ k: 'Min. deposit', v: '$500' }, { k: 'Spreads from', v: '1.5 pips' }, { k: 'FX commission', v: 'None' }, { k: 'Leverage', v: '1:200' }]
   },
   {
-    id: 'edge', name: 'Edge', tag: 'Raw pricing for experienced, active traders.', href: page('artix-edge'), icon: PhLightning, span: 'lg:col-span-2', hue: '#a9b7cf',
+    id: 'edge', name: 'Professional Trader', tag: 'Raw pricing for experienced, active traders.', href: page('artix-edge'), icon: PhLightning, span: 'lg:col-span-2', hue: '#a9b7cf',
     specs: [{ k: 'Min. deposit', v: '$10,000' }, { k: 'Spreads from', v: '0.0 pips' }, { k: 'FX commission', v: '$5 / lot' }, { k: 'Leverage', v: '1:200' }]
   },
   {
-    id: 'elite', name: 'Elite', tag: 'Priority conditions for high-volume trading.', href: page('artix-elite'), icon: PhCrown, span: 'lg:col-span-2', featured: true, hue: '#c41e2a',
+    id: 'elite', name: 'Arbitrage Trader', tag: 'Priority conditions for high-volume trading.', href: page('artix-elite'), icon: PhCrown, span: 'lg:col-span-2', featured: true, hue: '#c41e2a',
     specs: [{ k: 'Min. deposit', v: '$25,000' }, { k: 'Spreads from', v: '0.0 pips' }, { k: 'FX commission', v: '$3.5 / lot' }, { k: 'Leverage', v: '1:200' }]
   },
   {
-    id: 'coverage', name: 'Coverage', tag: 'For disciplined traders who put capital preservation first.', href: page('artix-coverage-account'), icon: PhShieldCheck, span: 'lg:col-span-4', hue: '#9a1c26',
+    id: 'coverage', name: 'Bullion Trader', tag: 'For disciplined traders who put capital preservation first.', href: page('artix-coverage-account'), icon: PhShieldCheck, span: 'lg:col-span-4', hue: '#9a1c26',
     specs: [{ k: 'Min. deposit', v: '$50,000' }, { k: 'Spreads from', v: '0.0 pips' }, { k: 'FX commission', v: '$3.5 / lot' }, { k: 'Leverage', v: '1:200' }]
   },
   {
