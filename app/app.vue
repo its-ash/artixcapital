@@ -40,7 +40,6 @@ useJsonLd('ld-org', {
     <SiteNav />
     <NuxtPage :transition="pageTransition" />
     <SiteFooter />
-    <ThemePicker />
     <MobileTabBar />
   </div>
 </template>
