@@ -1,7 +1,7 @@
 import type { Component } from 'vue'
 import BrandAndroid from '~/components/icons/BrandAndroid.vue'
 import BrandChrome from '~/components/icons/BrandChrome.vue'
-import BrandIos from '~/components/icons/BrandIos.vue'
+import BrandApple from '~/components/icons/BrandApple.vue'
 import BrandPlay from '~/components/icons/BrandPlay.vue'
 import BrandWindows from '~/components/icons/BrandWindows.vue'
 import {
@@ -123,7 +123,7 @@ export const PLATFORMS: Platform[] = [
 export const MT5_DOWNLOADS: { id: string; label: string; title: string; href: string; icon: Component }[] = [
   { id: 'windows', label: 'Windows', title: 'Desktop terminal', href: 'https://download.terminal.free/cdn/web/artix.capital.ltd/mt5/artixcapital5setup.exe', icon: BrandWindows },
   { id: 'web', label: 'Web', title: 'Trade in your browser', href: 'https://web.artixcapital.com/terminal', icon: BrandChrome },
-  { id: 'ios', label: 'iOS', title: 'iPhone and iPad', href: 'https://download.terminal.free/cdn/mobile/mt5/ios?server=ArtixCapital-Server', icon: BrandIos },
+  { id: 'ios', label: 'iOS', title: 'iPhone and iPad', href: 'https://download.terminal.free/cdn/mobile/mt5/ios?server=ArtixCapital-Server', icon: BrandApple },
   { id: 'android', label: 'Android .APK', title: 'Phone and tablet, direct download', href: 'https://download.terminal.free/cdn/web/metaquotes.software.corp/mt5/metatrader5.apk?utm_source=www.metatrader5.com&utm_campaign=install.metaquotes', icon: BrandAndroid },
   { id: 'playstore', label: 'Google Play', title: 'Android app', href: 'https://download.terminal.free/cdn/mobile/mt5/android?server=ArtixCapital-Server', icon: BrandPlay }
 ]
