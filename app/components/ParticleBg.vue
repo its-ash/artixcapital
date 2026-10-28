@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<{
   cameraZ?: number
   /** Fog density */
   fogDensity?: number
-}>({
+}>(), {
   count: 20000,
   size: 1,
   interactive: true,
@@ -77,8 +77,9 @@ const init = () => {
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
 
+  const geo = geometry
   const layers = getColorLayers()
-  materials = layers.map(([h, s, l, size]) => {
+  materials = layers.map(([h = 0, s = 1, l = 0.5, size = 1]) => {
     const material = new THREE.PointsMaterial({
       size: size * props.size,
       transparent: true,
@@ -91,7 +92,7 @@ const init = () => {
   })
 
   particles = materials.map(material => {
-    const pts = new THREE.Points(geometry, material)
+    const pts = new THREE.Points(geo, material)
     pts.rotation.x = Math.random() * 6
     pts.rotation.y = Math.random() * 6
     pts.rotation.z = Math.random() * 6
@@ -173,7 +174,7 @@ const render = () => {
   materials.forEach((material, i) => {
     const layer = getColorLayers()[i]
     if (layer) {
-      const [h, s, l] = layer
+      const [h = 0, s = 1, l = 0.5] = layer
       const hue = (360 * (h + time) % 360) / 360
       material.color.setHSL(hue, s, l)
     }
@@ -188,18 +189,20 @@ const onMouseMove = (e: MouseEvent) => {
 }
 
 const onTouchStart = (e: TouchEvent) => {
-  if (e.touches.length === 1) {
+  const t = e.touches[0]
+  if (e.touches.length === 1 && t) {
     e.preventDefault()
-    mouseX = e.touches[0].pageX - windowHalfX
-    mouseY = e.touches[0].pageY - windowHalfY
+    mouseX = t.pageX - windowHalfX
+    mouseY = t.pageY - windowHalfY
   }
 }
 
 const onTouchMove = (e: TouchEvent) => {
-  if (e.touches.length === 1) {
+  const t = e.touches[0]
+  if (e.touches.length === 1 && t) {
     e.preventDefault()
-    mouseX = e.touches[0].pageX - windowHalfX
-    mouseY = e.touches[0].pageY - windowHalfY
+    mouseX = t.pageX - windowHalfX
+    mouseY = t.pageY - windowHalfY
   }
 }
 
@@ -254,7 +257,7 @@ const handleAccentChange = () => {
   materials.forEach((material, i) => {
     const layer = getColorLayers()[i]
     if (layer) {
-      const [h, s, l] = layer
+      const [h = 0, s = 1, l = 0.5] = layer
       const hue = (360 * (h + time) % 360) / 360
       material.color.setHSL(hue, s, l)
     }

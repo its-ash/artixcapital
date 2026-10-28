@@ -170,12 +170,15 @@ export const FAQS: { q: string; a: string }[] = [
   { q: 'Who can not open an account?', a: `Artix Capital Ltd does not provide services for citizens or residents of ${RESTRICTED_LIST}.` }
 ]
 
+// Policy PDFs are self-hosted from public/files/
+const doc = (file: string) => `/files/${file}`
+
 export const POLICIES: { label: string; href: string }[] = [
-  { label: 'Complaints Management', href: `${SITE}/wp-content/uploads/2026/04/Complaints-Management-Policy.pdf` },
-  { label: 'Conflicts of Interest', href: `${SITE}/wp-content/uploads/2026/04/Conflicts-of-Interest-Policy.pdf` },
-  { label: 'Privacy Policy', href: `${SITE}/wp-content/uploads/2026/04/Privacy-Policy.pdf` },
-  { label: 'Risk Disclosure', href: `${SITE}/wp-content/uploads/2026/04/Risk-Disclosure-Policy.pdf` },
-  { label: 'Risk Management', href: `${SITE}/wp-content/uploads/2026/04/Risk-Management-Policy.pdf` },
-  { label: 'Safeguarding of Client Funds', href: `${SITE}/wp-content/uploads/2026/04/Safeguarding-of-Clients-Funds.pdf` },
-  { label: 'Fraud Alert', href: `${SITE}/wp-content/uploads/2026/09/Fraud-Alert.pdf` }
+  { label: 'Complaints Management', href: doc('Complaints-Management-Policy.pdf') },
+  { label: 'Conflicts of Interest', href: doc('Conflicts-of-Interest-Policy.pdf') },
+  { label: 'Privacy Policy', href: doc('Privacy-Policy.pdf') },
+  { label: 'Risk Disclosure', href: doc('Risk-Disclosure-Policy.pdf') },
+  { label: 'Risk Management', href: doc('Risk-Management-Policy.pdf') },
+  { label: 'Safeguarding of Client Funds', href: doc('Safeguarding-of-Clients-Funds.pdf') },
+  { label: 'Fraud Alert', href: doc('Fraud-Alert.pdf') }
 ]

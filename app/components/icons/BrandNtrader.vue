@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const SRC = 'https://play-lh.googleusercontent.com/6mv_NULxcOzgNQAostl74PT2I_5xRwNUDU28lrhd5U9XSATUQ9e9si8xL3ZMRu16TYD_vl7b4HPmKysBoW3l3cY'
+const SRC = '/logo/ntradeLogo.png'
 
 withDefaults(defineProps<{ size?: number | string }>(), { size: 24 })
 </script>

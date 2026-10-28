@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const SRC = 'https://signalexpertglobal.com/wp-content/uploads/2025/07/unnamed-1.png'
+const SRC = '/logo/meta.webp'
 
 withDefaults(defineProps<{ size?: number | string }>(), { size: 24 })
 </script>
