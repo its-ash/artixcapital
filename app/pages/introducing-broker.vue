@@ -35,6 +35,7 @@ const program = [
       group="Partners"
       title="Partner. Earn. Succeed."
       lead="Turn your audience, network or firm into a revenue stream on every lot your traders execute. Full sales support, real reporting, no ceiling."
+      mascot="ib"
     >
       <a href="https://artixcapital.com/introducing-broker/" class="btn btn-primary h-13 px-7">Become a partner</a>
     </PageHero>

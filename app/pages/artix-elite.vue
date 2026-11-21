@@ -38,6 +38,7 @@ const full = [
       group="Accounts"
       title="Artix Elite"
       lead="Premium trading conditions for professionals: zero spreads, priority liquidity and the lowest per-lot cost on the roster, with a dedicated service lane."
+      mascot="elite"
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
       <NuxtLink to="/artix-coverage-account/" class="btn btn-ghost h-13 px-7">Institutional tier</NuxtLink>

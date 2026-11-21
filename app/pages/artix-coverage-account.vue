@@ -28,6 +28,7 @@ const conditions = [
       group="Accounts"
       title="Some strategies defend first. Coverage exists for them."
       lead="A specialized account for advanced hedging, deep liquidity access and institutional-style conditions. For traders whose first question is how the position survives, not how big it can get."
+      mascot="coverage"
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
     </PageHero>

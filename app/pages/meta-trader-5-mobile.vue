@@ -39,6 +39,7 @@ const spec = [
       group="Platforms"
       title="MetaTrader 5 for Mobile"
       lead="Take the full MT5 terminal with you. Charts, orders, alerts and expert advisors on iPhone, iPad and Android, connected to your Artix account."
+      mascot="mt5-mobile"
     >
       <a href="#mt-mobile-download" class="btn btn-primary h-13 px-7">Download MT5</a>
       <NuxtLink to="/ntrader-for-mobile/" class="btn btn-ghost h-13 px-7">Prefer nTrader?</NuxtLink>

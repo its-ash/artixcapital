@@ -18,6 +18,7 @@ const tips = [
       group="Trading tools"
       title="The week, before it moves you"
       lead="Rate decisions, inflation prints, employment reports: every release that moves your pairs and indices, on one screen, in your own time zone."
+      mascot="calendar"
     />
 
     <PageSection id="ev-cal" title="Live economic calendar">

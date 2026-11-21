@@ -69,6 +69,7 @@ const LIVE = ['XTIUSD', 'XBRUSD', 'XNGUSD', 'XAUUSD', 'XAGUSD', 'US30', 'US500',
       group="Markets"
       title="Futures trading"
       lead="Trade futures on energies, metals and indices from one account. US oil, gold, the S&P 500 and more, with cash settlement and no physical delivery."
+      mascot="futures"
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
       <NuxtLink to="/expiry-dates-of-futures-contracts/" class="btn btn-ghost h-13 px-7">Expiry dates</NuxtLink>

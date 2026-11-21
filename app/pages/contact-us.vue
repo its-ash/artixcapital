@@ -29,6 +29,7 @@ const channels = [
       group="Company"
       title="Talk to a real person"
       lead="No bots, no ticket maze. Questions about accounts, verification, payments or trading conditions get direct answers from the desk, through every session."
+      mascot="contact"
     >
       <a :href="`mailto:${EMAIL}`" class="btn btn-primary h-13 px-7">
         Email the desk

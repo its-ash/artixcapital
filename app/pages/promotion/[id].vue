@@ -47,6 +47,7 @@ const downloadTerms = async () => {
       group="Promotions"
       :title="promo.heroTitle"
       :lead="promo.lead"
+      mascot="promotion"
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
       <button type="button" class="btn btn-ghost h-13 px-7" :disabled="busy" @click="downloadTerms">{{ busy ? 'Creating PDF…' : 'Download terms (PDF)' }}</button>

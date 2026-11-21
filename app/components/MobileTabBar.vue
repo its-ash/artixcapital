@@ -10,7 +10,7 @@ const TABS = [
 </script>
 
 <template>
-  <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-canvas pb-[env(safe-area-inset-bottom)] md:hidden" aria-label="Quick links">
+  <nav class="glass fixed inset-x-0 bottom-0 z-40 border-t border-line pb-[env(safe-area-inset-bottom)] shadow-[0_-12px_32px_-18px_oklch(0_0_0/0.85)] md:hidden" aria-label="Quick links">
     <ul class="grid grid-cols-4">
       <li v-for="t in TABS" :key="t.label">
         <a :href="t.href" class="tb-link flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-medium text-muted transition-colors duration-200 active:text-fg">

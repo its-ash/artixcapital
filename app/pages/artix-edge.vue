@@ -33,6 +33,7 @@ const faqs = [
       group="Accounts"
       title="Artix Edge"
       lead="Raw pricing for experienced, active traders: zero spreads on FX and metals and one visible commission per lot."
+      mascot="edge"
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
       <NuxtLink to="/artix-core/" class="btn btn-ghost h-13 px-7">Compare with Core</NuxtLink>

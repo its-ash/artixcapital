@@ -13,13 +13,13 @@ const CONTACT = [
 
 <template>
   <section :aria-labelledby="id" class="wrap">
-    <div class="grid gap-12 border-t border-line py-16 md:py-24 lg:grid-cols-12 lg:gap-10">
+    <div class="section-rule grid gap-8 py-10 md:py-14 lg:grid-cols-12 lg:gap-8">
       <div class="lg:col-span-4">
-        <div class="lg:sticky lg:top-28">
+        <div class="lg:sticky lg:top-24">
           <h2 :id="id" class="h-section max-w-sm text-3xl md:text-4xl">{{ title }}</h2>
-          <p class="mt-4 max-w-xs leading-relaxed text-muted">Short answers to what traders ask most. Anything else, our team is a message away.</p>
+          <p class="mt-3 max-w-xs leading-relaxed text-muted">Short answers to what traders ask most. Anything else, our team is a message away.</p>
 
-          <div v-spot class="card mt-8 p-5">
+          <div v-spot class="card mt-6 p-4 sm:p-5">
             <p class="font-medium">Talk to a real person</p>
             <p class="mt-1 text-sm text-muted">Support runs 24 hours a day, five days a week.</p>
             <ul class="mt-5 grid gap-2 text-sm">

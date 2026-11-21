@@ -25,6 +25,7 @@ const compare = [
       title="Live prices. Play money. Real habits."
       lead="The Demo account mirrors live market conditions with virtual funds. Practise sizing, stops and discipline in nTrader, then take the workflow live without relearning anything."
       center
+      mascot="demo"
     >
       <a :href="`${PORTAL}/`" class="btn btn-primary h-14 px-8 text-base">Try demo</a>
       <template #below>

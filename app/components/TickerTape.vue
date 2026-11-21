@@ -15,8 +15,8 @@ onBeforeUnmount(() => io?.disconnect())
 </script>
 
 <template>
-  <section ref="root" class="tt relative overflow-hidden border-y border-line" :class="paused ? 'anim-paused' : ''" aria-label="Market prices">
-    <div class="tt-track flex w-max bg-canvas">
+  <section ref="root" class="tt relative overflow-hidden border-y border-line bg-[color-mix(in_oklab,var(--color-surface)_55%,var(--color-canvas))] shadow-[inset_0_1px_0_oklch(1_0_0/0.05)]" :class="paused ? 'anim-paused' : ''" aria-label="Market prices">
+    <div class="tt-track flex w-max">
       <Mql5Widget type="ticker" :symbols="SYMBOLS" :height="50" class="shrink-0" :style="{ width: `${COPY_PX}px` }" />
       <div class="tt-dup shrink-0" aria-hidden="true" inert>
         <Mql5Widget type="ticker" :symbols="SYMBOLS" :height="50" :style="{ width: `${COPY_PX}px` }" />

@@ -62,21 +62,21 @@ const onDrawerKey = (e: KeyboardEvent) => {
   btns[next]?.focus()
 }
 
-const onScroll = () => {
-  const next = window.scrollY > 8
-  if (scrolled.value !== next) scrolled.value = next
-}
+let navIo: IntersectionObserver | undefined
 
 onMounted(() => {
-  onScroll()
-  addEventListener('scroll', onScroll, { passive: true })
+  const sentinel = document.getElementById('nav-sentinel')
+  if (sentinel) {
+    navIo = new IntersectionObserver(([e]) => { scrolled.value = !e?.isIntersecting })
+    navIo.observe(sentinel)
+  }
   addEventListener('keydown', onKey)
   document.addEventListener('pointerdown', onDoc)
 })
 onBeforeUnmount(() => {
   clearTimeout(timer)
+  navIo?.disconnect()
   document.documentElement.style.overflow = ''
-  removeEventListener('scroll', onScroll)
   removeEventListener('keydown', onKey)
   document.removeEventListener('pointerdown', onDoc)
 })
@@ -92,14 +92,14 @@ useMotion(root, ({ motion }) => {
 <template>
   <header ref="root" class="sticky top-0 z-50">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-60 focus:rounded-full focus:bg-fg focus:px-4 focus:py-2 focus:text-ink">Skip to main content</a>
-    <div ref="shell" class="sf-nav glass relative border-b transition-colors duration-300" :class="scrolled ? 'border-line' : 'border-transparent'">
+    <div ref="shell" class="sf-nav glass relative border-b transition-[border-color,box-shadow] duration-300" :class="scrolled ? 'border-line shadow-[0_12px_36px_-22px_oklch(0_0_0/0.92)]' : 'border-transparent'">
       <nav class="wrap relative flex h-16 items-center justify-between gap-4" aria-label="Primary">
         <NuxtLink to="/" class="nav-item sf-logo shrink-0" aria-label="Artix Capital home">
           <BrandLogo class="h-7 w-auto sm:h-8" />
         </NuxtLink>
 
         <ul class="relative hidden items-center lg:flex" @pointerleave="hidePill">
-          <span ref="pill" class="absolute left-0 top-1/2 h-9 w-0 -translate-y-1/2 rounded-full bg-white/6 opacity-0" aria-hidden="true" />
+          <span ref="pill" class="absolute left-0 top-1/2 h-9 w-0 -translate-y-1/2 rounded-full bg-white/7 ring-1 ring-inset ring-white/10 opacity-0" aria-hidden="true" />
           <li
             v-for="(g, i) in NAV"
             :key="g.label"
@@ -109,7 +109,7 @@ useMotion(root, ({ motion }) => {
           >
             <button
               type="button"
-              class="sf-link relative flex h-9 items-center gap-1 rounded-full px-3.5 font-roboto text-[0.95rem] font-medium tracking-wide text-fg/80 transition-colors hover:text-fg"
+              class="sf-link relative flex h-9 cursor-pointer items-center gap-1 rounded-full px-3.5 text-sm font-medium tracking-[-0.01em] text-fg/80 transition-colors hover:text-fg"
               :class="active === i ? 'text-fg' : ''"
               :aria-expanded="active === i"
               :aria-controls="`mega-${i}`"
@@ -118,17 +118,17 @@ useMotion(root, ({ motion }) => {
               @click="toggle(i)"
             >
               {{ g.label }}
-              <PhCaretDown :size="11" weight="bold" class="text-muted transition-transform duration-200" :class="active === i ? 'rotate-180' : ''" />
+              <PhCaretDown :size="11" weight="bold" class="text-muted transition-transform duration-200" :class="active === i ? 'rotate-180 text-accent-soft' : ''" />
             </button>
             <div :id="`mega-${i}`" class="mega absolute left-1/2 top-full pt-3" :data-open="active === i">
-              <ul class="w-80 rounded-2xl border border-line bg-surface p-2 shadow-[0_24px_60px_-24px_rgb(0_0_0/0.8)]">
+              <ul class="surface-lux w-80 rounded-2xl p-2 shadow-[0_28px_70px_-24px_oklch(0_0_0/0.92)]">
                 <li v-for="(it, j) in g.items" :key="it.label" class="mega-item" :style="{ '--i': j }">
-                  <NuxtLink :to="it.href" class="group flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-white/4" :tabindex="active === i ? 0 : -1" @click="active = null">
-                    <span class="grid size-9 shrink-0 place-items-center rounded-full border border-line text-muted transition-colors group-hover:text-accent-soft">
-                      <component :is="it.icon" :size="18" />
+                  <NuxtLink :to="it.href" class="group flex items-center gap-3 rounded-xl p-2.5 transition-colors hover:bg-white/5" :tabindex="active === i ? 0 : -1" @click="active = null">
+                    <span class="grid size-9 shrink-0 place-items-center rounded-lg border border-line bg-canvas/80 text-muted shadow-[inset_0_1px_0_oklch(1_0_0/0.07)] transition-colors group-hover:border-[color-mix(in_oklab,var(--color-accent)_45%,transparent)] group-hover:bg-[color-mix(in_oklab,var(--color-accent)_14%,transparent)] group-hover:text-accent-soft">
+                      <component :is="it.icon" :size="17" />
                     </span>
                     <span class="min-w-0">
-                      <span class="block text-sm font-medium">{{ it.label }}</span>
+                      <span class="block text-sm font-medium text-fg">{{ it.label }}</span>
                       <span class="block truncate text-xs text-muted">{{ it.desc }}</span>
                     </span>
                   </NuxtLink>
@@ -139,8 +139,8 @@ useMotion(root, ({ motion }) => {
         </ul>
 
         <div class="flex shrink-0 items-center gap-2">
-          <a :href="LOGIN" class="sf-link nav-item hidden h-10 items-center px-3 font-roboto text-[0.95rem] font-medium tracking-wide text-fg/80 transition-colors hover:text-fg xl:inline-flex">Log in</a>
-          <a :href="SIGNUP" class="nav-item btn btn-primary h-10 px-5 text-sm">Open account</a>
+          <a :href="LOGIN" class="sf-link nav-item hidden h-9 items-center rounded-full px-3.5 text-sm font-medium tracking-[-0.01em] text-fg/80 transition-colors hover:bg-white/5 hover:text-fg xl:inline-flex">Log in</a>
+          <a :href="SIGNUP" class="nav-item btn btn-primary h-9 px-5 text-sm">Open account</a>
           <button
             ref="burger"
             type="button"
@@ -229,15 +229,9 @@ useMotion(root, ({ motion }) => {
 .d-cta { opacity: 0; transform: translateY(10px); transition: opacity 240ms ease, transform 380ms var(--ease-out-expo); }
 .drawer[data-open="true"] .d-cta { opacity: 1; transform: none; transition-delay: 260ms; }
 
-.sf-nav::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.55;
-  background-image: linear-gradient(color-mix(in oklab, var(--color-accent) 7%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--color-accent) 7%, transparent) 1px, transparent 1px);
-  background-size: 32px 32px; mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
-}
-.sf-link { position: relative; text-shadow: 0 0 0 transparent; transition: color 220ms ease, text-shadow 320ms ease; }
-.sf-link:hover { text-shadow: 0 0 14px color-mix(in oklab, var(--color-accent) 55%, transparent); }
-.sf-logo { transition: filter 360ms ease; }
-.sf-logo:hover { filter: drop-shadow(0 0 10px color-mix(in oklab, var(--color-accent) 45%, transparent)); }
+.sf-link { position: relative; transition: color 200ms ease, background-color 200ms ease; }
+.sf-logo { transition: opacity 220ms ease; }
+.sf-logo:hover { opacity: 0.9; }
 
 @supports (animation-timeline: scroll()) {
   .nav-progress {

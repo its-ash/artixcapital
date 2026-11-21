@@ -37,6 +37,7 @@ const spec = [
       group="Platforms"
       title="If your edge lives in automation, MT5 is the road."
       lead="MetaTrader 5 connects to your Artix account with the same institutional feeds and pure agency execution: full multi-asset coverage, expert advisors and the strategy tester."
+      mascot="mt5-desktop"
     >
       <a href="#mt-download" class="btn btn-primary h-13 px-7">Download MT5</a>
       <NuxtLink to="/ntrader-for-windows/" class="btn btn-ghost h-13 px-7">Prefer nTrader?</NuxtLink>

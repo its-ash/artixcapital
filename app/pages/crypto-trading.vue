@@ -29,6 +29,7 @@ const faqs = [
       group="Markets"
       title="Crypto, without the custody"
       lead="Trade the major digital currencies as CFDs in USD. Take either side of 24/7 volatility with real risk tools, and never touch a seed phrase."
+      mascot="crypto"
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
       <NuxtLink to="/artix-demo-account/" class="btn btn-ghost h-13 px-7">Try demo</NuxtLink>

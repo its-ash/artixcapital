@@ -27,14 +27,39 @@ Canonical brand mascot specification for **Artix Capital** (`artixcapital.com`),
 ## Existing Poses (`public/images/`)
 | Pose | File | Dimensions | Usage |
 | :--- | :--- | :--- | :--- |
-| `stand` | `mascot.webp` | `392 × 720` | Standalone hero / brand stance |
-| `signup` | `mascot/signup.webp` | `314 × 457` | `StepsPath.vue` — Step 1 (Register / filling form) |
-| `verify` | `mascot/verify.webp` | `313 × 459` | `StepsPath.vue` — Step 2 (Verify / KYC shield) |
-| `trade` | `mascot/trade.webp` | `338 × 456` | `StepsPath.vue` — Step 3 (Trade / holographic chart) |
-| `faq` | `mascot/faq.webp` | `344 × 449` | `FaqSection.vue` — FAQ support advisor |
+| `stand` | `mascot.webp` | `522 × 972` | Standalone hero / brand stance |
+| `signup` | `mascot/signup.webp` | `634 × 903` | `StepsPath.vue` — Step 1 (Register / filling form) |
+| `verify` | `mascot/verify.webp` | `625 × 907` | `StepsPath.vue` — Step 2 (Verify / KYC shield) |
+| `trade` | `mascot/trade.webp` | `687 × 900` | `StepsPath.vue` — Step 3 (Trade / holographic chart) |
+| `faq` | `mascot/faq.webp` | `705 × 886` | `FaqSection.vue` — FAQ support advisor |
+| `forex` | `mascot/forex.webp` | `730 × 906` | `forex-trading.vue` |
+| `commodities` | `mascot/commodities.webp` | `662 × 906` | `commodities-trading.vue` |
+| `stocks` | `mascot/stocks.webp` | `683 × 901` | `stocks-trading.vue` |
+| `indices` | `mascot/indices.webp` | `763 × 887` | `indices-trading.vue` |
+| `crypto` | `mascot/crypto.webp` | `726 × 911` | `crypto-trading.vue` |
+| `futures` | `mascot/futures.webp` | `738 × 906` | `futures-trading.vue` |
+| `core` | `mascot/core.webp` | `697 × 902` | `artix-core.vue` |
+| `edge` | `mascot/edge.webp` | `647 × 895` | `artix-edge.vue` |
+| `elite` | `mascot/elite.webp` | `705 × 909` | `artix-elite.vue` |
+| `coverage` | `mascot/coverage.webp` | `619 × 908` | `artix-coverage-account.vue` |
+| `demo` | `mascot/demo.webp` | `672 × 899` | `artix-demo-account.vue` |
+| `ib` | `mascot/ib.webp` | `743 × 886` | `introducing-broker.vue` |
+| `whitelabel` | `mascot/whitelabel.webp` | `691 × 938` | `white-label-solution.vue` |
+| `ntrader-desktop` | `mascot/ntrader-desktop.webp` | `690 × 905` | `ntrader-for-windows.vue` |
+| `ntrader-mobile` | `mascot/ntrader-mobile.webp` | `665 × 897` | `ntrader-for-mobile.vue` |
+| `mt5-desktop` | `mascot/mt5-desktop.webp` | `751 × 886` | `meta-trader-5.vue` |
+| `mt5-mobile` | `mascot/mt5-mobile.webp` | `666 × 884` | `meta-trader-5-mobile.vue` |
+| `calendar` | `mascot/calendar.webp` | `759 × 913` | `economic-calendar.vue` |
+| `spreads` | `mascot/spreads.webp` | `673 × 902` | `spread-table.vue` |
+| `expiry` | `mascot/expiry.webp` | `775 × 890` | `expiry-dates-of-futures-contracts.vue` |
+| `about` | `mascot/about.webp` | `586 × 903` | `about.vue` |
+| `contact` | `mascot/contact.webp` | `728 × 924` | `contact-us.vue` |
+| `promotion` | `mascot/promotion.webp` | `598 × 904` | `promotion/index.vue`, `promotion/[id].vue` |
+| `pdf` | `mascot/pdf.webp` | `702 × 891` | `generate-pdf.vue` |
 
 ## Wiring
-- **Component**: `app/components/BearMascot.vue` (`pose?: 'stand' | 'signup' | 'verify' | 'trade' | 'faq'`)
+- **Component**: `app/components/BearMascot.vue` (`pose?: CapitalMascotPose`)
+- **Subpage Hero**: `app/components/page/Hero.vue` (`mascot?: CapitalMascotPose`)
 
 ## Prompt Template (New Poses)
 ```text

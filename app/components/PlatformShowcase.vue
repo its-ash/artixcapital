@@ -9,21 +9,23 @@ import BrandNtrader from '~/components/icons/BrandNtrader.vue'
 
 type Opt = { id: string; label: string; title: string; href: string; icon: Component; external: boolean }
 
-const TABS: { id: string; label: string; desc: string; logo?: Component; more?: { label: string; href: string }; opts: Opt[] }[] = [
-  {
-    id: 'ntrader',
-    label: 'nTrader',
-    logo: BrandNtrader,
-    desc: 'Our own terminal on desktop, browser and mobile, with one login across every screen.',
-    opts: PLATFORMS.map(p => ({ id: p.id, label: p.label, title: p.title, href: p.href, icon: p.icon, external: p.href.startsWith('http') }))
-  },
+const TABS: { id: string; label: string; badge: string; desc: string; logo?: Component; more?: { label: string; href: string }; opts: Opt[] }[] = [
   {
     id: 'mt5',
     label: 'MetaTrader 5',
+    badge: 'ArtixCapital-Server',
     logo: BrandMetaTrader,
     desc: 'The industry-standard terminal, connected to the ArtixCapital-Server.',
     more: { label: 'Read about MT5', href: '/meta-trader-5/' },
     opts: MT5_DOWNLOADS.map(d => ({ ...d, external: true }))
+  },
+  {
+    id: 'ntrader',
+    label: 'nTrader',
+    badge: 'Single Login · All Devices',
+    logo: BrandNtrader,
+    desc: 'Our own terminal on desktop, browser and mobile, with one login across every screen.',
+    opts: PLATFORMS.map(p => ({ id: p.id, label: p.label, title: p.title, href: p.href, icon: p.icon, external: p.href.startsWith('http') }))
   }
 ]
 
@@ -68,22 +70,23 @@ useMotion(root, ({ motion, fine }) => {
 </script>
 
 <template>
-  <section id="platform" ref="root" class="cv-auto wrap" style="--cv-h: 720px" aria-labelledby="platform-title">
-    <div class="border-t border-line py-24 md:py-32">
-      <div class="p-card relative isolate overflow-hidden rounded-2xl border border-line bg-surface p-5 sm:p-8 lg:p-12">
-        <span class="pointer-events-none absolute inset-0 -z-1 bg-[radial-gradient(50%_70%_at_90%_0%,color-mix(in_oklab,var(--color-accent)_12%,transparent),transparent_70%)]" aria-hidden="true" />
+  <section id="platform" ref="root" class="cv-auto wrap" style="--cv-h: 560px" aria-labelledby="platform-title">
+    <div class="section-rule py-12 md:py-16">
+      <div class="p-card surface-lux relative isolate overflow-hidden rounded-2xl p-5 sm:p-6 lg:p-8">
+        <span class="pointer-events-none absolute inset-0 -z-1 bg-[radial-gradient(52%_75%_at_92%_0%,color-mix(in_oklab,var(--color-accent)_16%,transparent),transparent_68%),radial-gradient(40%_50%_at_0%_100%,oklch(1_0_0/0.03),transparent_70%)]" aria-hidden="true" />
 
-        <h2 id="platform-title" class="h-section max-w-3xl text-3xl sm:text-4xl md:text-5xl">Built for precision, speed and simplicity.</h2>
-        <p class="mt-4 max-w-xl text-base leading-relaxed text-muted md:mt-5 md:text-lg">Trade on nTrader or MetaTrader 5. Pick a platform to get it on your device.</p>
+        <p class="eyebrow">Trading Terminals</p>
+        <h2 id="platform-title" class="h-section mt-3 max-w-3xl text-3xl sm:text-4xl md:text-5xl">Built for precision, speed and simplicity.</h2>
+        <p class="mt-3 max-w-xl text-base leading-relaxed text-muted md:text-lg">Trade on MetaTrader 5 or nTrader. Pick a platform to get it on your device.</p>
 
         <div
-          class="p-tabs relative mt-8 grid w-full grid-cols-2 rounded-full border border-line bg-canvas p-1 sm:inline-grid sm:w-auto md:mt-10"
+          class="p-tabs relative mt-5 grid w-full grid-cols-2 rounded-full border border-line bg-canvas/90 p-1 shadow-[inset_0_2px_4px_oklch(0_0_0/0.55)] sm:inline-grid sm:w-auto md:mt-6"
           role="tablist"
           aria-label="Trading platform"
           @keydown="onKey"
         >
           <span
-            class="p-pill pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-full bg-accent"
+            class="p-pill pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-full bg-linear-to-b from-[color-mix(in_oklab,var(--color-accent)_92%,#fff_8%)] to-[color-mix(in_oklab,var(--color-accent)_92%,#000_8%)] shadow-[inset_0_1px_0_oklch(1_0_0/0.25),0_8px_20px_-8px_color-mix(in_oklab,var(--color-accent)_75%,transparent)]"
             :style="{ translate: `${idx * 100}% 0` }"
             aria-hidden="true"
           />
@@ -93,7 +96,7 @@ useMotion(root, ({ motion, fine }) => {
             :key="t.id"
             type="button"
             role="tab"
-            class="p-tab relative z-1 h-11 whitespace-nowrap rounded-full px-6 text-sm font-semibold sm:min-w-44"
+            class="p-tab relative z-1 h-11 cursor-pointer whitespace-nowrap rounded-full px-6 text-sm font-semibold sm:min-w-44"
             :class="idx === i ? 'text-on-accent' : 'text-muted'"
             :aria-selected="idx === i"
             :aria-controls="`ppanel-${t.id}`"
@@ -105,33 +108,36 @@ useMotion(root, ({ motion, fine }) => {
           </button>
         </div>
 
-        <div :id="`ppanel-${tab.id}`" class="mt-6" role="tabpanel" :aria-labelledby="`ptab-${tab.id}`">
-          <component :is="tab.logo" v-if="tab.logo" :size="88" class="p-logo mb-6 block" aria-hidden="true" />
+        <div :id="`ppanel-${tab.id}`" class="mt-5" role="tabpanel" :aria-labelledby="`ptab-${tab.id}`">
+          <div class="mb-4 flex flex-wrap items-center gap-3.5">
+            <component :is="tab.logo" v-if="tab.logo" :size="58" class="p-logo block" aria-hidden="true" />
+            <span class="chip inline-flex h-7 items-center rounded-full px-3 font-mono text-xs text-muted">{{ tab.badge }}</span>
+          </div>
           <p class="p-desc max-w-xl text-sm leading-relaxed text-muted md:text-base">
             {{ tab.desc }}
-            <NuxtLink v-if="tab.more" :to="tab.more.href" class="font-medium text-fg underline decoration-accent-soft underline-offset-4">{{ tab.more.label }}</NuxtLink>
+            <NuxtLink v-if="tab.more" :to="tab.more.href" class="font-medium text-fg underline decoration-accent-soft underline-offset-4 transition-colors hover:text-accent-soft">{{ tab.more.label }}</NuxtLink>
           </p>
 
-          <ul :key="tab.id" class="mt-6 grid gap-2.5 sm:gap-3" :class="tab.opts.length > 3 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3'">
+          <ul :key="tab.id" class="mt-5 grid gap-2.5 sm:gap-3" :class="tab.opts.length > 3 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3'">
             <li v-for="(o, i) in tab.opts" :key="o.id" class="p-opt min-w-0">
               <component
                 :is="o.external ? 'a' : Link"
                 v-bind="o.external ? { href: o.href, target: '_blank', rel: 'noopener noreferrer' } : { to: o.href }"
-                class="dl relative isolate flex h-full items-center gap-4 overflow-hidden rounded-xl border border-line bg-canvas p-4 sm:flex-col sm:items-start sm:p-6"
+                class="dl relative isolate flex h-full items-center gap-4 overflow-hidden rounded-xl border border-line bg-linear-to-b from-canvas/85 to-canvas p-3.5 shadow-[inset_0_1px_0_oklch(1_0_0/0.06)] sm:flex-col sm:items-start sm:p-4"
                 :data-live="live === i || undefined"
                 :aria-label="`${tab.id === 'mt5' ? (o.id === 'web' ? 'Open MetaTrader 5 for' : 'Download MetaTrader 5 for') : 'nTrader for'} ${o.label}${o.external ? ' (opens in a new tab)' : ''}`"
               >
                 <span class="dl-glow pointer-events-none absolute inset-0 -z-1" aria-hidden="true" />
                 <component :is="o.icon" :size="160" weight="thin" class="dl-ghost pointer-events-none absolute -right-8 -bottom-10 -z-1 max-sm:size-28 max-sm:-bottom-8" aria-hidden="true" />
-                <span class="dl-ico relative grid size-11 shrink-0 place-items-center overflow-hidden rounded-lg border border-line-strong bg-surface text-accent-soft sm:size-12">
-                  <component :is="o.icon" :size="22" :weight="tab.id === 'mt5' ? 'regular' : 'duotone'" class="dl-i1" aria-hidden="true" />
-                  <component :is="o.icon" :size="22" weight="fill" class="dl-i2 absolute" aria-hidden="true" />
+                <span class="dl-ico relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-line-strong bg-surface text-accent-soft sm:size-11">
+                  <component :is="o.icon" :size="20" :weight="tab.id === 'mt5' ? 'regular' : 'duotone'" class="dl-i1" aria-hidden="true" />
+                  <component :is="o.icon" :size="20" weight="fill" class="dl-i2 absolute" aria-hidden="true" />
                 </span>
-                <span class="min-w-0 flex-1 sm:mt-6">
-                  <span class="block font-semibold sm:text-xl sm:tracking-tight">{{ o.label }}</span>
+                <span class="min-w-0 flex-1 sm:mt-4">
+                  <span class="block font-semibold sm:text-lg sm:tracking-tight">{{ o.label }}</span>
                   <span class="mt-0.5 block truncate text-xs text-muted sm:text-sm">{{ o.title }}</span>
                 </span>
-                <span class="dl-arrow grid size-9 shrink-0 place-items-center rounded-full border border-line-strong text-muted sm:mt-6 sm:self-end" aria-hidden="true">
+                <span class="dl-arrow grid size-8 shrink-0 place-items-center rounded-full border border-line-strong text-muted sm:mt-4 sm:self-end" aria-hidden="true">
                   <PhDownloadSimple v-if="tab.id === 'mt5' && o.id !== 'web'" :size="15" weight="bold" />
                   <PhArrowUpRight v-else-if="o.external" :size="15" weight="bold" />
                   <PhArrowRight v-else :size="15" weight="bold" />

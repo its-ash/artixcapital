@@ -24,6 +24,7 @@ const faqs = [
       group="Markets"
       title="Trade the companies you think matter."
       lead="With stock CFDs you speculate on the price of a listed company without owning the shares. Go long or short as earnings, news and sentiment move prices, with leverage and full risk tools from one USD account."
+      mascot="stocks"
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
       <NuxtLink to="/indices-trading/" class="btn btn-ghost h-13 px-7">Prefer indices?</NuxtLink>

@@ -27,6 +27,7 @@ const note = 'Typical values, not guaranteed. Spreads widen at rollover, news an
       group="Trading tools"
       title="Spread table"
       lead="The visible raw cost of every trade, by instrument and account. Price your strategy honestly before the ticket, not after the fill."
+      mascot="spreads"
     />
 
     <PageSection id="sp-table" title="Typical spreads by instrument and account" hidden>

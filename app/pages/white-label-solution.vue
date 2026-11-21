@@ -26,6 +26,7 @@ const steps = [
       group="Partners"
       title="Your brokerage, on our rails"
       lead="A fully branded nTrader, institutional liquidity, multi-asset trading and a support desk behind it. Launch in weeks and scale on infrastructure that already works."
+      mascot="whitelabel"
     >
       <a href="https://artixcapital.com/white-label-solution/" class="btn btn-primary h-13 px-7">Request a consultation</a>
     </PageHero>

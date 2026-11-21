@@ -47,6 +47,7 @@ const full = [
       group="Accounts"
       title="Artix Core"
       lead="Enter global markets with low costs, powerful tools and simple pricing. Ideal for beginners and growing traders alike."
+      mascot="core"
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
       <NuxtLink to="/artix-demo-account/" class="btn btn-ghost h-13 px-7">Try demo</NuxtLink>

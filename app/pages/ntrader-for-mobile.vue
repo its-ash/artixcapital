@@ -29,6 +29,7 @@ const spec = [
       group="Platforms"
       title="nTrader for Mobile"
       lead="The market, in your pocket: real-time quotes, complete order entry and full account control on iOS and Android, synced with your desktop session."
+      mascot="ntrader-mobile"
     >
       <a href="https://artixcapital.com/ntrader-for-mobile/" class="btn btn-primary h-13 px-7">Get the mobile app</a>
       <NuxtLink to="/ntrader-for-windows/" class="btn btn-ghost h-13 px-7">Desktop version</NuxtLink>

@@ -43,6 +43,7 @@ const generate = async () => {
       group="Tools"
       title="Generate a branded PDF"
       lead="Create an Artix Capital PDF in your browser, with the company logo and formatting. Load the promotion terms or paste your own text, then download the file."
+      mascot="pdf"
     />
 
     <PageSection id="pdf-form" title="Document" lead="Nothing is uploaded. The PDF is built on your device and downloads straight away.">

@@ -13,13 +13,13 @@ const wide = (i: number) => {
     <li v-for="(f, i) in items" :key="f[0]" class="min-w-0" :class="wide(i) ? (cols === 3 ? 'lg:col-span-2' : 'sm:col-span-2') : ''">
       <article
         v-spot
-        class="card flex h-full flex-col p-6 md:p-7"
+        class="card flex h-full flex-col p-5"
         :class="i === 0 ? 'bg-[radial-gradient(80%_90%_at_0%_0%,color-mix(in_oklab,var(--color-accent)_12%,transparent),transparent_70%)]' : ''"
       >
         <component :is="themeIcon(`${f[0]} ${f[1]}`)" :size="160" weight="thin" class="card-bg pointer-events-none absolute -bottom-8 -right-8 -z-1 text-fg" aria-hidden="true" />
         <span class="card-icon font-mono text-xs" aria-hidden="true">{{ String(i + 1).padStart(2, '0') }}</span>
-        <h3 class="mt-6 text-lg font-semibold tracking-tight md:text-xl">{{ f[0] }}</h3>
-        <p class="mt-2 max-w-[48ch] text-pretty leading-relaxed text-muted">{{ f[1] }}</p>
+        <h3 class="mt-4 text-lg font-semibold tracking-tight md:text-xl">{{ f[0] }}</h3>
+        <p class="mt-1.5 max-w-[48ch] text-pretty text-sm leading-relaxed text-muted md:text-base">{{ f[1] }}</p>
       </article>
     </li>
   </ul>

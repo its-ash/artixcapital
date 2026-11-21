@@ -29,6 +29,7 @@ const spec = [
       group="Platforms"
       title="nTrader for Windows"
       lead="The full workstation: unlimited charts across saved workspaces, one-click execution and Level 2 depth, shaped around the way you trade."
+      mascot="ntrader-desktop"
     >
       <a href="https://artixcapital.com/ntrader-for-windows/" class="btn btn-primary h-13 px-7">Download for Windows</a>
       <NuxtLink to="/artix-demo-account/" class="btn btn-ghost h-13 px-7">Try demo</NuxtLink>

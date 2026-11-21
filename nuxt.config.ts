@@ -10,7 +10,11 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ['@nuxt/fonts'],
   css: ['~/assets/css/main.css'],
-  vite: { plugins: [tailwindcss()] },
+  devServer: { cors: { origin: '*' } },
+  vite: {
+    plugins: [tailwindcss()],
+    server: { cors: { origin: '*' } }
+  },
   fonts: {
     families: [
       { name: 'Geist', provider: 'google', weights: [400, 500, 600, 800] },

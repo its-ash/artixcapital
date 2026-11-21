@@ -31,6 +31,7 @@ const faqs = [
       group="Markets"
       title="One ticket. The whole market."
       lead="An index is hundreds of companies in a single number. With index CFDs you trade the direction of entire economies, long or short, without buying a single share."
+      mascot="indices"
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
       <template #aside>

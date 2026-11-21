@@ -29,6 +29,7 @@ const faqs = [
       group="Markets"
       title="Forex trading"
       lead="Forex is the global marketplace for buying and selling currencies. Traded 24 hours a day, five days a week, it is the most liquid market in the world, with trillions exchanged daily across major, minor and exotic pairs."
+      mascot="forex"
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
       <NuxtLink to="/artix-demo-account/" class="btn btn-ghost h-13 px-7">Try demo</NuxtLink>

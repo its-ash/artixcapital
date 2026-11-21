@@ -35,6 +35,7 @@ const protocol = [
       group="Trading tools"
       title="Futures contract expiry dates"
       lead="Futures-linked CFDs track a contract month behind the symbol. Know the cycle, mark the date, and roll on your schedule instead of the market's."
+      mascot="expiry"
     />
 
     <PageSection id="ex-cycles" title="The three cycles">

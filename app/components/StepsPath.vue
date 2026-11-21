@@ -33,16 +33,16 @@ useMotion(root, ({ motion }) => {
 
 <template>
   <section ref="root" class="wrap" aria-labelledby="steps-title">
-    <div class="grid gap-14 border-t border-line py-24 md:py-32 lg:grid-cols-12 lg:gap-10">
+    <div class="section-rule grid gap-8 py-12 md:py-16 lg:grid-cols-12 lg:gap-8">
       <div class="lg:col-span-5">
-        <div class="lg:sticky lg:top-28">
-          <h2 id="steps-title" class="h-section max-w-md text-4xl md:text-6xl">From sign-up to first trade in three steps.</h2>
-          <p class="mt-5 max-w-sm text-lg leading-relaxed text-muted">Open, verify and fund from one client area. Your account is ready on nTrader once the checks clear.</p>
-          <a v-magnetic="0.2" :href="SIGNUP" class="btn btn-primary mt-10 h-14 px-8">
+        <div class="lg:sticky lg:top-24">
+          <h2 id="steps-title" class="h-section max-w-md text-3xl sm:text-4xl md:text-5xl">From sign-up to first trade in three steps.</h2>
+          <p class="mt-3 max-w-sm text-base leading-relaxed text-muted md:text-lg">Open, verify and fund from one client area. Your account is ready on MetaTrader 5 and nTrader once checks clear.</p>
+          <a v-magnetic="0.2" :href="SIGNUP" class="btn btn-primary mt-6 h-12 px-7">
             Open account
             <span class="btn-icon" aria-hidden="true"><PhArrowRight :size="18" weight="bold" /><PhArrowRight :size="18" weight="bold" /></span>
           </a>
-          <div class="st-bear relative mx-auto mt-10 hidden h-72 w-56 lg:mx-0 lg:block" aria-hidden="true">
+          <div class="st-bear relative mx-auto mt-6 hidden h-56 w-48 lg:mx-0 lg:block" aria-hidden="true">
             <BearMascot
               v-for="(s, i) in ITEMS"
               :key="s.pose"
@@ -55,23 +55,23 @@ useMotion(root, ({ motion }) => {
         </div>
       </div>
 
-      <ol class="st-list relative grid gap-6 lg:col-span-7">
-        <span class="absolute top-7 bottom-7 left-7 w-px bg-line-strong" aria-hidden="true">
+      <ol class="st-list relative grid gap-4 lg:col-span-7">
+        <span class="absolute top-6 bottom-6 left-6 w-px bg-line-strong" aria-hidden="true">
           <span class="st-fill absolute inset-0 origin-top bg-accent" />
         </span>
 
-        <li v-for="(s, i) in ITEMS" :key="s.title" class="st-item relative grid grid-cols-[3.5rem_1fr] gap-4 sm:gap-6">
-          <span class="st-node relative z-1 grid size-14 place-items-center rounded-2xl border" aria-hidden="true">
-            <component :is="s.icon" :size="22" weight="duotone" />
+        <li v-for="(s, i) in ITEMS" :key="s.title" class="st-item relative grid grid-cols-[3rem_1fr] gap-4 sm:gap-5">
+          <span class="st-node relative z-1 grid size-12 place-items-center rounded-2xl border shadow-[inset_0_1px_0_oklch(1_0_0/0.22),0_10px_24px_-12px_color-mix(in_oklab,var(--color-accent)_60%,transparent)]" aria-hidden="true">
+            <component :is="s.icon" :size="20" weight="duotone" />
           </span>
 
-          <article class="st-card group relative isolate overflow-hidden rounded-2xl border border-line bg-surface p-6 transition-[border-color,translate] duration-300 hover:border-line-strong sm:p-7">
+          <article class="st-card surface-lux group relative isolate overflow-hidden rounded-2xl p-4 transition-[border-color,translate,box-shadow] duration-300 hover:border-line-strong sm:p-5">
             <span class="st-glow pointer-events-none absolute inset-0 -z-1" aria-hidden="true" />
-            <span class="pointer-events-none absolute -top-6 right-4 -z-1 select-none font-mono text-[7rem] leading-none font-bold text-fg/4" aria-hidden="true">{{ i + 1 }}</span>
+            <span class="pointer-events-none absolute -top-5 right-4 -z-1 select-none font-mono text-[5.5rem] leading-none font-bold text-fg/4" aria-hidden="true">{{ i + 1 }}</span>
             <p class="font-mono text-xs text-accent-soft">Step {{ i + 1 }}</p>
-            <h3 class="mt-2 text-2xl font-semibold tracking-tight md:text-3xl">{{ s.title }}</h3>
-            <p class="mt-2 max-w-md leading-relaxed text-muted">{{ s.desc }}</p>
-            <ul class="mt-6 flex flex-wrap gap-2">
+            <h3 class="mt-1.5 text-xl font-semibold tracking-tight md:text-2xl">{{ s.title }}</h3>
+            <p class="mt-1.5 max-w-md text-sm leading-relaxed text-muted md:text-base">{{ s.desc }}</p>
+            <ul class="mt-4 flex flex-wrap gap-2">
               <li v-for="d in s.details" :key="d" class="chip inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs">
                 <PhCheck :size="12" weight="bold" class="text-accent-soft" />{{ d }}
               </li>

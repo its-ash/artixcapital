@@ -19,16 +19,19 @@ const track = (e: PointerEvent) => {
 </script>
 
 <template>
-  <section id="markets" class="cv-auto wrap" style="--cv-h: 980px" aria-labelledby="markets-title">
-    <div class="border-t border-line py-24 md:py-32">
-      <h2 id="markets-title" class="h-section max-w-2xl text-4xl md:text-6xl">One account. Five markets.</h2>
-      <p class="mt-5 max-w-xl text-lg leading-relaxed text-muted">Over 150 instruments across currencies, commodities, shares, indices and crypto.</p>
+  <section id="markets" class="cv-auto wrap" style="--cv-h: 780px" aria-labelledby="markets-title">
+    <div class="section-rule py-12 md:py-16">
+      <h2 id="markets-title" class="h-section max-w-2xl text-3xl sm:text-4xl md:text-5xl">One account. Five markets.</h2>
+      <p class="mt-3 max-w-xl text-base leading-relaxed text-muted md:text-lg">
+        Over 150 instruments across currencies, commodities, shares, indices and crypto.
+        <NuxtLink to="/spread-table/" class="font-medium text-fg underline decoration-accent-soft underline-offset-4 transition-colors hover:text-accent-soft">View spreads</NuxtLink>
+      </p>
 
-      <ul class="mt-10 grid grid-cols-2 gap-2.5 md:mt-12 md:gap-3 lg:grid-cols-12">
+      <ul class="mt-6 grid grid-cols-2 gap-3 md:mt-8 md:gap-3.5 lg:grid-cols-12">
         <li v-for="m in MARKETS" :key="m.id" class="mk-card min-w-0" :class="SPAN[m.id]">
           <article
-            class="mk group relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface p-4 md:p-6"
-            :class="m.id === 'forex' ? 'min-h-64 md:min-h-72' : 'min-h-44 md:min-h-56'"
+            class="mk surface-lux group relative isolate flex h-full flex-col overflow-hidden rounded-2xl p-4 md:p-5"
+            :class="m.id === 'forex' ? 'min-h-52 md:min-h-60' : 'min-h-36 md:min-h-44'"
             @pointermove="track"
           >
             <span class="mk-spot pointer-events-none absolute inset-0 -z-1" aria-hidden="true" />
@@ -36,23 +39,23 @@ const track = (e: PointerEvent) => {
             <component :is="m.icon" :size="m.id === 'forex' ? 220 : 150" weight="thin" class="mk-ghost pointer-events-none absolute -right-6 -bottom-8 -z-1 text-fg" :class="m.id === 'forex' ? 'max-md:size-40' : 'max-md:size-24'" aria-hidden="true" />
 
             <div class="flex items-start justify-between gap-4">
-              <span class="mk-icon relative grid size-9 place-items-center overflow-hidden rounded-xl md:size-11 border border-line-strong bg-canvas text-accent-soft">
+              <span class="mk-icon relative grid size-9 place-items-center overflow-hidden rounded-xl border border-line-strong bg-linear-to-b from-elevated to-canvas text-accent-soft shadow-[inset_0_1px_0_oklch(1_0_0/0.09)] md:size-11">
                 <component :is="m.icon" :size="20" weight="duotone" class="mk-i1" />
                 <component :is="m.icon" :size="20" weight="fill" class="mk-i2 absolute" aria-hidden="true" />
               </span>
-              <span class="mk-arrow grid size-8 place-items-center md:size-9 rounded-full border border-line-strong text-muted" aria-hidden="true">
+              <span class="mk-arrow grid size-8 place-items-center rounded-full border border-line-strong bg-canvas/50 text-muted md:size-9" aria-hidden="true">
                 <PhArrowUpRight :size="16" weight="bold" />
               </span>
             </div>
 
-            <h3 class="mt-4 font-semibold tracking-tight md:mt-5" :class="m.id === 'forex' ? 'text-2xl md:text-4xl' : 'text-lg md:text-2xl'">
+            <h3 class="mt-3 font-semibold tracking-tight" :class="m.id === 'forex' ? 'text-2xl md:text-3xl' : 'text-lg md:text-xl'">
               <NuxtLink :to="m.href" class="after:absolute after:inset-0 after:z-1 after:rounded-2xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-accent-soft">{{ m.name }}</NuxtLink>
             </h3>
-            <p class="mt-1.5 line-clamp-3 max-w-sm text-pretty text-xs leading-relaxed text-muted md:mt-2 md:line-clamp-none md:text-sm">{{ m.desc }}</p>
+            <p class="mt-1.5 line-clamp-3 max-w-sm text-pretty text-xs leading-relaxed text-muted md:line-clamp-none md:text-sm">{{ m.desc }}</p>
 
-            <div class="mt-auto pt-4 md:pt-5">
-              <div v-if="m.id === 'forex'" class="relative z-2 mb-4">
-                <Mql5Widget type="chart" :symbols="['EURUSD']" :height="180" />
+            <div class="mt-auto pt-3 md:pt-4">
+              <div v-if="m.id === 'forex'" class="relative z-2 mb-3">
+                <Mql5Widget type="chart" :symbols="['EURUSD']" :height="150" />
               </div>
               <ul class="flex flex-wrap gap-1.5 md:gap-2" aria-label="Popular symbols">
                 <li v-for="(p, i) in m.popular" :key="p" class="mk-chip chip inline-flex h-6 items-center rounded-full px-2 font-mono text-[11px] md:h-7 md:px-2.5 md:text-xs" :class="m.id !== 'forex' && i > 1 ? 'max-md:hidden' : ''" :style="{ '--d': `${i * 40}ms` }">{{ p }}</li>

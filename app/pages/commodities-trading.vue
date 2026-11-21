@@ -35,6 +35,7 @@ const faqs = [
       group="Markets"
       title="Commodities trading"
       lead="Trade the assets that power economies: gold, silver and the energy benchmarks. Speculate on price movement with CFDs, without ever touching a barrel or a bullion bar."
+      mascot="commodities"
     >
       <a :href="SIGNUP" class="btn btn-primary h-13 px-7">Open account</a>
       <NuxtLink to="/spread-table/" class="btn btn-ghost h-13 px-7">Check spreads</NuxtLink>

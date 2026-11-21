@@ -64,6 +64,7 @@ useJsonLd('ld-org', {
 
 <template>
   <div class="min-h-dvh pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0 relative">
+    <span id="nav-sentinel" class="pointer-events-none absolute top-0 left-0 h-2 w-px" aria-hidden="true" />
     <SiteNav />
     <NuxtPage :transition="pageTransition" />
     <SiteFooter />

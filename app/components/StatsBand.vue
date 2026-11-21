@@ -43,25 +43,22 @@ useMotion(root, ({ motion }) => {
 </script>
 
 <template>
-  <section ref="root" class="wrap py-12 md:py-16" :class="paused ? 'anim-paused' : ''" aria-label="Trading conditions">
+  <section ref="root" class="wrap py-8 md:py-10" :class="paused ? 'anim-paused' : ''" aria-label="Trading conditions">
     <dl class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
       <div
         v-for="(s, i) in STATS"
         :key="s.label"
         v-spot
-        class="s-card card group flex min-h-52 flex-col p-5"
+        class="s-card card group flex min-h-40 flex-col p-4"
         :class="i === STATS.length - 1 ? 'col-span-2 md:col-span-2 lg:col-span-1' : ''"
       >
-        <dt class="flex items-center justify-between gap-2 text-sm text-muted">
-          <span>{{ s.label }}</span>
-          <span class="font-mono text-xs text-muted/60">0{{ i + 1 }}</span>
-        </dt>
-        <dd class="mt-4 whitespace-nowrap font-mono tabular-nums tracking-tight">
-          <span class="s-big text-4xl font-medium text-fg transition-colors duration-300 group-hover:text-accent-soft lg:text-[2.6rem]">{{ s.big }}</span>
-          <span v-if="s.unit" class="ml-1 text-lg text-muted">{{ s.unit }}</span>
+        <dt class="text-xs font-medium tracking-wide text-muted sm:text-sm">{{ s.label }}</dt>
+        <dd class="mt-2.5 whitespace-nowrap font-mono tabular-nums tracking-tight">
+          <span class="s-big text-3xl font-semibold text-fg transition-colors duration-300 group-hover:text-accent-soft lg:text-4xl">{{ s.big }}</span>
+          <span v-if="s.unit" class="ml-1 text-base text-muted">{{ s.unit }}</span>
         </dd>
-        <dd class="mt-auto pt-5" aria-hidden="true">
-          <svg v-if="s.kind === 'spread'" viewBox="0 0 120 40" preserveAspectRatio="xMinYMid meet" class="h-10 w-full overflow-visible">
+        <dd class="mt-auto pt-3" aria-hidden="true">
+          <svg v-if="s.kind === 'spread'" viewBox="0 0 120 40" preserveAspectRatio="xMinYMid meet" class="h-8 w-full overflow-visible">
             <path :d="ASK" class="sv-flow" stroke="var(--color-down)" />
             <path :d="BID" class="sv-flow" stroke="var(--color-up)" />
             <circle cx="120" cy="20" r="6" class="sv-ping" fill="var(--color-accent)" />

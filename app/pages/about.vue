@@ -34,6 +34,7 @@ const principles = [
       group="Company"
       title="We win when you trade well."
       lead="A multi-asset brokerage built on proven industry experience: direct market access, an execution-only desk and pricing that says what it costs."
+      mascot="about"
     >
       <NuxtLink to="/contact-us/" class="btn btn-primary h-13 px-7">Contact us</NuxtLink>
       <NuxtLink to="/forex-trading/" class="btn btn-ghost h-13 px-7">See the markets</NuxtLink>

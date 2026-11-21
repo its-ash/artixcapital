@@ -11,6 +11,7 @@ usePageSeo({
       group="Promotions"
       title="Current promotions."
       lead="Compare what is on offer, then open a promotion to see its rate, calculator and full terms."
+      mascot="promotion"
     />
 
     <PageSection id="pr-list" title="Open promotions" lead="Select a promotion to see its details.">
