@@ -19,7 +19,7 @@ const track = (e: PointerEvent) => {
 </script>
 
 <template>
-  <section id="markets" class="wrap" aria-labelledby="markets-title">
+  <section id="markets" class="cv-auto wrap" style="--cv-h: 980px" aria-labelledby="markets-title">
     <div class="border-t border-line py-24 md:py-32">
       <h2 id="markets-title" class="h-section max-w-2xl text-4xl md:text-6xl">One account. Five markets.</h2>
       <p class="mt-5 max-w-xl text-lg leading-relaxed text-muted">Over 150 instruments across currencies, commodities, shares, indices and crypto.</p>

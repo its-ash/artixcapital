@@ -1,10 +1,6 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { SplitText } from 'gsap/SplitText'
-import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin'
-import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
-import Lenis from 'lenis'
 import type { Directive } from 'vue'
 
 type Cleanup = { __fx?: () => void }
@@ -90,19 +86,10 @@ export default defineNuxtPlugin(nuxtApp => {
   nuxtApp.vueApp.directive('tilt', tilt)
   nuxtApp.vueApp.directive('spot', spot)
 
-  if (import.meta.server) return { provide: { lenis: null as Lenis | null } }
+  if (import.meta.server) return
 
-  gsap.registerPlugin(ScrollTrigger, SplitText, DrawSVGPlugin, ScrambleTextPlugin, MotionPathPlugin)
+  gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin)
   gsap.defaults({ ease: 'expo.out', duration: 1 })
   ScrollTrigger.config({ ignoreMobileResize: true })
-
-  const lenis = reduced() ? null : new Lenis({ lerp: 0.09, wheelMultiplier: 1, anchors: { offset: -88 } })
-  if (lenis) {
-    lenis.on('scroll', ScrollTrigger.update)
-    gsap.ticker.add(t => lenis.raf(t * 1000))
-    gsap.ticker.lagSmoothing(0)
-  }
   document.fonts?.ready.then(() => ScrollTrigger.refresh())
-
-  return { provide: { lenis } }
 })

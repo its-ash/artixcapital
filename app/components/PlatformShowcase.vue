@@ -68,7 +68,7 @@ useMotion(root, ({ motion, fine }) => {
 </script>
 
 <template>
-  <section id="platform" ref="root" class="wrap" aria-labelledby="platform-title">
+  <section id="platform" ref="root" class="cv-auto wrap" style="--cv-h: 720px" aria-labelledby="platform-title">
     <div class="border-t border-line py-24 md:py-32">
       <div class="p-card relative isolate overflow-hidden rounded-2xl border border-line bg-surface p-5 sm:p-8 lg:p-12">
         <span class="pointer-events-none absolute inset-0 -z-1 bg-[radial-gradient(50%_70%_at_90%_0%,color-mix(in_oklab,var(--color-accent)_12%,transparent),transparent_70%)]" aria-hidden="true" />

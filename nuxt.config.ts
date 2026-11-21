@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-10-01',
   devtools: { enabled: false },
   modules: ['@nuxt/fonts'],
-  css: ['lenis/dist/lenis.css', '~/assets/css/main.css'],
+  css: ['~/assets/css/main.css'],
   vite: { plugins: [tailwindcss()] },
   fonts: {
     families: [

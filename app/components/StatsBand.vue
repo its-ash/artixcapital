@@ -19,6 +19,15 @@ const ASK = 'M0 8 L14 10 L26 7 L38 12 L50 10 L62 15 L74 14 L86 18 L98 19 L110 20
 const BID = 'M0 32 L14 29 L26 31 L38 27 L50 29 L62 25 L74 26 L86 22 L98 21 L110 20 L120 20'
 
 const root = ref<HTMLElement | null>(null)
+const paused = ref(false)
+let io: IntersectionObserver | undefined
+
+onMounted(() => {
+  if (!root.value) return
+  io = new IntersectionObserver(([e]) => { paused.value = !e?.isIntersecting }, { rootMargin: '120px' })
+  io.observe(root.value)
+})
+onBeforeUnmount(() => io?.disconnect())
 
 useMotion(root, ({ motion }) => {
   if (!motion || !root.value) return
@@ -34,7 +43,7 @@ useMotion(root, ({ motion }) => {
 </script>
 
 <template>
-  <section ref="root" class="wrap py-12 md:py-16" aria-label="Trading conditions">
+  <section ref="root" class="wrap py-12 md:py-16" :class="paused ? 'anim-paused' : ''" aria-label="Trading conditions">
     <dl class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
       <div
         v-for="(s, i) in STATS"
@@ -80,7 +89,7 @@ useMotion(root, ({ motion }) => {
             <span
               v-for="d in COLS * ROWS"
               :key="d"
-              class="sv-dot mx-auto size-1 rounded-full bg-fg/30"
+              class="sv-dot mx-auto size-1 rounded-full bg-accent"
               :style="{ animationDelay: `${((d * 37) % 29) / 10}s` }"
             />
           </div>
@@ -124,6 +133,6 @@ useMotion(root, ({ motion }) => {
 @keyframes bar { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 @keyframes spin { to { rotate: 360deg; } }
 @keyframes run { 0% { translate: 0 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { translate: 72px 0; opacity: 0; } }
-@keyframes twinkle { 0%, 100% { opacity: 0.25; background: var(--color-fg); } 50% { opacity: 1; background: var(--color-accent); } }
+@keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
 @keyframes scan { 0% { opacity: 0.9; scale: 1; } 40%, 100% { opacity: 0; scale: 1.25; } }
 </style>

@@ -126,8 +126,9 @@ onMounted(() => {
   }
 
   const loop = (now: number) => {
-    raf = requestAnimationFrame(loop)
+    raf = 0
     if (!visible || !props.active || document.hidden) return
+    raf = requestAnimationFrame(loop)
     const cur = data.at(-1)
     if (cur) {
       cur.c *= 1 + (Math.random() - 0.5) * props.vol * 0.25
@@ -142,18 +143,33 @@ onMounted(() => {
     draw(now)
   }
 
+  const syncLoop = () => {
+    if (reduce) return
+    if (visible && props.active && !document.hidden) {
+      if (!raf) raf = requestAnimationFrame(loop)
+    } else if (raf) {
+      cancelAnimationFrame(raf)
+      raf = 0
+    }
+  }
+
   const ro = new ResizeObserver(resize)
   ro.observe(el)
   const io = new IntersectionObserver(([e]) => {
     visible = !!e?.isIntersecting
     if (visible && !born) born = performance.now()
+    syncLoop()
   }, { rootMargin: '100px' })
   io.observe(el)
+  document.addEventListener('visibilitychange', syncLoop)
+  const stopActive = watch(() => props.active, syncLoop)
   resize()
-  if (!reduce) raf = requestAnimationFrame(loop)
+  syncLoop()
 
   stop = () => {
     cancelAnimationFrame(raf)
+    stopActive()
+    document.removeEventListener('visibilitychange', syncLoop)
     ro.disconnect()
     io.disconnect()
   }

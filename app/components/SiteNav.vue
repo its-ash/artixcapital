@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PhCaretDown, PhCaretUp, PhList, PhX } from '@phosphor-icons/vue'
 
 const CLOSE_DELAY = 140
@@ -15,7 +14,6 @@ const active = ref<number | null>(null)
 const expandedGroup = ref<number | null>(0)
 const menu = ref(false)
 const scrolled = ref(false)
-const { $lenis } = useNuxtApp()
 let timer: ReturnType<typeof setTimeout> | undefined
 
 const open = (i: number) => {
@@ -40,7 +38,7 @@ const hidePill = () => pill.value && gsap.to(pill.value, { opacity: 0, duration:
 
 const setMenu = (v: boolean) => {
   menu.value = v
-  v ? $lenis?.stop() : $lenis?.start()
+  document.documentElement.style.overflow = v ? 'hidden' : ''
   nextTick(() => (v ? closeBtn.value : burger.value)?.focus())
 }
 
@@ -64,21 +62,30 @@ const onDrawerKey = (e: KeyboardEvent) => {
   btns[next]?.focus()
 }
 
+const onScroll = () => {
+  const next = window.scrollY > 8
+  if (scrolled.value !== next) scrolled.value = next
+}
+
 onMounted(() => {
+  onScroll()
+  addEventListener('scroll', onScroll, { passive: true })
   addEventListener('keydown', onKey)
   document.addEventListener('pointerdown', onDoc)
 })
 onBeforeUnmount(() => {
   clearTimeout(timer)
+  document.documentElement.style.overflow = ''
+  removeEventListener('scroll', onScroll)
   removeEventListener('keydown', onKey)
   document.removeEventListener('pointerdown', onDoc)
 })
 
 useMotion(root, ({ motion }) => {
-  const st = ScrollTrigger.create({ start: 0, end: 'max', onUpdate: self => { scrolled.value = self.scroll() > 8 } })
-  if (bar.value) gsap.to(bar.value, { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } })
+  if (bar.value && !CSS.supports('animation-timeline: scroll()')) {
+    gsap.to(bar.value, { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: true } })
+  }
   if (motion) gsap.fromTo(gsap.utils.selector(root.value)('.nav-item'), { y: -8, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.04, duration: 0.7 })
-  return () => st.kill()
 })
 </script>
 
@@ -149,7 +156,7 @@ useMotion(root, ({ motion }) => {
 
       </nav>
       <span class="pointer-events-none absolute inset-x-0 -bottom-px h-px overflow-hidden" aria-hidden="true">
-        <span ref="bar" class="block h-full origin-left scale-x-0 bg-accent-soft" />
+        <span ref="bar" class="nav-progress block h-full origin-left scale-x-0 bg-accent-soft" />
       </span>
     </div>
 
@@ -231,6 +238,14 @@ useMotion(root, ({ motion }) => {
 .sf-link:hover { text-shadow: 0 0 14px color-mix(in oklab, var(--color-accent) 55%, transparent); }
 .sf-logo { transition: filter 360ms ease; }
 .sf-logo:hover { filter: drop-shadow(0 0 10px color-mix(in oklab, var(--color-accent) 45%, transparent)); }
+
+@supports (animation-timeline: scroll()) {
+  .nav-progress {
+    animation: nav-progress linear both;
+    animation-timeline: scroll(root);
+  }
+}
+@keyframes nav-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 @media (prefers-reduced-motion: reduce) {
   .d-group, .d-cta { transform: none; transition: opacity 200ms ease; }

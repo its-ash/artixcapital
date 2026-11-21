@@ -8,10 +8,20 @@ const PAYMENTS = [
   ['Tether USDT', '/payments/tether.svg']
 ] as const
 const LOOP = [...PAYMENTS, ...PAYMENTS]
+const root = ref<HTMLElement | null>(null)
+const paused = ref(true)
+let io: IntersectionObserver | undefined
+
+onMounted(() => {
+  if (!root.value) return
+  io = new IntersectionObserver(([e]) => { paused.value = !e?.isIntersecting }, { rootMargin: '120px' })
+  io.observe(root.value)
+})
+onBeforeUnmount(() => io?.disconnect())
 </script>
 
 <template>
-  <section class="ps border-t border-line py-16 md:py-24" aria-labelledby="ps-title">
+  <section ref="root" class="cv-auto ps border-t border-line py-16 md:py-24" :class="paused ? 'anim-paused' : ''" style="--cv-h: 260px" aria-labelledby="ps-title">
     <h2 id="ps-title" class="wrap text-center text-3xl font-semibold tracking-tight md:text-4xl">We accept</h2>
     <ul class="wrap mt-10 hidden flex-wrap items-center justify-center gap-12 md:flex">
       <li v-for="p in PAYMENTS" :key="p[0]" class="shrink-0">

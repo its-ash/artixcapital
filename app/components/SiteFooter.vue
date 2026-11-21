@@ -22,9 +22,17 @@ const ENTITY = [
 ]
 
 const root = ref<HTMLElement | null>(null)
-const { $lenis } = useNuxtApp()
+const paused = ref(true)
+let io: IntersectionObserver | undefined
 
-const toTop = () => ($lenis ? $lenis.scrollTo(0, { duration: 1.2 }) : scrollTo({ top: 0, behavior: 'smooth' }))
+const toTop = () => scrollTo({ top: 0, behavior: 'smooth' })
+
+onMounted(() => {
+  if (!root.value) return
+  io = new IntersectionObserver(([e]) => { paused.value = !e?.isIntersecting }, { rootMargin: '120px' })
+  io.observe(root.value)
+})
+onBeforeUnmount(() => io?.disconnect())
 
 useMotion(root, ({ motion }) => {
   if (!motion) return
@@ -34,7 +42,7 @@ useMotion(root, ({ motion }) => {
 </script>
 
 <template>
-  <footer ref="root" class="relative overflow-hidden border-t border-line" aria-labelledby="ft-title">
+  <footer ref="root" class="cv-auto relative overflow-hidden border-t border-line" :class="paused ? 'anim-paused' : ''" style="--cv-h: 920px" aria-labelledby="ft-title">
     <h2 id="ft-title" class="sr-only">Site footer</h2>
 
     <div class="wrap pt-20">

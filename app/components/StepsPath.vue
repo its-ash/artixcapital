@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PhArrowRight, PhCheck } from '@phosphor-icons/vue'
+import type { CapitalMascotPose } from './BearMascot.vue'
 
 const DETAILS = [
   ['Email address', 'Name and country', 'Secure password'],
@@ -7,11 +10,29 @@ const DETAILS = [
   ['Visa and Mastercard', 'Neteller and Skrill', 'Crypto wallets']
 ]
 
-const ITEMS = STEPS.map((s, i) => ({ ...s, details: DETAILS[i] ?? [] }))
+const POSES: CapitalMascotPose[] = ['signup', 'verify', 'trade']
+const ITEMS = STEPS.map((s, i) => ({ ...s, details: DETAILS[i] ?? [], pose: POSES[i] ?? 'stand' }))
+
+const root = ref<HTMLElement | null>(null)
+const active = ref(0)
+
+useMotion(root, ({ motion }) => {
+  if (!motion) return
+  const q = gsap.utils.selector(root.value)
+  q('.st-item').forEach((item, i) => {
+    ScrollTrigger.create({
+      trigger: item,
+      start: 'top 60%',
+      end: 'bottom 40%',
+      onEnter: () => { active.value = i },
+      onEnterBack: () => { active.value = i }
+    })
+  })
+})
 </script>
 
 <template>
-  <section class="wrap" aria-labelledby="steps-title">
+  <section ref="root" class="wrap" aria-labelledby="steps-title">
     <div class="grid gap-14 border-t border-line py-24 md:py-32 lg:grid-cols-12 lg:gap-10">
       <div class="lg:col-span-5">
         <div class="lg:sticky lg:top-28">
@@ -21,6 +42,16 @@ const ITEMS = STEPS.map((s, i) => ({ ...s, details: DETAILS[i] ?? [] }))
             Open account
             <span class="btn-icon" aria-hidden="true"><PhArrowRight :size="18" weight="bold" /><PhArrowRight :size="18" weight="bold" /></span>
           </a>
+          <div class="st-bear relative mx-auto mt-10 hidden h-72 w-56 lg:mx-0 lg:block" aria-hidden="true">
+            <BearMascot
+              v-for="(s, i) in ITEMS"
+              :key="s.pose"
+              :pose="s.pose"
+              decorative
+              class="st-bear-img absolute bottom-0 left-0 max-h-full w-auto transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none"
+              :class="i === active ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-3 scale-95'"
+            />
+          </div>
         </div>
       </div>
 

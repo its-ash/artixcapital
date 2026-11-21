@@ -9,7 +9,7 @@ type Arc = { world: Float32Array; sp: Float32Array; hid: Uint8Array; hue: string
 type Orbit = { inc: number; node: number; r: number; speed: number; phase: number; tag: string }
 type Tick = { v: V3; t: number; text: string; up: boolean }
 
-const DOTS = 24000
+const DOTS = 12000
 const SPIN = 0.0015
 const TILT = -0.22
 const AXIAL = (23.4 * Math.PI) / 180
@@ -182,8 +182,8 @@ onMounted(() => {
     return A && B ? [makeArc(A, B, i)] : []
   })
   const grid: V3[][] = []
-  for (let lon = -180; lon < 180; lon += GRID_STEP) grid.push(Array.from({ length: 61 }, (_, k) => vec(-90 + k * 3, lon)))
-  for (let lat = -75; lat <= 75; lat += GRID_STEP) grid.push(Array.from({ length: 121 }, (_, k) => vec(lat, -180 + k * 3)))
+  for (let lon = -180; lon < 180; lon += GRID_STEP) grid.push(Array.from({ length: 31 }, (_, k) => vec(-90 + k * 6, lon)))
+  for (let lat = -75; lat <= 75; lat += GRID_STEP) grid.push(Array.from({ length: 61 }, (_, k) => vec(lat, -180 + k * 6)))
   const HQ = { lat: 14.08, lon: -60.95, foot: 1.6, h: 0.12 }
   const hqCenter = vec(HQ.lat, HQ.lon)
   const hqBaseV = CORNERS.map(([a, b]) => vec(HQ.lat + a * HQ.foot, HQ.lon + b * HQ.foot))
@@ -198,6 +198,8 @@ onMounted(() => {
   const bm: V3 = [0, 0, 0]
 
   let dots = new Float32Array()
+  let rimBuf = new Float32Array()
+  let mainBuf = new Float32Array()
   const state = { yaw: 0.6, tilt: TILT, vYaw: SPIN, reveal: reduce ? 1 : 0, dots: 0, hover: 0 }
   let anchor: { yaw: number; tilt: number } | null = null
   let waiting = !!props.locate
@@ -208,10 +210,22 @@ onMounted(() => {
   let R = 0
   let cx = 0
   let cy = 0
+  let cyw = 1
+  let syw = 0
+  let ct = 1
+  let st = 0
   let raf = 0
   let visible = true
   let drag: { x: number; y: number; t: number } | null = null
   let fills: { body: CanvasGradient; pal: CanvasGradient } | null = null
+  let ringCvs: HTMLCanvasElement | null = null
+  let lastSec = -1
+  let utcStr = ''
+  let utcHr = 0
+  let sesWidths: number[] = []
+  let hqTagW = 0
+  let hudFs = 10
+  const quoteMap = new Map<string, Quote>()
 
   const glow = document.createElement('canvas')
   glow.width = glow.height = 64
@@ -226,7 +240,7 @@ onMounted(() => {
   }
 
   const resize = () => {
-    const dpr = Math.min(devicePixelRatio, 2)
+    const dpr = Math.min(devicePixelRatio, 1.5)
     w = el.clientWidth
     c.width = c.height = Math.round(w * dpr)
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -240,14 +254,30 @@ onMounted(() => {
     const palette = [tone.accent, tone.soft, ...NEUTRALS]
     palette.forEach((col, i) => pal.addColorStop(i / (palette.length - 1), col))
     fills = { body, pal }
+
+    ringCvs = document.createElement('canvas')
+    ringCvs.width = ringCvs.height = c.width
+    const rctx = ringCvs.getContext('2d')
+    if (rctx && w > 0) {
+      rctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      rctx.shadowColor = hue('accent')
+      rctx.shadowBlur = R * 0.16
+      rctx.strokeStyle = hue('accent')
+      rctx.lineWidth = 2
+      rctx.beginPath()
+      rctx.arc(cx, cy, R, 0, TAU)
+      rctx.stroke()
+    }
+
+    hudFs = Math.min(11, Math.max(9, Math.round(w / 70)))
+    ctx.font = `500 ${hudFs}px "Geist Mono", ui-monospace, monospace`
+    sesWidths = SESSIONS.map(ses => ctx.measureText(`${ses.id}  `).width)
+    ctx.font = `500 ${Math.min(12, Math.max(9, Math.round(w / 64)))}px "Geist Mono", ui-monospace, monospace`
+    hqTagW = ctx.measureText('ARTIX HQ').width + 16
     if (reduce) draw(0)
   }
 
   const proj = (v: ArrayLike<number>, o: number, out: V3) => {
-    const cyw = Math.cos(state.yaw)
-    const syw = Math.sin(state.yaw)
-    const ct = Math.cos(state.tilt)
-    const st = Math.sin(state.tilt)
     const vx = v[o] ?? 0
     const vy = v[o + 1] ?? 0
     const vz = v[o + 2] ?? 0
@@ -337,16 +367,10 @@ onMounted(() => {
 
   const hud = (s: number, rv: number) => {
     const acc = hue('accent')
-    ctx.save()
-    ctx.globalAlpha = (0.45 + Math.sin(s * 1.4) * 0.12) * rv
-    ctx.shadowColor = acc
-    ctx.shadowBlur = R * 0.16
-    ctx.strokeStyle = acc
-    ctx.lineWidth = 2
-    ctx.beginPath()
-    ctx.arc(cx, cy, R, 0, TAU)
-    ctx.stroke()
-    ctx.restore()
+    if (ringCvs) {
+      ctx.globalAlpha = (0.45 + Math.sin(s * 1.4) * 0.12) * rv
+      ctx.drawImage(ringCvs, 0, 0, w, w)
+    }
 
     const r1 = R * 1.04
     const rot = s * 0.04
@@ -372,8 +396,14 @@ onMounted(() => {
     ctx.stroke()
     ctx.setLineDash([])
 
-    const now = new Date()
-    const hr = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600
+    const sec = Math.floor(s)
+    if (sec !== lastSec) {
+      lastSec = sec
+      const now = new Date()
+      utcHr = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600
+      utcStr = `UTC ${now.toISOString().slice(11, 19)}`
+    }
+    const hr = utcHr
     const ang = (h: number) => (h / 24) * TAU - Math.PI / 2
     SESSIONS.forEach((ses, i) => {
       const on = live(ses.from, ses.to, hr)
@@ -397,23 +427,24 @@ onMounted(() => {
     ctx.arc(cx + Math.cos(na) * R * 1.19, cy + Math.sin(na) * R * 1.19, 2.5, 0, TAU)
     ctx.fill()
 
-    const fs = Math.min(11, Math.max(9, Math.round(w / 70)))
+    const fs = hudFs
     ctx.font = `500 ${fs}px "Geist Mono", ui-monospace, monospace`
     ctx.textBaseline = 'middle'
     const tx = cx - R * 1.17
     const ty = cy - R * 1.12
     ctx.globalAlpha = 0.85 * rv
     ctx.fillStyle = INK
-    ctx.fillText(`UTC ${now.toISOString().slice(11, 19)}`, tx, ty)
+    ctx.fillText(utcStr, tx, ty)
     ctx.globalAlpha = 0.5 * rv
     ctx.fillText('SESSIONS', tx, ty + fs * 1.6)
     let sx = tx
-    for (const ses of SESSIONS) {
+    for (let i = 0; i < SESSIONS.length; i++) {
+      const ses = SESSIONS[i]!
       const on = live(ses.from, ses.to, hr)
       ctx.fillStyle = on ? acc : INK
       ctx.globalAlpha = (on ? 1 : 0.3) * rv
       ctx.fillText(ses.id, sx, ty + fs * 3.2)
-      sx += ctx.measureText(`${ses.id}  `).width
+      sx += sesWidths[i] ?? 28
     }
     ctx.textAlign = 'right'
     ctx.fillStyle = INK
@@ -497,6 +528,12 @@ onMounted(() => {
     if (!fills) return
     const s = time / 1000
     const rv = state.reveal
+    cyw = Math.cos(state.yaw)
+    syw = Math.sin(state.yaw)
+    ct = Math.cos(state.tilt)
+    st = Math.sin(state.tilt)
+    quoteMap.clear()
+    for (const q of quotes.value) quoteMap.set(q.sym, q)
     ctx.clearRect(0, 0, w, w)
     hud(s, rv)
 
@@ -507,37 +544,61 @@ onMounted(() => {
     ctx.fill()
 
     ctx.lineWidth = 1
-    for (const front of [false, true]) {
-      ctx.beginPath()
-      for (const line of grid) {
-        let pen = false
-        const n = Math.ceil(line.length * rv)
-        for (let k = 0; k < n; k++) {
-          const v = line[k]
-          if (!v) continue
-          const p = proj(v, 0, tmp)
-          if (p[2] >= 0 === front) {
-            pen ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])
-            pen = true
-          } else pen = false
+    const backPath = new Path2D()
+    const frontPath = new Path2D()
+    for (const line of grid) {
+      let penF = false
+      let penB = false
+      const n = Math.ceil(line.length * rv)
+      for (let k = 0; k < n; k++) {
+        const v = line[k]
+        if (!v) continue
+        const p = proj(v, 0, tmp)
+        if (p[2] >= 0) {
+          penF ? frontPath.lineTo(p[0], p[1]) : frontPath.moveTo(p[0], p[1])
+          penF = true
+          penB = false
+        } else {
+          penB ? backPath.lineTo(p[0], p[1]) : backPath.moveTo(p[0], p[1])
+          penB = true
+          penF = false
         }
       }
-      ctx.strokeStyle = front ? fills.pal : 'rgba(255,255,255,0.06)'
-      ctx.globalAlpha = (front ? 0.38 : 1) * rv
-      ctx.stroke()
     }
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)'
+    ctx.globalAlpha = rv
+    ctx.stroke(backPath)
+    ctx.strokeStyle = fills.pal
+    ctx.globalAlpha = 0.38 * rv
+    ctx.stroke(frontPath)
 
     if (dots.length) {
-      const sz = Math.min(2.6, Math.max(1.4, R / 120))
-      for (const rimPass of [true, false]) {
-        ctx.beginPath()
-        for (let i = 0; i < dots.length; i += 3) {
-          const p = proj(dots, i, tmp)
-          if (p[2] <= 0 || (p[2] < RIM_FADE) !== rimPass) continue
-          ctx.rect(p[0] - sz / 2, p[1] - sz / 2, sz, sz)
+      const sz = Math.min(2.8, Math.max(1.6, R / 110))
+      const half = sz / 2
+      let rc = 0
+      let mc = 0
+      for (let i = 0; i < dots.length; i += 3) {
+        const p = proj(dots, i, tmp)
+        if (p[2] <= 0) continue
+        if (p[2] < RIM_FADE) {
+          rimBuf[rc++] = p[0] - half
+          rimBuf[rc++] = p[1] - half
+        } else {
+          mainBuf[mc++] = p[0] - half
+          mainBuf[mc++] = p[1] - half
         }
-        ctx.fillStyle = fills.pal
-        ctx.globalAlpha = (rimPass ? 0.35 : 0.95) * state.dots
+      }
+      ctx.fillStyle = fills.pal
+      if (rc) {
+        ctx.beginPath()
+        for (let i = 0; i < rc; i += 2) ctx.rect(rimBuf[i]!, rimBuf[i + 1]!, sz, sz)
+        ctx.globalAlpha = 0.35 * state.dots
+        ctx.fill()
+      }
+      if (mc) {
+        ctx.beginPath()
+        for (let i = 0; i < mc; i += 2) ctx.rect(mainBuf[i]!, mainBuf[i + 1]!, sz, sz)
+        ctx.globalAlpha = 0.95 * state.dots
         ctx.fill()
       }
     }
@@ -622,7 +683,7 @@ onMounted(() => {
       ctx.arc(p[0], p[1], 3.2, 0, Math.PI * 2)
       ctx.fill()
       if (p[2] < 0.45) continue
-      const q = h.user ? undefined : quotes.value.find(x => x.sym === h.sym)
+      const q = h.user ? undefined : quoteMap.get(h.sym)
       const label = h.user ? `YOU  ${h.sym}` : `${h.id}  ${h.sym}  ${q ? fmt(q.price, Math.min(q.dp, 4)) : ''}`
       const tw = ctx.measureText(label).width + 16
       const lx = p[0] + 10
@@ -650,7 +711,7 @@ onMounted(() => {
       const tx = top.reduce((s, p) => s + p[0], 0) / top.length
       const ty = top.reduce((s, p) => s + p[1], 0) / top.length
       const tag = 'ARTIX HQ'
-      const tw = ctx.measureText(tag).width + 16
+      const tw = hqTagW || ctx.measureText(tag).width + 16
       ctx.globalAlpha = alpha * 0.92
       ctx.fillStyle = 'rgba(18,19,22,0.85)'
       ctx.beginPath()
@@ -666,8 +727,9 @@ onMounted(() => {
   }
 
   const loop = (now: number) => {
-    raf = requestAnimationFrame(loop)
+    raf = 0
     if (!visible || document.hidden) return
+    raf = requestAnimationFrame(loop)
     if (drag) state.yaw += state.vYaw
     else if (anchor) {
       const target = anchor.yaw + Math.sin((now / 1000) * SWAY_SPEED) * SWAY
@@ -680,6 +742,16 @@ onMounted(() => {
       state.yaw += state.vYaw
     }
     draw(now)
+  }
+
+  const syncLoop = () => {
+    if (reduce) return
+    if (visible && !document.hidden) {
+      if (!raf) raf = requestAnimationFrame(loop)
+    } else if (raf) {
+      cancelAnimationFrame(raf)
+      raf = 0
+    }
   }
 
   const down = (e: PointerEvent) => {
@@ -726,14 +798,21 @@ onMounted(() => {
 
   const ro = new ResizeObserver(resize)
   ro.observe(el)
-  const io = new IntersectionObserver(([e]) => { visible = !!e?.isIntersecting })
+  const io = new IntersectionObserver(([e]) => {
+    visible = !!e?.isIntersecting
+    syncLoop()
+  })
   io.observe(el)
+  document.addEventListener('visibilitychange', syncLoop)
   resize()
 
   if (!reduce) gsap.to(state, { reveal: 1, duration: 2.4, ease: 'power2.inOut' })
 
   landDots().then(d => {
     dots = d
+    const maxPts = Math.ceil((d.length / 3) * 2)
+    rimBuf = new Float32Array(maxPts)
+    mainBuf = new Float32Array(maxPts)
     if (reduce) {
       state.dots = 1
       draw(0)
@@ -769,6 +848,7 @@ onMounted(() => {
 
   stop = () => {
     cancelAnimationFrame(raf)
+    document.removeEventListener('visibilitychange', syncLoop)
     removeEventListener('accentchange', onAccent)
     ro.disconnect()
     io.disconnect()

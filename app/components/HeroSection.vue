@@ -19,11 +19,17 @@ const ml = ref<SVGTextElement | null>(null)
 const quiet = ref<Glyph[]>([])
 const loud = ref<Glyph[]>([])
 const size = ref({ w: 700, lw: 640 })
+const paused = ref(false)
 
 const glyphs = (el: SVGTextElement, text: string, start: number, gap: number) =>
   Array.from(text).flatMap((ch, i) => (ch.trim() ? [{ ch, x: el.getStartPositionOfChar(i).x, d: start + i * gap }] : []))
 
+let io: IntersectionObserver | undefined
 onMounted(async () => {
+  if (root.value) {
+    io = new IntersectionObserver(([e]) => { paused.value = !e?.isIntersecting }, { rootMargin: '100px' })
+    io.observe(root.value)
+  }
   await document.fonts.ready.catch(() => {})
   const q = mq.value
   const l = ml.value
@@ -33,6 +39,7 @@ onMounted(async () => {
   const lw = l.getComputedTextLength()
   size.value = { w: Math.ceil(Math.max(q.getComputedTextLength(), lw + FS * 0.3)), lw }
 })
+onBeforeUnmount(() => io?.disconnect())
 
 const tail = computed(() => LOUD_START + LOUD.length * LOUD_GAP)
 const vb = computed(() => `0 0 ${size.value.w} ${FS * 2.15}`)
@@ -40,24 +47,21 @@ const vb = computed(() => `0 0 ${size.value.w} ${FS * 2.15}`)
 useMotion(root, ({ motion }) => {
   if (!motion) return
   const q = gsap.utils.selector(root.value)
-  const scrub = { trigger: root.value, start: 'top top', end: 'bottom top', scrub: true }
   gsap.timeline({ defaults: { ease: 'expo.out' } })
     .from(q('.h-label'), { y: 12, opacity: 0, duration: 0.7 })
     .from(q('.h-sub'), { y: 16, opacity: 0, duration: 0.9 }, 1)
     .from(q('.h-cta'), { y: 16, opacity: 0, stagger: 0.06, duration: 0.8 }, 1.1)
     .fromTo(q('.h-globe'), { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 1.8 }, 0.1)
-  gsap.fromTo(q('.h-globe-inner'), { yPercent: 0, opacity: 1 }, { yPercent: 8, opacity: 0.4, ease: 'none', immediateRender: false, scrollTrigger: scrub })
-  gsap.to(q('.h-quiet'), { x: -FS * 0.4, opacity: 0.25, ease: 'none', scrollTrigger: scrub })
-  gsap.to(q('.h-loud-wrap'), { x: FS * 0.3, ease: 'none', scrollTrigger: scrub })
+  gsap.fromTo(q('.h-globe-inner'), { yPercent: 0, opacity: 1 }, { yPercent: 8, opacity: 0.4, ease: 'none', immediateRender: false, scrollTrigger: { trigger: root.value, start: 'top top', end: 'bottom top', scrub: true } })
 })
 </script>
 
 <template>
-  <section id="top" ref="root" class="relative overflow-hidden" aria-labelledby="hero-title">
+  <section id="top" ref="root" class="relative overflow-hidden" :class="paused ? 'anim-paused' : ''" aria-labelledby="hero-title">
     <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(45%_55%_at_85%_10%,color-mix(in_oklab,var(--color-accent)_16%,transparent),transparent_70%),radial-gradient(35%_40%_at_0%_100%,rgb(255_255_255/0.03),transparent_70%)]" aria-hidden="true" />
     <div class="pointer-events-none absolute inset-0" aria-hidden="true">
       <div class="h-globe absolute -bottom-[36vw] -right-[42vw] size-[130vw] opacity-60 md:right-auto md:bottom-auto md:left-[80vw] md:top-[62%] md:size-[min(119vw,92dvh)] md:-translate-x-1/2 md:-translate-y-1/2 md:opacity-100">
-        <div class="h-globe-inner size-full">
+        <div class="h-globe-inner size-full will-change-[transform,opacity]">
           <GlobeGrid locate class="pointer-events-auto" />
         </div>
       </div>
@@ -69,7 +73,11 @@ useMotion(root, ({ motion }) => {
         <h1 id="hero-title" class="h-display mt-6 text-[clamp(3rem,8.4vw,7.25rem)] leading-[0.95]! whitespace-nowrap" aria-label="Quiet money. Loud success.">
           <svg class="hw block h-[2.15em] w-auto max-w-none overflow-visible" :viewBox="vb" aria-hidden="true">
             <defs>
-              <filter id="hw-blur" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur :stdDeviation="FS * 0.08" /></filter>
+              <radialGradient id="hw-glow-grad">
+                <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.95" />
+                <stop offset="45%" stop-color="var(--color-accent)" stop-opacity="0.4" />
+                <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0" />
+              </radialGradient>
             </defs>
             <text ref="mq" class="hw-quiet hw-measure" x="0" :y="Y1" :font-size="FS * 1.08">{{ QUIET }}</text>
             <text ref="ml" class="hw-loud hw-measure" x="0" :y="Y2" :font-size="FS">{{ LOUD }}</text>
@@ -80,7 +88,7 @@ useMotion(root, ({ motion }) => {
               <text v-for="(g, i) in loud" :key="i" class="hw-char" :x="g.x" :y="Y2" :style="{ '--d': g.d }">{{ g.ch }}</text>
               <template v-if="loud.length">
               <line class="hw-bar" x1="0" :x2="size.lw" :y1="Y2 + FS * 0.17" :y2="Y2 + FS * 0.17" :stroke-width="FS * 0.06" pathLength="1" :style="{ '--d': tail }" />
-              <circle class="hw-glow" :cx="size.lw + FS * 0.13" :cy="Y2 - FS * 0.07" :r="FS * 0.09" filter="url(#hw-blur)" :style="{ '--d': tail + 0.5 }" />
+              <circle class="hw-glow" :cx="size.lw + FS * 0.13" :cy="Y2 - FS * 0.07" :r="FS * 0.24" fill="url(#hw-glow-grad)" :style="{ '--d': tail + 0.5 }" />
               <circle class="hw-dot" :cx="size.lw + FS * 0.13" :cy="Y2 - FS * 0.07" :r="FS * 0.075" :style="{ '--d': tail + 0.5 }" />
               </template>
             </g>

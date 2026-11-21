@@ -30,7 +30,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section id="accounts" class="wrap" aria-labelledby="accounts-title">
+  <section id="accounts" class="cv-auto wrap" style="--cv-h: 920px" aria-labelledby="accounts-title">
     <div class="border-t border-line py-24 md:py-32">
       <h2 id="accounts-title" class="h-section max-w-3xl text-4xl md:text-6xl">Pick the account that fits how you trade.</h2>
       <p class="mt-5 max-w-xl text-lg leading-relaxed text-muted">Every account runs on nTrader with access to FX, metals, indices, commodities, equities and crypto.</p>
