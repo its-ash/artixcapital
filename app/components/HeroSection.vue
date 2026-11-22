@@ -10,7 +10,7 @@ const Y2 = FS * 1.9
 const QUIET_GAP = 0.06
 const LOUD_START = 0.75
 const LOUD_GAP = 0.05
-const VIDEO_RATE = 1.3
+const VIDEO_RATE = 1.5
 
 type Glyph = { ch: string; x: number; d: number }
 
