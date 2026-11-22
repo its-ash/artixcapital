@@ -10,6 +10,7 @@ const Y2 = FS * 1.9
 const QUIET_GAP = 0.06
 const LOUD_START = 0.75
 const LOUD_GAP = 0.05
+const VIDEO_RATE = 1.3
 
 type Glyph = { ch: string; x: number; d: number }
 
@@ -29,15 +30,23 @@ const paused = ref(false)
 const glyphs = (el: SVGTextElement, text: string, start: number, gap: number) =>
   Array.from(text).flatMap((ch, i) => (ch.trim() ? [{ ch, x: el.getStartPositionOfChar(i).x, d: start + i * gap }] : []))
 
+const setRate = (el: HTMLVideoElement | null) => {
+  if (!el) return
+  el.defaultPlaybackRate = VIDEO_RATE
+  el.playbackRate = VIDEO_RATE
+}
+
 const safePlay = (el: HTMLVideoElement | null) => {
   if (!el) return
   el.defaultMuted = true
   el.muted = true
   el.playsInline = true
+  setRate(el)
   el.play().catch(() => {})
 }
 
 const onRunPlaying = () => {
+  setRate(videoEl.value)
   if (loopSrc.value) return
   const mobile = window.matchMedia('(max-width: 767px)').matches
   const vp9 = !mobile && Boolean(loopEl.value?.canPlayType('video/webm; codecs="vp9"'))
@@ -70,7 +79,9 @@ onMounted(async () => {
       v.defaultMuted = true
       v.muted = true
       v.playsInline = true
+      setRate(v)
       v.load()
+      setRate(v)
       v.play().catch(() => {
         unlock = () => {
           safePlay(looping.value ? loopEl.value : videoEl.value)
@@ -153,6 +164,8 @@ useMotion(root, ({ motion, desktop }) => {
             webkit-playsinline
             disablepictureinpicture
             preload="auto"
+            @loadedmetadata="setRate(loopEl)"
+            @playing="setRate(loopEl)"
           />
           <video
             ref="videoEl"
@@ -166,6 +179,7 @@ useMotion(root, ({ motion, desktop }) => {
             webkit-playsinline
             disablepictureinpicture
             preload="auto"
+            @loadedmetadata="setRate(videoEl)"
             @playing="onRunPlaying"
             @ended="onRunEnded"
           />
