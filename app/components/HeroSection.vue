@@ -13,11 +13,21 @@ const LOUD_GAP = 0.05
 const VIDEO_RATE = 1.5
 
 type Glyph = { ch: string; x: number; d: number }
+type NetInfo = { effectiveType?: string; saveData?: boolean }
+
+useHead({
+  link: [
+    { rel: 'preload', as: 'image', href: '/video/hero-poster-mobile.webp', media: '(max-width: 767px)', fetchpriority: 'high' },
+    { rel: 'preload', as: 'image', href: '/video/hero-poster.webp', media: '(min-width: 768px)', fetchpriority: 'high' }
+  ]
+})
 
 const root = ref<HTMLElement | null>(null)
+const posterEl = ref<HTMLImageElement | null>(null)
 const videoEl = ref<HTMLVideoElement | null>(null)
 const loopEl = ref<HTMLVideoElement | null>(null)
 const looping = ref(false)
+const runVisible = ref(false)
 const runSrc = ref('')
 const loopSrc = ref('')
 const mq = ref<SVGTextElement | null>(null)
@@ -45,18 +55,39 @@ const safePlay = (el: HTMLVideoElement | null) => {
   el.play().catch(() => {})
 }
 
-const onRunPlaying = () => {
-  setRate(videoEl.value)
-  if (loopSrc.value) return
-  const mobile = window.matchMedia('(max-width: 767px)').matches
-  const vp9 = !mobile && Boolean(loopEl.value?.canPlayType('video/webm; codecs="vp9"'))
-  loopSrc.value = mobile ? '/video/hero-forex-loop-mobile.mp4' : vp9 ? '/video/hero-forex-loop.webm' : '/video/hero-forex-loop.mp4'
+const isSlowNet = () => {
+  const c = (navigator as Navigator & { connection?: NetInfo }).connection
+  return Boolean(c?.saveData || (c?.effectiveType && /(?:slow-2g|2g|3g)/.test(c.effectiveType)))
 }
 
-const onRunEnded = () => {
-  if (looping.value) return
-  if (!loopSrc.value) onRunPlaying()
+let io: IntersectionObserver | undefined
+let unlock: (() => void) | undefined
+let ac: AbortController | undefined
+const blobUrls: string[] = []
+let mounted = false
+let videoStarted = false
+let runReady = false
+let loopLoading = false
+let pendingLoop = false
+
+const fetchFullVideo = async (url: string, signal: AbortSignal) => {
+  try {
+    const res = await fetch(url, { signal })
+    if (!res.ok) return null
+    const blob = await res.blob()
+    if (signal.aborted) return null
+    const objUrl = URL.createObjectURL(blob)
+    blobUrls.push(objUrl)
+    return objUrl
+  } catch {
+    return null
+  }
+}
+
+const startLoop = () => {
+  if (looping.value || !loopSrc.value) return
   looping.value = true
+  pendingLoop = false
   nextTick(() => {
     const lv = loopEl.value
     if (!lv || paused.value) return
@@ -65,44 +96,96 @@ const onRunEnded = () => {
   })
 }
 
-let io: IntersectionObserver | undefined
-let unlock: (() => void) | undefined
+const loadLoopVideo = async () => {
+  if (loopSrc.value || loopLoading || !ac) return
+  loopLoading = true
+  const mobile = window.matchMedia('(max-width: 767px)').matches
+  const vp9 = !mobile && Boolean(loopEl.value?.canPlayType('video/webm; codecs="vp9"'))
+  const url = mobile ? '/video/hero-forex-loop-mobile.mp4' : vp9 ? '/video/hero-forex-loop.webm' : '/video/hero-forex-loop.mp4'
+  const src = mobile || isSlowNet() ? await fetchFullVideo(url, ac.signal) : url
+  if (!src || !mounted) return
+  loopSrc.value = src
+  if (pendingLoop) startLoop()
+}
+
+const onRunPlaying = () => {
+  setRate(videoEl.value)
+  runVisible.value = true
+  loadLoopVideo()
+}
+
+const onRunEnded = () => {
+  if (looping.value) return
+  if (loopSrc.value) {
+    startLoop()
+  } else {
+    pendingLoop = true
+    loadLoopVideo()
+  }
+}
+
+const playRun = (v: HTMLVideoElement) => {
+  runReady = true
+  if (paused.value) return
+  setRate(v)
+  v.play().catch(() => {
+    if (unlock) return
+    unlock = () => {
+      safePlay(looping.value ? loopEl.value : videoEl.value)
+      if (unlock) {
+        window.removeEventListener('touchstart', unlock)
+        window.removeEventListener('pointerdown', unlock)
+        unlock = undefined
+      }
+    }
+    window.addEventListener('touchstart', unlock, { passive: true, once: true })
+    window.addEventListener('pointerdown', unlock, { passive: true, once: true })
+  })
+}
+
+const startVideoLoad = async () => {
+  if (videoStarted || !mounted) return
+  videoStarted = true
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  ac = new AbortController()
+  const mobile = window.matchMedia('(max-width: 767px)').matches
+  const fullDownload = mobile || isSlowNet()
+  const url = mobile ? '/video/hero-forex-run-mobile.mp4' : '/video/hero-forex-run.mp4'
+  const src = fullDownload ? await fetchFullVideo(url, ac.signal) : url
+  if (!src || !mounted) return
+  runSrc.value = src
+  await nextTick()
+  const v = videoEl.value
+  if (!v) return
+  v.defaultMuted = true
+  v.muted = true
+  v.playsInline = true
+  setRate(v)
+  v.load()
+  setRate(v)
+  if (fullDownload || v.readyState >= 4) {
+    playRun(v)
+  } else {
+    v.addEventListener('canplaythrough', () => playRun(v), { once: true })
+  }
+}
+
+const onPosterReady = () => {
+  startVideoLoad()
+}
 
 onMounted(async () => {
+  mounted = true
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const mobile = window.matchMedia('(max-width: 767px)').matches
-  if (!reduced) {
-    runSrc.value = mobile ? '/video/hero-forex-run-mobile.mp4' : '/video/hero-forex-run.mp4'
-    await nextTick()
-    const v = videoEl.value
-    if (v) {
-      v.defaultMuted = true
-      v.muted = true
-      v.playsInline = true
-      setRate(v)
-      v.load()
-      setRate(v)
-      v.play().catch(() => {
-        unlock = () => {
-          safePlay(looping.value ? loopEl.value : videoEl.value)
-          if (unlock) {
-            window.removeEventListener('touchstart', unlock)
-            window.removeEventListener('pointerdown', unlock)
-            unlock = undefined
-          }
-        }
-        window.addEventListener('touchstart', unlock, { passive: true, once: true })
-        window.addEventListener('pointerdown', unlock, { passive: true, once: true })
-      })
-    }
-  }
+  if (posterEl.value?.complete) onPosterReady()
   if (root.value) {
     io = new IntersectionObserver(([e]) => {
       const visible = Boolean(e?.isIntersecting)
       paused.value = !visible
       if (reduced) return
       const active = looping.value ? loopEl.value : videoEl.value
-      if (!active) return
+      const ready = looping.value ? Boolean(loopSrc.value) : runReady
+      if (!active || !ready) return
       if (visible && (looping.value || !active.ended)) safePlay(active)
       else active.pause()
     }, { rootMargin: '100px' })
@@ -118,6 +201,10 @@ onMounted(async () => {
   size.value = { w: Math.ceil(Math.max(q.getComputedTextLength(), lw + FS * 0.3)), lw }
 })
 onBeforeUnmount(() => {
+  mounted = false
+  ac?.abort()
+  blobUrls.forEach(u => URL.revokeObjectURL(u))
+  blobUrls.length = 0
   io?.disconnect()
   if (unlock) {
     window.removeEventListener('touchstart', unlock)
@@ -153,32 +240,46 @@ useMotion(root, ({ motion, desktop }) => {
     <div class="pointer-events-none relative h-[48dvh] min-h-64 w-full shrink-0 overflow-hidden sm:h-[52dvh] md:absolute md:inset-0 md:h-full md:min-h-0" aria-hidden="true">
       <div class="h-video size-full">
         <div class="h-video-inner relative size-full will-change-[transform,opacity]">
+          <picture class="absolute inset-0 size-full">
+            <source media="(max-width: 767px)" srcset="/video/hero-poster-mobile.webp" type="image/webp">
+            <img
+              ref="posterEl"
+              src="/video/hero-poster.webp"
+              alt=""
+              width="2560"
+              height="1440"
+              fetchpriority="high"
+              loading="eager"
+              decoding="async"
+              class="size-full object-cover object-center"
+              @load="onPosterReady"
+              @error="onPosterReady"
+            >
+          </picture>
           <video
             ref="loopEl"
-            class="absolute inset-0 size-full object-cover object-center opacity-100"
+            class="absolute inset-0 size-full object-cover object-center transition-opacity duration-300"
+            :class="looping ? 'opacity-100' : 'opacity-0'"
             :src="loopSrc || undefined"
-            poster="/video/hero-poster.webp"
             muted
             loop
             playsinline
             webkit-playsinline
             disablepictureinpicture
-            preload="auto"
+            :preload="loopSrc ? 'auto' : 'none'"
             @loadedmetadata="setRate(loopEl)"
             @playing="setRate(loopEl)"
           />
           <video
             ref="videoEl"
-            class="relative size-full object-cover object-center opacity-100 transition-opacity duration-300"
-            :class="looping ? 'opacity-0!' : ''"
+            class="relative size-full object-cover object-center transition-opacity duration-300"
+            :class="runVisible && !looping ? 'opacity-100' : 'opacity-0'"
             :src="runSrc || undefined"
-            poster="/video/hero-poster.webp"
-            autoplay
             muted
             playsinline
             webkit-playsinline
             disablepictureinpicture
-            preload="auto"
+            :preload="runSrc ? 'auto' : 'none'"
             @loadedmetadata="setRate(videoEl)"
             @playing="onRunPlaying"
             @ended="onRunEnded"
