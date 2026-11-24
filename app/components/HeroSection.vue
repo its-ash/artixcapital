@@ -14,7 +14,6 @@ const INTRO_DELAY_MS = 2200
 const OUTRO_LEAD_S = 0.65
 
 type Glyph = { ch: string; x: number; d: number }
-type NetInfo = { effectiveType?: string; saveData?: boolean }
 type Phase = 'globe-intro' | 'video' | 'globe-final'
 
 const root = ref<HTMLElement | null>(null)
@@ -31,13 +30,9 @@ const paused = ref(false)
 const glyphs = (el: SVGTextElement, text: string, start: number, gap: number) =>
   Array.from(text).flatMap((ch, i) => (ch.trim() ? [{ ch, x: el.getStartPositionOfChar(i).x, d: start + i * gap }] : []))
 
-const isSlowNet = () => {
-  const c = (navigator as Navigator & { connection?: NetInfo }).connection
-  return Boolean(c?.saveData || (c?.effectiveType && /(?:slow-2g|2g|3g)/.test(c.effectiveType)))
-}
-
 let io: IntersectionObserver | undefined
 let unlock: (() => void) | undefined
+let onPageLoad: (() => void) | undefined
 let ac: AbortController | undefined
 let introTimer: ReturnType<typeof setTimeout> | undefined
 const blobUrls: string[] = []
@@ -103,9 +98,12 @@ const preloadVideo = async () => {
   if (!mounted || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
   ac = new AbortController()
   const mobile = window.matchMedia('(max-width: 767px)').matches
-  const url = mobile ? '/video/hero-globe-run-mobile.mp4' : '/video/hero-globe-run.mp4'
-  const full = mobile || isSlowNet()
-  const src = full ? await fetchBlob(url, ac.signal) : url
+  const probe = videoEl.value
+  const vp9 = Boolean(probe?.canPlayType('video/webm; codecs="vp9"') === 'probably')
+  const url = mobile
+    ? (vp9 ? '/video/hero-globe-run-mobile.webm' : '/video/hero-globe-run-mobile.mp4')
+    : (vp9 ? '/video/hero-globe-run.webm' : '/video/hero-globe-run.mp4')
+  const src = await fetchBlob(url, ac.signal)
   if (!src || !mounted) return
   videoSrc.value = src
   await nextTick()
@@ -120,10 +118,9 @@ const preloadVideo = async () => {
     videoReady = true
     tryStartVideo()
   }
-  if (full || v.readyState >= 3) {
+  if (v.readyState >= 4) {
     markReady()
   } else {
-    v.addEventListener('canplay', markReady, { once: true })
     v.addEventListener('canplaythrough', markReady, { once: true })
   }
 }
@@ -147,11 +144,23 @@ onMounted(async () => {
     io.observe(root.value)
   }
   if (!reduced) {
-    introTimer = setTimeout(() => {
-      introDone = true
-      tryStartVideo()
-    }, INTRO_DELAY_MS)
-    preloadVideo()
+    const startAfterLoad = () => {
+      if (!mounted) return
+      introTimer = setTimeout(() => {
+        introDone = true
+        tryStartVideo()
+      }, INTRO_DELAY_MS)
+      preloadVideo()
+    }
+    if (document.readyState === 'complete') {
+      startAfterLoad()
+    } else {
+      onPageLoad = () => {
+        onPageLoad = undefined
+        startAfterLoad()
+      }
+      window.addEventListener('load', onPageLoad, { once: true })
+    }
   }
   await document.fonts.ready.catch(() => {})
   const q = mq.value
@@ -165,6 +174,10 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   mounted = false
+  if (onPageLoad) {
+    window.removeEventListener('load', onPageLoad)
+    onPageLoad = undefined
+  }
   if (introTimer) clearTimeout(introTimer)
   ac?.abort()
   blobUrls.forEach(u => URL.revokeObjectURL(u))
