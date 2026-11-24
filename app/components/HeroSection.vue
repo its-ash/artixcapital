@@ -10,26 +10,17 @@ const Y2 = FS * 1.9
 const QUIET_GAP = 0.06
 const LOUD_START = 0.75
 const LOUD_GAP = 0.05
-const VIDEO_RATE = 1.5
+const INTRO_DELAY_MS = 2200
+const OUTRO_LEAD_S = 0.65
 
 type Glyph = { ch: string; x: number; d: number }
 type NetInfo = { effectiveType?: string; saveData?: boolean }
-
-useHead({
-  link: [
-    { rel: 'preload', as: 'image', href: '/video/hero-poster-mobile.webp', media: '(max-width: 767px)', fetchpriority: 'high' },
-    { rel: 'preload', as: 'image', href: '/video/hero-poster.webp', media: '(min-width: 768px)', fetchpriority: 'high' }
-  ]
-})
+type Phase = 'globe-intro' | 'video' | 'globe-final'
 
 const root = ref<HTMLElement | null>(null)
-const posterEl = ref<HTMLImageElement | null>(null)
 const videoEl = ref<HTMLVideoElement | null>(null)
-const loopEl = ref<HTMLVideoElement | null>(null)
-const looping = ref(false)
-const runVisible = ref(false)
-const runSrc = ref('')
-const loopSrc = ref('')
+const videoSrc = ref('')
+const phase = ref<Phase>('globe-intro')
 const mq = ref<SVGTextElement | null>(null)
 const ml = ref<SVGTextElement | null>(null)
 const quiet = ref<Glyph[]>([])
@@ -40,21 +31,6 @@ const paused = ref(false)
 const glyphs = (el: SVGTextElement, text: string, start: number, gap: number) =>
   Array.from(text).flatMap((ch, i) => (ch.trim() ? [{ ch, x: el.getStartPositionOfChar(i).x, d: start + i * gap }] : []))
 
-const setRate = (el: HTMLVideoElement | null) => {
-  if (!el) return
-  el.defaultPlaybackRate = VIDEO_RATE
-  el.playbackRate = VIDEO_RATE
-}
-
-const safePlay = (el: HTMLVideoElement | null) => {
-  if (!el) return
-  el.defaultMuted = true
-  el.muted = true
-  el.playsInline = true
-  setRate(el)
-  el.play().catch(() => {})
-}
-
 const isSlowNet = () => {
   const c = (navigator as Navigator & { connection?: NetInfo }).connection
   return Boolean(c?.saveData || (c?.effectiveType && /(?:slow-2g|2g|3g)/.test(c.effectiveType)))
@@ -63,14 +39,53 @@ const isSlowNet = () => {
 let io: IntersectionObserver | undefined
 let unlock: (() => void) | undefined
 let ac: AbortController | undefined
+let introTimer: ReturnType<typeof setTimeout> | undefined
 const blobUrls: string[] = []
 let mounted = false
-let videoStarted = false
-let runReady = false
-let loopLoading = false
-let pendingLoop = false
+let videoReady = false
+let introDone = false
 
-const fetchFullVideo = async (url: string, signal: AbortSignal) => {
+const finishVideo = () => {
+  if (phase.value === 'globe-final') return
+  phase.value = 'globe-final'
+}
+
+const safePlay = (v: HTMLVideoElement | null) => {
+  if (!v || phase.value === 'globe-final') return
+  v.defaultMuted = true
+  v.muted = true
+  v.playsInline = true
+  v.play().catch(() => {
+    if (unlock) return
+    unlock = () => {
+      if (phase.value !== 'globe-final') safePlay(videoEl.value)
+      if (unlock) {
+        window.removeEventListener('touchstart', unlock)
+        window.removeEventListener('pointerdown', unlock)
+        unlock = undefined
+      }
+    }
+    window.addEventListener('touchstart', unlock, { passive: true, once: true })
+    window.addEventListener('pointerdown', unlock, { passive: true, once: true })
+  })
+}
+
+const tryStartVideo = () => {
+  if (!mounted || !videoReady || !introDone || phase.value !== 'globe-intro' || paused.value) return
+  safePlay(videoEl.value)
+}
+
+const onVideoPlaying = () => {
+  if (phase.value === 'globe-intro') phase.value = 'video'
+}
+
+const onVideoTimeUpdate = () => {
+  const v = videoEl.value
+  if (!v || phase.value !== 'video' || !Number.isFinite(v.duration) || v.duration <= 0) return
+  if (v.duration - v.currentTime <= OUTRO_LEAD_S) finishVideo()
+}
+
+const fetchBlob = async (url: string, signal: AbortSignal) => {
   try {
     const res = await fetch(url, { signal })
     if (!res.ok) return null
@@ -84,112 +99,59 @@ const fetchFullVideo = async (url: string, signal: AbortSignal) => {
   }
 }
 
-const startLoop = () => {
-  if (looping.value || !loopSrc.value) return
-  looping.value = true
-  pendingLoop = false
-  nextTick(() => {
-    const lv = loopEl.value
-    if (!lv || paused.value) return
-    lv.currentTime = 0
-    safePlay(lv)
-  })
-}
-
-const loadLoopVideo = async () => {
-  if (loopSrc.value || loopLoading || !ac) return
-  loopLoading = true
-  const mobile = window.matchMedia('(max-width: 767px)').matches
-  const vp9 = !mobile && Boolean(loopEl.value?.canPlayType('video/webm; codecs="vp9"'))
-  const url = mobile ? '/video/hero-forex-loop-mobile.mp4' : vp9 ? '/video/hero-forex-loop.webm' : '/video/hero-forex-loop.mp4'
-  const src = mobile || isSlowNet() ? await fetchFullVideo(url, ac.signal) : url
-  if (!src || !mounted) return
-  loopSrc.value = src
-  if (pendingLoop) startLoop()
-}
-
-const onRunPlaying = () => {
-  setRate(videoEl.value)
-  runVisible.value = true
-  loadLoopVideo()
-}
-
-const onRunEnded = () => {
-  if (looping.value) return
-  if (loopSrc.value) {
-    startLoop()
-  } else {
-    pendingLoop = true
-    loadLoopVideo()
-  }
-}
-
-const playRun = (v: HTMLVideoElement) => {
-  runReady = true
-  if (paused.value) return
-  setRate(v)
-  v.play().catch(() => {
-    if (unlock) return
-    unlock = () => {
-      safePlay(looping.value ? loopEl.value : videoEl.value)
-      if (unlock) {
-        window.removeEventListener('touchstart', unlock)
-        window.removeEventListener('pointerdown', unlock)
-        unlock = undefined
-      }
-    }
-    window.addEventListener('touchstart', unlock, { passive: true, once: true })
-    window.addEventListener('pointerdown', unlock, { passive: true, once: true })
-  })
-}
-
-const startVideoLoad = async () => {
-  if (videoStarted || !mounted) return
-  videoStarted = true
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+const preloadVideo = async () => {
+  if (!mounted || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
   ac = new AbortController()
   const mobile = window.matchMedia('(max-width: 767px)').matches
-  const fullDownload = mobile || isSlowNet()
-  const url = mobile ? '/video/hero-forex-run-mobile.mp4' : '/video/hero-forex-run.mp4'
-  const src = fullDownload ? await fetchFullVideo(url, ac.signal) : url
+  const url = mobile ? '/video/hero-globe-run-mobile.mp4' : '/video/hero-globe-run.mp4'
+  const full = mobile || isSlowNet()
+  const src = full ? await fetchBlob(url, ac.signal) : url
   if (!src || !mounted) return
-  runSrc.value = src
+  videoSrc.value = src
   await nextTick()
   const v = videoEl.value
   if (!v) return
   v.defaultMuted = true
   v.muted = true
   v.playsInline = true
-  setRate(v)
   v.load()
-  setRate(v)
-  if (fullDownload || v.readyState >= 4) {
-    playRun(v)
-  } else {
-    v.addEventListener('canplaythrough', () => playRun(v), { once: true })
+  const markReady = () => {
+    if (videoReady) return
+    videoReady = true
+    tryStartVideo()
   }
-}
-
-const onPosterReady = () => {
-  startVideoLoad()
+  if (full || v.readyState >= 3) {
+    markReady()
+  } else {
+    v.addEventListener('canplay', markReady, { once: true })
+    v.addEventListener('canplaythrough', markReady, { once: true })
+  }
 }
 
 onMounted(async () => {
   mounted = true
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (posterEl.value?.complete) onPosterReady()
   if (root.value) {
     io = new IntersectionObserver(([e]) => {
       const visible = Boolean(e?.isIntersecting)
       paused.value = !visible
       if (reduced) return
-      const active = looping.value ? loopEl.value : videoEl.value
-      const ready = looping.value ? Boolean(loopSrc.value) : runReady
-      if (!active || !ready) return
-      if (visible && (looping.value || !active.ended)) safePlay(active)
-      else active.pause()
+      const v = videoEl.value
+      if (phase.value === 'globe-intro' && visible) {
+        tryStartVideo()
+      } else if (phase.value === 'video' && v) {
+        if (visible && !v.ended) safePlay(v)
+        else v.pause()
+      }
     }, { rootMargin: '100px' })
     io.observe(root.value)
+  }
+  if (!reduced) {
+    introTimer = setTimeout(() => {
+      introDone = true
+      tryStartVideo()
+    }, INTRO_DELAY_MS)
+    preloadVideo()
   }
   await document.fonts.ready.catch(() => {})
   const q = mq.value
@@ -200,8 +162,10 @@ onMounted(async () => {
   const lw = l.getComputedTextLength()
   size.value = { w: Math.ceil(Math.max(q.getComputedTextLength(), lw + FS * 0.3)), lw }
 })
+
 onBeforeUnmount(() => {
   mounted = false
+  if (introTimer) clearTimeout(introTimer)
   ac?.abort()
   blobUrls.forEach(u => URL.revokeObjectURL(u))
   blobUrls.length = 0
@@ -222,9 +186,9 @@ useMotion(root, ({ motion, desktop }) => {
     .from(q('.h-label'), { y: 12, opacity: 0, duration: 0.7 })
     .from(q('.h-sub'), { y: 16, opacity: 0, duration: 0.9 }, 1)
     .from(q('.h-cta'), { y: 16, opacity: 0, stagger: 0.06, duration: 0.8 }, 1.1)
-    .fromTo(q('.h-video'), { opacity: 0, scale: desktop ? 1.04 : 1 }, { opacity: 1, scale: 1, duration: 1.1 }, 0.05)
+    .fromTo(q('.h-globe-entry'), { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 1.8 }, 0.1)
   if (desktop) {
-    gsap.fromTo(q('.h-video-inner'), { yPercent: 0, opacity: 1 }, { yPercent: 6, opacity: 0.45, ease: 'none', immediateRender: false, scrollTrigger: { trigger: root.value, start: 'top top', end: 'bottom top', scrub: true } })
+    gsap.fromTo(q('.h-stage-parallax'), { yPercent: 0, opacity: 1 }, { yPercent: 6, opacity: 0.45, ease: 'none', immediateRender: false, scrollTrigger: { trigger: root.value, start: 'top top', end: 'bottom top', scrub: true } })
   }
 })
 </script>
@@ -237,63 +201,44 @@ useMotion(root, ({ motion, desktop }) => {
     :class="paused ? 'anim-paused' : ''"
     aria-labelledby="hero-title"
   >
-    <div class="pointer-events-none relative h-[48dvh] min-h-64 w-full shrink-0 overflow-hidden sm:h-[52dvh] md:absolute md:inset-0 md:h-full md:min-h-0" aria-hidden="true">
-      <div class="h-video size-full">
-        <div class="h-video-inner relative size-full will-change-[transform,opacity]">
-          <picture class="absolute inset-0 size-full">
-            <source media="(max-width: 767px)" srcset="/video/hero-poster-mobile.webp" type="image/webp">
-            <img
-              ref="posterEl"
-              src="/video/hero-poster.webp"
-              alt=""
-              width="2560"
-              height="1440"
-              fetchpriority="high"
-              loading="eager"
-              decoding="async"
-              class="size-full object-cover object-center"
-              @load="onPosterReady"
-              @error="onPosterReady"
-            >
-          </picture>
-          <video
-            ref="loopEl"
-            class="absolute inset-0 size-full object-cover object-center transition-opacity duration-300"
-            :class="looping ? 'opacity-100' : 'opacity-0'"
-            :src="loopSrc || undefined"
-            muted
-            loop
-            playsinline
-            webkit-playsinline
-            disablepictureinpicture
-            :preload="loopSrc ? 'auto' : 'none'"
-            @loadedmetadata="setRate(loopEl)"
-            @playing="setRate(loopEl)"
-          />
-          <video
-            ref="videoEl"
-            class="relative size-full object-cover object-center transition-opacity duration-300"
-            :class="runVisible && !looping ? 'opacity-100' : 'opacity-0'"
-            :src="runSrc || undefined"
-            muted
-            playsinline
-            webkit-playsinline
-            disablepictureinpicture
-            :preload="runSrc ? 'auto' : 'none'"
-            @loadedmetadata="setRate(videoEl)"
-            @playing="onRunPlaying"
-            @ended="onRunEnded"
-          />
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(closest-side_at_85%_14%,color-mix(in_oklab,var(--color-accent)_16%,transparent),transparent_100%),radial-gradient(closest-side_at_6%_92%,rgb(255_255_255/0.03),transparent_100%)]"
+      aria-hidden="true"
+    />
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+      <div class="h-stage-parallax relative size-full will-change-[transform,opacity]">
+        <div
+          class="h-globe absolute -bottom-[8vw] -right-[18vw] size-[106vw] transition-opacity duration-700 ease-out md:right-auto md:bottom-auto md:left-[76vw] md:top-[52%] md:size-[min(92vw,88dvh)] md:-translate-x-1/2 md:-translate-y-1/2"
+          :class="phase === 'video' ? 'opacity-0 pointer-events-none' : 'opacity-90 md:opacity-100'"
+        >
+          <div class="h-globe-entry size-full">
+            <GlobeGrid locate :class="phase === 'video' ? 'pointer-events-none' : 'pointer-events-auto'" />
+          </div>
         </div>
+        <video
+          ref="videoEl"
+          class="pointer-events-none absolute inset-0 size-full object-cover object-center transition-opacity duration-700 ease-out"
+          :class="phase === 'video' ? 'opacity-100' : 'opacity-0'"
+          :src="videoSrc || undefined"
+          muted
+          playsinline
+          webkit-playsinline
+          disablepictureinpicture
+          :preload="videoSrc ? 'auto' : 'none'"
+          @playing="onVideoPlaying"
+          @timeupdate="onVideoTimeUpdate"
+          @ended="finishVideo"
+          @error="finishVideo"
+        />
       </div>
-      <div class="hidden md:block absolute inset-0 bg-[radial-gradient(50%_60%_at_82%_14%,color-mix(in_oklab,var(--color-accent)_14%,transparent),transparent_70%)]" />
-      <div class="hidden md:block absolute inset-0 w-3/4 bg-linear-to-r from-canvas via-canvas/75 to-transparent" />
-      <div class="absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-canvas via-canvas/55 to-transparent md:h-32 md:via-transparent" />
+      <div class="pointer-events-none absolute inset-y-0 left-0 hidden w-3/5 bg-linear-to-r from-canvas via-canvas/75 to-transparent md:block" />
+      <div class="pointer-events-none absolute inset-x-0 top-0 h-[52%] bg-linear-to-b from-canvas via-canvas/65 to-transparent md:hidden" />
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-canvas via-canvas/45 to-transparent md:h-28" />
     </div>
-    <div class="pointer-events-none relative z-1 wrap -mt-6 flex flex-1 flex-col justify-center pb-6 *:pointer-events-auto md:mt-0 md:grid md:flex-none md:items-center md:py-12 lg:grid-cols-12 lg:py-14">
-      <div class="min-w-0 lg:col-span-8">
+    <div class="pointer-events-none relative z-1 wrap grid min-h-[calc(100dvh-8rem-env(safe-area-inset-bottom))] items-start pb-14 pt-10 *:pointer-events-auto md:min-h-[calc(100dvh-4rem)] md:items-center md:py-14 lg:grid-cols-12 lg:py-20">
+      <div class="min-w-0 lg:col-span-7">
         <p class="h-label eyebrow">Forex &amp; CFD Brokerage</p>
-        <h1 id="hero-title" class="h-display mt-3 text-[clamp(2.25rem,8.4vw,7.25rem)] leading-[0.95]! whitespace-nowrap md:mt-4" aria-label="Quiet money. Loud success.">
+        <h1 id="hero-title" class="h-display mt-4 text-[clamp(2.25rem,8.4vw,6.75rem)] leading-[0.95]! whitespace-nowrap md:mt-5" aria-label="Quiet money. Loud success.">
           <svg class="hw block h-[2.15em] w-auto max-w-full overflow-visible" :viewBox="vb" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
             <defs>
               <radialGradient id="hw-glow-grad">
@@ -310,17 +255,17 @@ useMotion(root, ({ motion, desktop }) => {
             <g class="h-loud-wrap hw-loud text-fg" :font-size="FS">
               <text v-for="(g, i) in loud" :key="i" class="hw-char" :x="g.x" :y="Y2" :style="{ '--d': g.d }">{{ g.ch }}</text>
               <template v-if="loud.length">
-              <line class="hw-bar" x1="0" :x2="size.lw" :y1="Y2 + FS * 0.17" :y2="Y2 + FS * 0.17" :stroke-width="FS * 0.06" pathLength="1" :style="{ '--d': tail }" />
-              <circle class="hw-glow" :cx="size.lw + FS * 0.13" :cy="Y2 - FS * 0.07" :r="FS * 0.24" fill="url(#hw-glow-grad)" :style="{ '--d': tail + 0.5 }" />
-              <circle class="hw-dot" :cx="size.lw + FS * 0.13" :cy="Y2 - FS * 0.07" :r="FS * 0.075" :style="{ '--d': tail + 0.5 }" />
+                <line class="hw-bar" x1="0" :x2="size.lw" :y1="Y2 + FS * 0.17" :y2="Y2 + FS * 0.17" :stroke-width="FS * 0.06" pathLength="1" :style="{ '--d': tail }" />
+                <circle class="hw-glow" :cx="size.lw + FS * 0.13" :cy="Y2 - FS * 0.07" :r="FS * 0.24" fill="url(#hw-glow-grad)" :style="{ '--d': tail + 0.5 }" />
+                <circle class="hw-dot" :cx="size.lw + FS * 0.13" :cy="Y2 - FS * 0.07" :r="FS * 0.075" :style="{ '--d': tail + 0.5 }" />
               </template>
             </g>
           </svg>
         </h1>
-        <p class="h-sub mt-3 max-w-lg text-sm leading-relaxed text-muted sm:text-base md:mt-5 md:text-lg">
+        <p class="h-sub mt-4 max-w-lg text-sm leading-relaxed text-muted sm:text-base md:mt-6 md:text-lg">
           Institutional pricing and precision execution across forex, stocks, indices, commodities and crypto.
         </p>
-        <div class="mt-5 flex flex-wrap items-center gap-3 md:mt-7">
+        <div class="mt-6 flex flex-wrap items-center gap-3 md:mt-8">
           <a v-magnetic="0.2" :href="SIGNUP" class="h-cta btn btn-primary h-11 px-6 text-sm sm:h-12 sm:px-7 sm:text-base">
             Open account
             <span class="btn-icon" aria-hidden="true"><PhArrowRight :size="18" weight="bold" /><PhArrowRight :size="18" weight="bold" /></span>
