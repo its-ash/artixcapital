@@ -245,45 +245,47 @@ useMotion(root, ({ motion, desktop }) => {
         />
       </div>
       <div class="pointer-events-none absolute inset-y-0 left-0 hidden w-3/5 bg-linear-to-r from-canvas via-canvas/75 to-transparent md:block" />
-      <div class="pointer-events-none absolute inset-x-0 top-0 h-[52%] bg-linear-to-b from-canvas via-canvas/65 to-transparent md:hidden" />
-      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-canvas via-canvas/45 to-transparent md:h-28" />
+      <div class="pointer-events-none absolute inset-x-0 top-0 h-[48%] bg-linear-to-b from-canvas via-canvas/65 to-transparent md:hidden" />
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-canvas via-canvas/75 to-transparent md:h-28 md:via-canvas/45" />
     </div>
-    <div class="pointer-events-none relative z-1 wrap grid min-h-[calc(100dvh-8rem-env(safe-area-inset-bottom))] items-start pb-14 pt-10 *:pointer-events-auto md:min-h-[calc(100dvh-4rem)] md:items-center md:py-14 lg:grid-cols-12 lg:py-20">
-      <div class="min-w-0 lg:col-span-7">
-        <p class="h-label eyebrow">Forex &amp; CFD Brokerage</p>
-        <h1 id="hero-title" class="h-display mt-4 text-[clamp(2.25rem,8.4vw,6.75rem)] leading-[0.95]! whitespace-nowrap md:mt-5" aria-label="Quiet money. Loud success.">
-          <svg class="hw block h-[2.15em] w-auto max-w-full overflow-visible" :viewBox="vb" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
-            <defs>
-              <radialGradient id="hw-glow-grad">
-                <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.95" />
-                <stop offset="45%" stop-color="var(--color-accent)" stop-opacity="0.4" />
-                <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0" />
-              </radialGradient>
-            </defs>
-            <text ref="mq" class="hw-quiet hw-measure" x="0" :y="Y1" :font-size="FS * 1.08">{{ QUIET }}</text>
-            <text ref="ml" class="hw-loud hw-measure" x="0" :y="Y2" :font-size="FS">{{ LOUD }}</text>
-            <g class="h-quiet hw-quiet text-muted" :font-size="FS * 1.08">
-              <text v-for="(g, i) in quiet" :key="i" class="hw-char" :x="g.x" :y="Y1" :style="{ '--d': g.d }">{{ g.ch }}</text>
-            </g>
-            <g class="h-loud-wrap hw-loud text-fg" :font-size="FS">
-              <text v-for="(g, i) in loud" :key="i" class="hw-char" :x="g.x" :y="Y2" :style="{ '--d': g.d }">{{ g.ch }}</text>
-              <template v-if="loud.length">
-                <line class="hw-bar" x1="0" :x2="size.lw" :y1="Y2 + FS * 0.17" :y2="Y2 + FS * 0.17" :stroke-width="FS * 0.06" pathLength="1" :style="{ '--d': tail }" />
-                <circle class="hw-glow" :cx="size.lw + FS * 0.13" :cy="Y2 - FS * 0.07" :r="FS * 0.24" fill="url(#hw-glow-grad)" :style="{ '--d': tail + 0.5 }" />
-                <circle class="hw-dot" :cx="size.lw + FS * 0.13" :cy="Y2 - FS * 0.07" :r="FS * 0.075" :style="{ '--d': tail + 0.5 }" />
-              </template>
-            </g>
-          </svg>
-        </h1>
-        <p class="h-sub mt-4 max-w-lg text-sm leading-relaxed text-muted sm:text-base md:mt-6 md:text-lg">
-          Institutional pricing and precision execution across forex, stocks, indices, commodities and crypto.
-        </p>
-        <div class="mt-6 flex flex-wrap items-center gap-3 md:mt-8">
-          <a v-magnetic="0.2" :href="SIGNUP" class="h-cta btn btn-primary h-11 px-6 text-sm sm:h-12 sm:px-7 sm:text-base">
+    <div class="pointer-events-none relative z-1 wrap flex min-h-[calc(100dvh-8rem-env(safe-area-inset-bottom))] flex-1 flex-col pb-6 pt-8 md:grid md:min-h-[calc(100dvh-4rem)] md:flex-none md:items-center md:py-14 lg:grid-cols-12 lg:py-20">
+      <div class="pointer-events-none flex min-w-0 flex-1 flex-col md:block lg:col-span-7">
+        <div class="pointer-events-auto">
+          <p class="h-label eyebrow">Forex &amp; CFD Brokerage</p>
+          <h1 id="hero-title" class="h-display mt-4 text-[clamp(2.25rem,8.4vw,6.75rem)] leading-[0.95]! whitespace-nowrap md:mt-5" aria-label="Quiet money. Loud success.">
+            <svg class="hw block h-[2.15em] w-auto max-w-full overflow-visible" :viewBox="vb" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
+              <defs>
+                <radialGradient id="hw-glow-grad">
+                  <stop offset="0%" stop-color="var(--color-accent)" stop-opacity="0.95" />
+                  <stop offset="45%" stop-color="var(--color-accent)" stop-opacity="0.4" />
+                  <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+              <text ref="mq" class="hw-quiet hw-measure" x="0" :y="Y1" :font-size="FS * 1.08">{{ QUIET }}</text>
+              <text ref="ml" class="hw-loud hw-measure" x="0" :y="Y2" :font-size="FS">{{ LOUD }}</text>
+              <g class="h-quiet hw-quiet text-muted" :font-size="FS * 1.08">
+                <text v-for="(g, i) in quiet" :key="i" class="hw-char" :x="g.x" :y="Y1" :style="{ '--d': g.d }">{{ g.ch }}</text>
+              </g>
+              <g class="h-loud-wrap hw-loud text-fg" :font-size="FS">
+                <text v-for="(g, i) in loud" :key="i" class="hw-char" :x="g.x" :y="Y2" :style="{ '--d': g.d }">{{ g.ch }}</text>
+                <template v-if="loud.length">
+                  <line class="hw-bar" x1="0" :x2="size.lw" :y1="Y2 + FS * 0.17" :y2="Y2 + FS * 0.17" :stroke-width="FS * 0.06" pathLength="1" :style="{ '--d': tail }" />
+                  <circle class="hw-glow" :cx="size.lw + FS * 0.13" :cy="Y2 - FS * 0.07" :r="FS * 0.24" fill="url(#hw-glow-grad)" :style="{ '--d': tail + 0.5 }" />
+                  <circle class="hw-dot" :cx="size.lw + FS * 0.13" :cy="Y2 - FS * 0.07" :r="FS * 0.075" :style="{ '--d': tail + 0.5 }" />
+                </template>
+              </g>
+            </svg>
+          </h1>
+          <p class="h-sub mt-4 max-w-lg text-sm leading-relaxed text-muted sm:text-base md:mt-6 md:text-lg">
+            Institutional pricing and precision execution across forex, stocks, indices, commodities and crypto.
+          </p>
+        </div>
+        <div class="pointer-events-auto mt-auto flex flex-wrap items-center gap-3 pt-6 md:mt-8 md:pt-0">
+          <a v-magnetic="0.2" :href="SIGNUP" class="h-cta btn btn-primary h-11 flex-1 px-6 text-sm sm:h-12 sm:flex-none sm:px-7 sm:text-base">
             Open account
             <span class="btn-icon" aria-hidden="true"><PhArrowRight :size="18" weight="bold" /><PhArrowRight :size="18" weight="bold" /></span>
           </a>
-          <NuxtLink to="/artix-demo-account/" class="h-cta btn btn-ghost h-11 px-5 text-sm sm:h-12 sm:px-6 sm:text-base">Try demo</NuxtLink>
+          <NuxtLink to="/artix-demo-account/" class="h-cta btn btn-ghost h-11 flex-1 px-5 text-sm sm:h-12 sm:flex-none sm:px-6 sm:text-base">Try demo</NuxtLink>
         </div>
       </div>
     </div>
