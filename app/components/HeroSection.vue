@@ -17,6 +17,8 @@ type Glyph = { ch: string; x: number; d: number }
 type Phase = 'globe-intro' | 'video' | 'globe-final'
 
 const root = ref<HTMLElement | null>(null)
+const copyEl = ref<HTMLElement | null>(null)
+const ctaEl = ref<HTMLElement | null>(null)
 const videoEl = ref<HTMLVideoElement | null>(null)
 const videoSrc = ref('')
 const phase = ref<Phase>('globe-intro')
@@ -33,12 +35,32 @@ const glyphs = (el: SVGTextElement, text: string, start: number, gap: number) =>
 let io: IntersectionObserver | undefined
 let unlock: (() => void) | undefined
 let onPageLoad: (() => void) | undefined
+let onResize: (() => void) | undefined
 let ac: AbortController | undefined
 let introTimer: ReturnType<typeof setTimeout> | undefined
 const blobUrls: string[] = []
 let mounted = false
 let videoReady = false
 let introDone = false
+
+const syncCopyPos = (animate: boolean) => {
+  const copy = copyEl.value
+  const cta = ctaEl.value
+  if (!copy || !cta) return
+  const mobile = window.matchMedia('(max-width: 767px)').matches
+  if (!mobile || phase.value !== 'video') {
+    if (animate && mobile) gsap.to(copy, { y: 0, duration: 0.9, ease: 'expo.inOut', overwrite: 'auto' })
+    else gsap.set(copy, { clearProps: 'transform' })
+    return
+  }
+  const curY = Number(gsap.getProperty(copy, 'y')) || 0
+  const naturalBottom = copy.getBoundingClientRect().bottom - curY
+  const targetY = Math.max(0, cta.getBoundingClientRect().top - naturalBottom + 4)
+  if (animate) gsap.to(copy, { y: targetY, duration: 0.9, ease: 'expo.inOut', overwrite: 'auto' })
+  else gsap.set(copy, { y: targetY })
+}
+
+watch(phase, () => syncCopyPos(true))
 
 const finishVideo = () => {
   if (phase.value === 'globe-final') return
@@ -162,6 +184,8 @@ onMounted(async () => {
       window.addEventListener('load', onPageLoad, { once: true })
     }
   }
+  onResize = () => syncCopyPos(false)
+  window.addEventListener('resize', onResize, { passive: true })
   await document.fonts.ready.catch(() => {})
   const q = mq.value
   const l = ml.value
@@ -178,6 +202,11 @@ onBeforeUnmount(() => {
     window.removeEventListener('load', onPageLoad)
     onPageLoad = undefined
   }
+  if (onResize) {
+    window.removeEventListener('resize', onResize)
+    onResize = undefined
+  }
+  if (copyEl.value) gsap.killTweensOf(copyEl.value)
   if (introTimer) clearTimeout(introTimer)
   ac?.abort()
   blobUrls.forEach(u => URL.revokeObjectURL(u))
@@ -245,14 +274,21 @@ useMotion(root, ({ motion, desktop }) => {
         />
       </div>
       <div class="pointer-events-none absolute inset-y-0 left-0 hidden w-3/5 bg-linear-to-r from-canvas via-canvas/75 to-transparent md:block" />
-      <div class="pointer-events-none absolute inset-x-0 top-0 h-[48%] bg-linear-to-b from-canvas via-canvas/65 to-transparent md:hidden" />
-      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-canvas via-canvas/75 to-transparent md:h-28 md:via-canvas/45" />
+      <div
+        class="pointer-events-none absolute inset-x-0 top-0 h-[48%] bg-linear-to-b from-canvas via-canvas/65 to-transparent transition-opacity duration-700 ease-out md:hidden"
+        :class="phase === 'video' ? 'opacity-0' : 'opacity-100'"
+      />
+      <div
+        class="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] bg-linear-to-t from-canvas via-canvas/85 to-transparent transition-opacity duration-700 ease-out md:hidden"
+        :class="phase === 'video' ? 'opacity-100' : 'opacity-0'"
+      />
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-canvas via-canvas/55 to-transparent md:via-canvas/45" />
     </div>
     <div class="pointer-events-none relative z-1 wrap flex min-h-[calc(100dvh-8rem-env(safe-area-inset-bottom))] flex-1 flex-col pb-6 pt-8 md:grid md:min-h-[calc(100dvh-4rem)] md:flex-none md:items-center md:py-14 lg:grid-cols-12 lg:py-20">
       <div class="pointer-events-none flex min-w-0 flex-1 flex-col md:block lg:col-span-7">
-        <div class="pointer-events-auto">
+        <div ref="copyEl" class="pointer-events-auto will-change-transform">
           <p class="h-label eyebrow">Forex &amp; CFD Brokerage</p>
-          <h1 id="hero-title" class="h-display mt-4 text-[clamp(2.25rem,8.4vw,6.75rem)] leading-[0.95]! whitespace-nowrap md:mt-5" aria-label="Quiet money. Loud success.">
+          <h1 id="hero-title" class="h-display mt-3 text-[clamp(2.25rem,8.4vw,6.75rem)] leading-[0.95]! whitespace-nowrap md:mt-5" aria-label="Quiet money. Loud success.">
             <svg class="hw block h-[2.15em] w-auto max-w-full overflow-visible" :viewBox="vb" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
               <defs>
                 <radialGradient id="hw-glow-grad">
@@ -276,11 +312,11 @@ useMotion(root, ({ motion, desktop }) => {
               </g>
             </svg>
           </h1>
-          <p class="h-sub mt-4 max-w-lg text-sm leading-relaxed text-muted sm:text-base md:mt-6 md:text-lg">
+          <p class="h-sub mt-3 max-w-lg text-sm leading-relaxed text-muted sm:text-base md:mt-6 md:text-lg">
             Institutional pricing and precision execution across forex, stocks, indices, commodities and crypto.
           </p>
         </div>
-        <div class="pointer-events-auto mt-auto flex flex-wrap items-center gap-3 pt-6 md:mt-8 md:pt-0">
+        <div ref="ctaEl" class="pointer-events-auto mt-auto flex flex-wrap items-center gap-3 pt-6 md:mt-8 md:pt-0">
           <a v-magnetic="0.2" :href="SIGNUP" class="h-cta btn btn-primary h-11 flex-1 px-6 text-sm sm:h-12 sm:flex-none sm:px-7 sm:text-base">
             Open account
             <span class="btn-icon" aria-hidden="true"><PhArrowRight :size="18" weight="bold" /><PhArrowRight :size="18" weight="bold" /></span>

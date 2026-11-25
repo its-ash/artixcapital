@@ -60,10 +60,37 @@ useJsonLd('ld-org', {
     }
   ]
 })
+
+onMounted(() => {
+  const html = document.documentElement
+  const dismiss = () => {
+    requestAnimationFrame(() => {
+      html.classList.add('artix-ready')
+      setTimeout(() => html.classList.add('artix-done'), 460)
+    })
+  }
+  const fonts = document.fonts?.ready ?? Promise.resolve()
+  Promise.race([fonts.catch(() => {}), new Promise(r => setTimeout(r, 700))]).then(dismiss)
+})
 </script>
 
 <template>
   <div class="min-h-dvh pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0 relative">
+    <div id="artix-boot" aria-hidden="true">
+      <div class="ab-box">
+        <svg class="ab-mark" viewBox="830 8 252 330" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polyline fill="#ffffff" points="1074.6,329.8 1037.7,329.8 837.3,15.7 874.3,15.7 1074.6,329.8" />
+          <polyline fill="#851c23" points="1074.6,15.7 985.7,144.5 907.8,15.7 1074.6,15.7" />
+          <polygon fill="#ec2026" points="907.8,15.7 966.5,113.4 1011,83.7" />
+          <polyline fill="#d71f29" points="1074.6,15.7 1041.4,15.7 994.5,15.7 1011,83.7 1074.6,15.7" />
+          <polygon fill="#47b549" points="926.2,200.9 1004.1,329.8 837.3,329.8" />
+          <polygon fill="#8dc582" points="1003.8,329.3 944.1,230.5 901.3,259.7" />
+          <polygon fill="#30a150" points="918.6,329.8 901.3,259.7 837.3,329.8" />
+          <polygon fill="#1b713b" points="944.1,230.5 871.6,280.1 911.3,222.5" />
+        </svg>
+        <div class="ab-track"><span class="ab-bar" /></div>
+      </div>
+    </div>
     <span id="nav-sentinel" class="pointer-events-none absolute top-0 left-0 h-2 w-px" aria-hidden="true" />
     <SiteNav />
     <NuxtPage :transition="pageTransition" />
